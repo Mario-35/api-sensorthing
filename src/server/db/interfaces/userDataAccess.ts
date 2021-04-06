@@ -1,0 +1,15 @@
+/**
+ * IUserDataAccess interface.
+ *
+ * @copyright 2020-present Inrae
+ * @author mario.adam@inrae.fr
+ *
+ */
+
+import { IUser } from "./user";
+
+export interface IUserDataAccess {
+    getAll(): Promise<IUser[] | any[]>;
+    getSingle(id: string): Promise<IUser | any>;
+    add(datas: any): Promise<IUser | any>;
+}

@@ -1,0 +1,1 @@
+The SensorThings API uses the following error codes :
