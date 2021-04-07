@@ -1,4 +1,4 @@
-![alt text](doc\assets\inrae.png/ "Logo Title Text 1")
+![alt text](doc\assets\inrae.png/ "Inrae")
 
 ## Want to use this project?
 
@@ -8,6 +8,18 @@
 4. Make .env file (see .env.example) .env is for prod
 5. npm run dev for dev, npm run build (vs script package.json)
 6. If database not exists the program create it.
+
+The project run under nodeJS.
+
+![Nodejs](doc\assets\nodejs.png/ "Nodejs")
+
+Is 100% typescript, the javascript is used for TDD only and apidoc.
+
+![TypeScript](doc\assets\ts.png/ "TypeScript") ![Javascript](doc\assets\js.png/ "Javascript")
+
+For views a little :
+
+![HTML JS CSS](doc\assets\html.png/ "HTML JS CSS")
 
 ## Directory Structure
 
