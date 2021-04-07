@@ -23,7 +23,7 @@
  ┃ ┃ ┣ routes "Router routes"
  ┃ ┃ ┃ ┣ views "logins html views"
  ┃ ┃ ┣ utils "Utils for app"
- ┃ ┃ ┃ ┣ odata "Odata parser"
+ ┃ ┃ ┃ ┣ odata "Odata Enhanced parser"
  ┃ ┃ ┣ constant.ts "All datas"
  ┃ ┃ ┣ db.ts "DB connection"
  ┃ ┃ ┗ index.ts "Server start"
@@ -53,3 +53,29 @@
   PGADMIN=mario29 "postgres admin password"
   PGDATABASE=test "postgres database name"
 ```
+
+## Tech Stack
+
+-   [Node.js](https://nodejs.org/) `v14.15.1`
+-   [PostgreSQL](https://www.postgresql.org/)
+-   [Knex.js](https://knexjs.org/)
+-   [pg](https://node-postgres.com/)
+-   [odata-v4-pg](https://github.com/jaystack/odata-v4-pg)
+-   [json2csv](https://mircozeiss.com/json2csv/)
+
+---
+
+-   [koa](https://koajs.com/)
+-   [koa-bodyparser](https://github.com/koajs/bodyparser)
+-   [koa-json](https://github.com/koajs/json)
+-   [koa-logger](https://github.com/koajs/logger)
+-   [koa-router](https://github.com/koajs/router)
+-   [koa-session](https://github.com/koajs/session)
+-   [koa-passport](https://github.com/rkusa/koa-passport)
+-   [passport-local](https://github.com/jaredhanson/passport-local)
+
+---
+
+-   [bcryptjs](https://github.com/dcodeIO/bcrypt.js)
+-   [chalk](https://github.com/chalk/chalk)
+-   [dotenv](https://github.com/motdotla/dotenv)

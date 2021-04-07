@@ -11,7 +11,6 @@ process.env.PGDATABASE = process.env.NODE_ENV && process.env.NODE_ENV.trim() == 
 
 import Koa, { ParameterizedContext } from "koa";
 import bodyParser from "koa-bodyparser";
-import koaBody from "koa-body";
 import session from "koa-session";
 import passport from "koa-passport";
 import logger from "koa-logger";
@@ -42,7 +41,6 @@ app.use(async (ctx: ParameterizedContext, next) => {
 });
 
 // Apply Koa-Body To All Routes
-app.use(koaBody({ multipart: true }));
 
 // body parser
 app.use(bodyParser());

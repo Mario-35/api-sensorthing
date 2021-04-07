@@ -1,32 +1,34 @@
 import { Token } from "odata-v4-parser/lib/lexer";
 import { Literal } from "odata-v4-literal";
 import { SQLLiteral, SQLLang, Visitor } from "odata-v4-sql/lib/visitor";
-import { SqlOptions } from "./index";
+import { SqlOptions } from "odata-v4-pg";
 
 export class PGVisitor extends Visitor {
-    parameters: any[] = [];
+    parameters: unknown[] = [];
     includes: PGVisitor[] = [];
 
     constructor(options = <SqlOptions>{}) {
         super(options);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (<any>this).parameters = [];
         this.type = SQLLang.PostgreSql;
     }
     /**
      * returns parameters as {0: 'abc', 1: '2019', ...}
      */
-    public parameterObject() {
+    public parameterObject(): { [key: number]: unknown } {
         return Object.assign({}, this.parameters);
     }
 
-    from(table: string) {
+    from(table: string): string {
         let sql = `SELECT ${this.select} FROM ${table} WHERE ${this.where} ORDER BY ${this.orderby}`;
         if (typeof this.limit == "number") sql += ` LIMIT ${this.limit}`;
         if (typeof this.skip == "number") sql += ` OFFSET ${this.skip}`;
         return sql;
     }
 
-    protected VisitExpand(node: Token, context: any) {
+    protected VisitExpand(node: Token): void {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         node.value.items.forEach((item: any) => {
             const expandPath = item.value.path.raw;
             let visitor = this.includes.filter((v) => v.navigationProperty == expandPath)[0];
@@ -42,6 +44,7 @@ export class PGVisitor extends Visitor {
     protected toSnakeCase(str: string): string {
         return (
             str &&
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             str
                 .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)!
                 .map((x) => x!.toLowerCase())!
@@ -49,7 +52,7 @@ export class PGVisitor extends Visitor {
         );
     }
 
-    protected VisitSelectItem(node: Token, context: any) {
+    protected VisitSelectItem(node: Token, context: any): void {
         const item = node.raw.replace(/\//g, ".");
         this.select += `"${item}"`;
     }
@@ -58,7 +61,7 @@ export class PGVisitor extends Visitor {
 	 double underscore __, and identifier will be replaced with "xxx"."yyyy" for the
 	 where clause.
 	*/
-    protected VisitODataIdentifier(node: Token, context: any) {
+    protected VisitODataIdentifier(node: Token, context: any): void {
         let colNames = node.value.name.split("__");
         colNames = colNames.map(this.toSnakeCase);
         if (colNames.length > 1) {
@@ -74,7 +77,7 @@ export class PGVisitor extends Visitor {
 		context.identifier = node.value.name; */
     }
 
-    protected VisitEqualsExpression(node: Token, context: any) {
+    protected VisitEqualsExpression(node: Token, context: any): void {
         this.Visit(node.value.left, context);
         this.where += " = ";
         this.Visit(node.value.right, context);
@@ -85,7 +88,7 @@ export class PGVisitor extends Visitor {
         }
     }
 
-    protected VisitNotEqualsExpression(node: Token, context: any) {
+    protected VisitNotEqualsExpression(node: Token, context: any): void {
         this.Visit(node.value.left, context);
         this.where += " <> ";
         this.Visit(node.value.right, context);
@@ -100,7 +103,7 @@ export class PGVisitor extends Visitor {
         }
     }
 
-    protected VisitLiteral(node: Token, context: any) {
+    protected VisitLiteral(node: Token, context: any): void {
         if (this.options.useParameters) {
             const value = Literal.convert(node.value, node.raw);
             context.literal = value;
@@ -109,14 +112,14 @@ export class PGVisitor extends Visitor {
         } else this.where += context.literal = SQLLiteral.convert(node.value, node.raw);
     }
 
-    protected VisitInExpression(node: Token, context: any) {
+    protected VisitInExpression(node: Token, context: any): void {
         this.Visit(node.value.left, context);
         this.where += " IN (";
         this.Visit(node.value.right, context);
         this.where += ":list)";
     }
 
-    protected VisitArrayOrObject(node: Token, context: any) {
+    protected VisitArrayOrObject(node: Token, context: any): void {
         if (this.options.useParameters) {
             const value = node.value.value.items.map((item: any) => (item.value === "number" ? parseInt(item.raw, 10) : item.raw));
             context.literal = value;
@@ -125,7 +128,7 @@ export class PGVisitor extends Visitor {
         } else this.where += context.literal = SQLLiteral.convert(node.value, node.raw);
     }
 
-    protected VisitMethodCallExpression(node: Token, context: any) {
+    protected VisitMethodCallExpression(node: Token, context: any): void {
         const method = node.value.method;
         const params = node.value.parameters || [];
         switch (method) {

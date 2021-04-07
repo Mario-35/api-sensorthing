@@ -8,7 +8,7 @@
 
 /* eslint-disable quotes */
 
-import { PGVisitor as Visitor } from "./utils/odata/visitor";
+import { PGVisitor } from "./utils/odata/visitor";
 export interface connectionDB {
     host: string | undefined;
     user: string | undefined;
@@ -45,7 +45,7 @@ export interface requestArgs {
     baseUrl: string;
     version: string;
     entities: string[];
-    odada: Visitor;
+    odada: PGVisitor;
     debug: boolean;
     formatResult: formatResult;
 }

@@ -101,10 +101,10 @@
 *        "properties": null,
 *        "Datastreams": [
 *            {
-*                "@iot.id": "12",
-*                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(12)",
-*                "description": "Air quality readings",
-*                "name": "air_quality_readings",
+*                "@iot.id": "1",
+*                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)",
+*                "description": "Air quality Number one",
+*                "name": "air_quality_readings1",
 *                "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
 *                "observedArea": null,
 *                "phenomenonTime": null,
@@ -115,12 +115,31 @@
 *                    "symbol": "μg/m³",
 *                    "definition": "http://unitsofmeasure.org/ucum.html"
 *                },
-*                "Observations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(12)/Observations",
-*                "ObservedProperty@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(12)/ObservedProperty",
-*                "Sensor@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(12)/Sensor",
-*                "Thing@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(12)/Thing"
+*                "Observations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Observations",
+*                "ObservedProperty@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/ObservedProperty",
+*                "Sensor@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Sensor",
+*                "Thing@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Thing"
 *            },
-*            null,
+*            {
+*                "@iot.id": "2",
+*                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(2)",
+*                "description": "Air quality Number two",
+*                "name": "air_quality_readings2",
+*                "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+*                "observedArea": null,
+*                "phenomenonTime": null,
+*                "properties": null,
+*                "resultTime": null,
+*                "unitOfMeasurement": {
+*                    "name": "PM 2.5 Particulates (ug/m3)",
+*                    "symbol": "μg/m³",
+*                    "definition": "http://unitsofmeasure.org/ucum.html"
+*                },
+*                "Observations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(2)/Observations",
+*                "ObservedProperty@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(2)/ObservedProperty",
+*                "Sensor@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(2)/Sensor",
+*                "Thing@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(2)/Thing"
+*            },
 *            "..."
 *        ]
 *    }
