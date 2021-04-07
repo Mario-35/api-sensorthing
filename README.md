@@ -1,4 +1,4 @@
-![alt text](doc\assets\inrae.png/ "Inrae")
+![Inrae](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/inrae.png "Inrae")
 
 ## Want to use this project?
 
@@ -11,7 +11,7 @@
 
 The project run under nodeJS.
 
-![Nodejs](.\doc\assets\nodejs.png "Nodejs")
+![Nodejs](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/nodejs.png "Nodejs")
 
 Is 100% typescript, the javascript is used for TDD only and apidoc.
 
@@ -19,7 +19,7 @@ Is 100% typescript, the javascript is used for TDD only and apidoc.
 
 For views a little :
 
-![HTML JS CSS](.\doc\assets\html.png/ "HTML JS CSS")
+![HTML JS CSS](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/html.png "HTML JS CSS")
 
 ## Directory Structure
 
