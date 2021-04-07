@@ -11,15 +11,15 @@
 
 The project run under nodeJS.
 
-![Nodejs](doc\assets\nodejs.png/ "Nodejs")
+![Nodejs](.\doc\assets\nodejs.png/ "Nodejs")
 
 Is 100% typescript, the javascript is used for TDD only and apidoc.
 
-![TypeScript](doc\assets\ts.png/ "TypeScript") ![Javascript](doc\assets\js.png/ "Javascript")
+![TypeScript](.\doc\assets\ts.png/ "TypeScript") ![Javascript](.\doc\assets\js.png/ "Javascript")
 
 For views a little :
 
-![HTML JS CSS](doc\assets\html.png/ "HTML JS CSS")
+![HTML JS CSS](.\doc\assets\html.png/ "HTML JS CSS")
 
 ## Directory Structure
 
