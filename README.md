@@ -49,8 +49,8 @@
   PGHOST=localhost "postgres host"
   PGPORT=5432 "postgres port"
   PGUSER=sensorapi "postgres user"
-  PGPASSWORD=mario29 "postgres user password"
-  PGADMIN=mario29 "postgres admin password"
+  PGPASSWORD=mario "postgres user password"
+  PGADMIN=mario "postgres admin password"
   PGDATABASE=test "postgres database name"
 ```
 
