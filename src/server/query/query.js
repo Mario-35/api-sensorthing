@@ -3,23 +3,24 @@ const APIVERSION = "v1.0";
 var jsonViewer = new JSONViewer();
 document.querySelector("#json").appendChild(jsonViewer.getContainer());
 
-const array = ["Things","Datastreams","FeaturesOfInterest","HistoricalLocations","Locations","Observations","ObservedProperties","Sensors","@array@"];
+const array = ["@array@"];
 
 // textarea value to JSON object
 var setJSON = function () {
   
-const entity = document.getElementById("entity");
-if (entity != null)
-  for (let i = 0; i < array.length; i++) {
-      var option = document.createElement("option");
-      option.value = array[i];
-      option.text = array[i]; 
-      entity.appendChild(option);
-  }
+// const entity = document.getElementById("entity");
+// if (entity != null)
+//   for (let i = 0; i < array.length; i++) {
+//       var option = document.createElement("option");
+//       option.value = array[i];
+//       option.text = array[i]; 
+//       entity.appendChild(option);
+//   }
 };
 
 // load default value
 setJSON();
+
 
 go.onclick = async (e) => {
   e.preventDefault();

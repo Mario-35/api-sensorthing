@@ -102,10 +102,20 @@ router.get("/(.*)", async (ctx) => {
         ctx.body = {
             value: expectedResponse.filter((elem) => Object.keys(elem).length)
         };
-    } else if (ctx.request.url.toLowerCase().endsWith("/query")) {
+    } else if (ctx.request.url.toLowerCase().includes("/query")) {
+        const pipo = JSON.stringify({
+            "description": "A SensorWeb thing",
+            "name": "SensorWebThing",
+            "properties": {
+                "organization": "Mozilla",
+                "owner": "Mozilla"
+            }
+        });
+        console.log(pipo);
+
         await add_log(ctx);
         ctx.type = "html";
-        ctx.body = queryHtml(helperUsers.ensureAuthenticated(ctx));
+        ctx.body = queryHtml({ user: helperUsers.ensureAuthenticated(ctx) ? "true" : "false", ...ctx.query });
     } else if (ctx.request.url.includes(`/${process.env.APIVERSION}/`)) {
         await add_log(ctx);
         const args = urlRequestToRequestArgs(ctx);

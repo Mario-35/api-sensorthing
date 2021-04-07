@@ -9,21 +9,37 @@
 /* eslint-disable quotes */
 
 import fs from "fs";
+import { _ENTITIES } from "../constant";
 
-export const queryHtml = (identified: boolean): string => {
+export const queryHtml = (params: { [key: string]: string }): string => {
+    const entities: string[] = [];
+    const methods: string[] = [];
+    const arrayEntities = Object.keys(_ENTITIES);
+    const entitiesArray = Object.keys(_ENTITIES);
+    Object.keys(_ENTITIES).forEach((key: string) => arrayEntities.push(_ENTITIES[key].singular));
+    if (params.user == "true") {
+        entitiesArray.push("CreateObservations");
+        entitiesArray.push("createDB");
+    }
+
+    entitiesArray.forEach((elem: string) => {
+        entities.push(`<option value="${elem}" ${elem == params.entity ? "selected" : ""}> ${elem} </option>`);
+    });
+
+    ["Get", "Post", "patch", "Delete"].forEach((elem: string) => {
+        methods.push(`<option value="${elem}" ${elem == params.method ? "selected" : ""}> ${elem} </option>`);
+    });
+
     const file = fs
         .readFileSync(__dirname + "/query.html", "utf-8")
         .replace('<link rel="stylesheet" href="./query.css">', "<style>" + fs.readFileSync(__dirname + "/query.css", "utf-8") + "</style>")
         .replace('<script src="query.js"></script>', "<script>" + fs.readFileSync(__dirname + "/query.js", "utf-8") + "</script>");
 
     return file
-        .replace(
-            "@Options@",
-            identified
-                ? `<option value='Post'>Post</option>
-                <option value='Patch'>Patch</option>
-                <option value='Delete'>Delete</option>`
-                : ""
-        )
-        .replace(',"@array@"', identified ? `,"CreateObservations","createDB"` : "");
+        .replace("@Options@", params.user == "true" ? methods.join("\n") : '<option value="Get" selected>Get</option>')
+        .replace("@entity@", entities.join("\n"))
+        .replace("@options@", params.options ? params.options : "")
+        .replace("@id@", params.id ? params.id : "")
+        .replace('"@array@"', arrayEntities.map((s: string) => `"${s}"`).join(","))
+        .replace("@datas@", params.datas ? params.datas : "");
 };

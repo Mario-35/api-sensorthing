@@ -298,24 +298,23 @@
         <div class="container">
             <div id="first">               
                     <select class="form__operation" tabindex="1" name="operation" id="operation" class="">
-                        <option value="Get" selected>Get</option>
                         @Options@
                     </select>
                     
 
                     <select class="form__select" tabindex="1" name="entity" id="entity" class="">
+                        @entity@
                     </select>
                     
-                    <input id="nb" class="form__nb" type="text" name="nb">
+                    <input id="nb" class="form__nb" type="text" value="@id@" name="nb">
 
                     <button type="button" id="go" class="go">Go</button>
 
 
-                    <input id="query" class="form__query" type="text" name="tab">
+                    <input id="query" class="form__query" type="text" value="@options@" name="tab">
 
 
-                    <textarea class="form__input" id="input" placeholder="Input json..." rows="6">
-                    </textarea>
+                    <textarea class="form__input" id="input" placeholder="Input json..." rows="6">@datas@</textarea>
                     
                     <button type="button" id="logout" class="logout">Logout</button>
                     <button type="button" id="info" class="info">Status</button>

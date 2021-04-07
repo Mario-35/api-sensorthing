@@ -21,43 +21,43 @@
 *        "value": [
 *            {
 *                "name": "Datastreams",
-*                "url": "http://127.0.0.1:54154/v1.0/Datastreams"
+*                "url": "http://127.0.0.1:55656/v1.0/Datastreams"
 *            },
 *            {
 *                "name": "Multidatastreams",
-*                "url": "http://127.0.0.1:54154/v1.0/Multidatastreams"
+*                "url": "http://127.0.0.1:55656/v1.0/Multidatastreams"
 *            },
 *            {
 *                "name": "multidatastreamobservedproperty",
-*                "url": "http://127.0.0.1:54154/v1.0/MultiDatastreamObservedproperties"
+*                "url": "http://127.0.0.1:55656/v1.0/MultiDatastreamObservedproperties"
 *            },
 *            {
 *                "name": "FeaturesOfInterest",
-*                "url": "http://127.0.0.1:54154/v1.0/FeaturesOfInterest"
+*                "url": "http://127.0.0.1:55656/v1.0/FeaturesOfInterest"
 *            },
 *            {
 *                "name": "HistoricalLocations",
-*                "url": "http://127.0.0.1:54154/v1.0/HistoricalLocations"
+*                "url": "http://127.0.0.1:55656/v1.0/HistoricalLocations"
 *            },
 *            {
 *                "name": "Locations",
-*                "url": "http://127.0.0.1:54154/v1.0/Locations"
+*                "url": "http://127.0.0.1:55656/v1.0/Locations"
 *            },
 *            {
 *                "name": "Observations",
-*                "url": "http://127.0.0.1:54154/v1.0/Observations"
+*                "url": "http://127.0.0.1:55656/v1.0/Observations"
 *            },
 *            {
 *                "name": "ObservedProperties",
-*                "url": "http://127.0.0.1:54154/v1.0/ObservedProperties"
+*                "url": "http://127.0.0.1:55656/v1.0/ObservedProperties"
 *            },
 *            {
 *                "name": "Sensors",
-*                "url": "http://127.0.0.1:54154/v1.0/Sensors"
+*                "url": "http://127.0.0.1:55656/v1.0/Sensors"
 *            },
 *            {
 *                "name": "Things",
-*                "url": "http://127.0.0.1:54154/v1.0/Things"
+*                "url": "http://127.0.0.1:55656/v1.0/Things"
 *            }
 *        ]
 *    }
