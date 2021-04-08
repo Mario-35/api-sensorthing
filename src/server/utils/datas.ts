@@ -516,6 +516,10 @@ export const databaseDatas: any = {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
                 comment: "A unique bigSerial."
             },
+            date: {
+                create: "timestamptz DEFAULT CURRENT_TIMESTAMP",
+                comment: "The time of the opération."
+            },
             user_id: {
                 create: "BIGINT",
                 comment: "User id."
@@ -532,9 +536,9 @@ export const databaseDatas: any = {
                 create: "jsonb NULL",
                 comment: "Datas send."
             },
-            date: {
-                create: "timestamptz DEFAULT CURRENT_TIMESTAMP",
-                comment: "The time of the opération."
+            results: {
+                create: "jsonb NULL",
+                comment: "result / error receive."
             }
         }
     }

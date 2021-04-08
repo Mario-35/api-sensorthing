@@ -14,7 +14,6 @@ import { ParameterizedContext } from "koa";
 import { Parser } from "json2csv";
 import { queryHtml } from "../query/";
 import { helperUsers } from "./_helpers";
-import { db } from "../db";
 
 const router: Router = new Router();
 
@@ -85,12 +84,8 @@ const returnBody = (args: requestArgs, input: string | keyStrings | keyStrings[]
     }
 };
 
-const add_log = async (ctx: ParameterizedContext) =>
-    await db.table("log_request").insert({ user_id: process.env.USERID, method: ctx.request.method, url: ctx.request.url, datas: ctx.request.body });
-
 router.get("/(.*)", async (ctx) => {
     if (ctx.request.url.endsWith(`/${process.env.APIVERSION}/`)) {
-        await add_log(ctx);
         const expectedResponse: Record<string, unknown>[] = [{}];
         Object.keys(_ENTITIES).forEach((value: string) => {
             expectedResponse.push({
@@ -103,24 +98,12 @@ router.get("/(.*)", async (ctx) => {
             value: expectedResponse.filter((elem) => Object.keys(elem).length)
         };
     } else if (ctx.request.url.toLowerCase().includes("/query")) {
-        const pipo = JSON.stringify({
-            "description": "A SensorWeb thing",
-            "name": "SensorWebThing",
-            "properties": {
-                "organization": "Mozilla",
-                "owner": "Mozilla"
-            }
-        });
-        console.log(pipo);
-
-        await add_log(ctx);
         ctx.type = "html";
         ctx.body = queryHtml({ user: helperUsers.ensureAuthenticated(ctx) ? "true" : "false", ...ctx.query });
     } else if (ctx.request.url.includes(`/${process.env.APIVERSION}/`)) {
-        await add_log(ctx);
         const args = urlRequestToRequestArgs(ctx);
         if (args && args.ENTITY_NAME != "") {
-            const objectAccess = new apiAccess(args);
+            const objectAccess = new apiAccess(ctx, args);
             if (args.ENTITY_ID === 0) {
                 const results = await objectAccess.getAll();
                 if (results) {
@@ -172,9 +155,8 @@ router.post("/(.*)", async (ctx) => {
                 ctx.type = "application/json";
                 ctx.body = results;
             } else {
-                await add_log(ctx);
-                const objectAccess = new apiAccess(args);
-                const result: ReturnResult | undefined | void = await objectAccess.add(ctx.request.body).catch((error) => console.log(error));
+                const objectAccess = new apiAccess(ctx, args);
+                const result: ReturnResult | undefined | void = await objectAccess.add().catch((error) => console.log(error));
                 if (result) {
                     if (result.error) {
                         errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
@@ -201,14 +183,11 @@ router.patch("/(.*)", async (ctx) => {
         if (!helperUsers.ensureAuthenticated(ctx)) {
             notAuthorized(ctx);
         } else if (Object.keys(ctx.request.body).length > 0) {
-            await add_log(ctx);
             const args = await urlRequestToRequestArgs(ctx);
             if (args) {
-                const objectAccess = new apiAccess(args);
+                const objectAccess = new apiAccess(ctx, args);
                 if (args.ENTITY_ID) {
-                    const result: ReturnResult | undefined | void = isNaN(args.ENTITY_ID)
-                        ? undefined
-                        : await objectAccess.update(BigInt(args.ENTITY_ID), ctx.request.body);
+                    const result: ReturnResult | undefined | void = isNaN(args.ENTITY_ID) ? undefined : await objectAccess.update(BigInt(args.ENTITY_ID));
                     if (result) {
                         if (result.error) {
                             errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
@@ -235,10 +214,9 @@ router.delete("/(.*)", async (ctx) => {
         if (!helperUsers.ensureAuthenticated(ctx)) {
             notAuthorized(ctx);
         } else {
-            await add_log(ctx);
             const args = await urlRequestToRequestArgs(ctx);
             if (args) {
-                const objectAccess = new apiAccess(args);
+                const objectAccess = new apiAccess(ctx, args);
                 if (args && args.ENTITY_ID) {
                     const result = await objectAccess.delete(BigInt(args.ENTITY_ID));
                     if (result && result.id && result.id > 0) {

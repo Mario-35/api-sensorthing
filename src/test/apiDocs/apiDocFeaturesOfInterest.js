@@ -44,8 +44,8 @@
 *                "feature": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-172.06",
-*                        "14.05"
+*                        "-14.06",
+*                        "46.05"
 *                    ]
 *                },
 *                "name": "Weather Station 1",
@@ -115,16 +115,16 @@
 *                "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(3)/FeatureOfInterest"
 *            },
 *            {
-*                "@iot.id": "9",
-*                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(9)",
+*                "@iot.id": "6",
+*                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(6)",
 *                "parameters": null,
-*                "phenomenonTime": "2016-11-18T01:15:15.790Z",
-*                "result": 45,
+*                "phenomenonTime": "2016-11-18T04:15:15.790Z",
+*                "result": 17.5,
 *                "resultQuality": null,
-*                "resultTime": "2016-11-18T12:30:30.790Z",
+*                "resultTime": "2016-11-18T13:30:30.790Z",
 *                "validTime": null,
-*                "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(9)/Datastream",
-*                "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(9)/FeatureOfInterest"
+*                "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(6)/Datastream",
+*                "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(6)/FeatureOfInterest"
 *            },
 *            "..."
 *        ]
