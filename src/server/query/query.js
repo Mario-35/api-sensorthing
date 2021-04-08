@@ -35,8 +35,7 @@ go.onclick = async (e) => {
   let query = (queryElem != null) ? queryElem.value : "";
 
   
-  
-  if (query != "" && query[0] != "?" ) {
+  if (query != "" && query[0] != "?" && query[0] != "/") {
     query = (array.includes(query)) ? "\\" + query : "?" + query;
   }
 

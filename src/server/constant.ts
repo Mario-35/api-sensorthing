@@ -36,11 +36,9 @@ export enum formatResult {
 
 export interface requestArgs {
     ENTITY_NAME: string;
-    tableName: string;
     ENTITY_ID?: number;
     PROPERTY_NAME?: string | undefined;
     RELATION_NAME?: string | undefined;
-    ref?: boolean;
     value?: boolean;
     baseUrl: string;
     version: string;

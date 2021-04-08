@@ -89,7 +89,7 @@ describe("routes : Thing [8.2.1]", () => {
                 api: `{get} /${entity.name}(:id) [${++index}] one.`,
                 apiName: `Get${entity.name}`,
                 apiDescription: `Get a specific ${entity.name}.`,
-                apiExample: `/v1.0/${entity.name}(1)`
+                apiExample: `/v1.0/${entity.name}(1) -debug-`
             };
             chai.request(server)
                 .get(infos.apiExample)

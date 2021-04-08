@@ -17,7 +17,7 @@
 *    @apiSampleRequest http://sensorthings.geosas.fr/v1.0/Things(10?$resultFormat=CSV
 *    @apiSuccessExample {json} Success-Response:
 *    "@iot.id";"@iot.selfLink";"description";"name";"properties";"Datastreams@iot.navigationLink";"HistoricalLocation@iot.navigationLink";"Locations@iot.navigationLink"
-*    "10";"http://sensorthings.geosas.fr/v1.0/Things(10)";"A SensorWeb thing Number ten";"SensorWebThing 10";"{""owner"":""Mozilla version one"",""organization"":""Mozilla""}";"proxy/v1.0/Things(10)/Datastreams";"proxy/v1.0/Things(10)/HistoricalLocation";"proxy/v1.0/Things(10)/Locations"
+*    "10";"http://sensorthings.geosas.fr/v1.0/Things(10)";"A SensorWeb thing Number ten";"SensorWebThing 10";"{""owner"":""Mozilla version six"",""organization"":""Mozilla""}";"proxy/v1.0/Things(10)/Datastreams";"proxy/v1.0/Things(10)/HistoricalLocation";"proxy/v1.0/Things(10)/Locations"
 *    @apiErrorExample {json} Error-Response:
 *    ""
 */

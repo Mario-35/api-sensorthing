@@ -39,8 +39,8 @@
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-5.06",
-*                        "21.05"
+*                        "-180.06",
+*                        "24.05"
 *                    ]
 *                },
 *                "name": "UofC (Created new location) Number six",
@@ -57,8 +57,8 @@
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-149.06",
-*                        "7.05"
+*                        "-161.06",
+*                        "3.05"
 *                    ]
 *                },
 *                "name": "UofC (Created new location) Number seven",
@@ -90,8 +90,8 @@
 *        "location": {
 *            "type": "Point",
 *            "coordinates": [
-*                "-5.06",
-*                "21.05"
+*                "-180.06",
+*                "24.05"
 *            ]
 *        },
 *        "name": "UofC (Created new location) Number six",
@@ -133,8 +133,8 @@
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-57.06",
-*                        "25.05"
+*                        "-113.06",
+*                        "4.05"
 *                    ]
 *                },
 *                "name": "My Location 6",
@@ -151,8 +151,8 @@
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-125.06",
-*                        "50.05"
+*                        "-169.06",
+*                        "28.05"
 *                    ]
 *                },
 *                "name": "My Location 7",

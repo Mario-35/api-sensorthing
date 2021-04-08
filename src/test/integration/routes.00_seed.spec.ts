@@ -12,7 +12,7 @@ import { server } from "../../server/index";
 const number = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "onze", "douze", "treize", "quatorze", "quinze"];
 
 describe("Add for tests.", () => {
-    it("Create Database", (done) => {
+    it("Create Database", async (done) => {
         chai.request(server)
             .post("/v1.0/createDB")
             .send({
@@ -57,7 +57,7 @@ describe("Add for tests.", () => {
     for (let i = 1; i < 6; i++) {
         it("Add Sensor for tests.", (done) => {
             chai.request(server)
-                .post("/v1.0/Sensor")
+                .post("/v1.0/Sensors")
                 .send({
                     description: `PM sensor Number ${number[i]}`,
                     name: `PM ${i} sensor`,
@@ -66,6 +66,8 @@ describe("Add for tests.", () => {
                 })
                 .end((err: any, res: any) => {
                     should.not.exist(err);
+                    console.log(res.body);
+
                     res.status.should.equal(201);
                     done();
                 });
@@ -76,7 +78,7 @@ describe("Add for tests.", () => {
     for (let i = 1; i < 11; i++) {
         it("Add Thing for tests.", (done) => {
             chai.request(server)
-                .post("/v1.0/Thing")
+                .post("/v1.0/Things")
                 .send(
                     i < 6
                         ? {
@@ -141,7 +143,7 @@ describe("Add for tests.", () => {
     for (let i = 1; i < 11; i++) {
         it("Add Datastream for tests.", (done) => {
             chai.request(server)
-                .post("/v1.0/Datastream")
+                .post("/v1.0/Datastreams")
                 .send({
                     unitOfMeasurement: {
                         symbol: "μg/m³",
@@ -167,7 +169,7 @@ describe("Add for tests.", () => {
     for (let i = 1; i < 11; i++) {
         it("Add Observation for tests.", (done) => {
             chai.request(server)
-                .post("/v1.0/Observation")
+                .post("/v1.0/Observations")
                 .send({
                     phenomenonTime: `2016-11-18T0${Number(Math.floor(Math.random() * Math.floor(8)) + 1)}:15:15.790Z`,
                     resultTime: `2016-11-18T1${Number(Math.floor(Math.random() * Math.floor(8)) + 1)}:30:30.790Z`,
@@ -187,7 +189,7 @@ describe("Add for tests.", () => {
     for (let i = 6; i < 11; i++) {
         it("Add Location for tests.", (done) => {
             chai.request(server)
-                .post("/v1.0/Location")
+                .post("/v1.0/Locations")
                 .send({
                     name: `My Location ${i}`,
                     description: `This is the Location Number ${number[i]}`,

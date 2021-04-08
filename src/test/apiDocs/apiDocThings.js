@@ -36,7 +36,7 @@
 *                "description": "A SensorWeb thing Number one",
 *                "name": "SensorWebThing 1",
 *                "properties": {
-*                    "owner": "Mozilla version eight",
+*                    "owner": "Mozilla version four",
 *                    "organization": "Mozilla"
 *                },
 *                "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/Datastreams",
@@ -49,7 +49,7 @@
 *                "description": "A SensorWeb thing Number two",
 *                "name": "SensorWebThing 2",
 *                "properties": {
-*                    "owner": "Mozilla version two",
+*                    "owner": "Mozilla version six",
 *                    "organization": "Mozilla"
 *                },
 *                "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(2)/Datastreams",
@@ -68,8 +68,8 @@
 *    @apiGroup Things
 *    @apiDescription Get a specific Things.
 *    @apiExample {js} Example usage:
-*          /v1.0/Things(1)
-*    @apiSampleRequest http://sensorthings.geosas.fr/v1.0/Things(1
+*          /v1.0/Things(1) -debug-
+*    @apiSampleRequest http://sensorthings.geosas.fr/v1.0/Things(1 -debug-
 *    @apiSuccessExample {json} Success-Response:
 *    {
 *        "@iot.id": "1",
@@ -77,7 +77,7 @@
 *        "description": "A SensorWeb thing Number one",
 *        "name": "SensorWebThing 1",
 *        "properties": {
-*            "owner": "Mozilla version eight",
+*            "owner": "Mozilla version four",
 *            "organization": "Mozilla"
 *        },
 *        "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/Datastreams",

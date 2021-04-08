@@ -31,13 +31,10 @@ app.use(favicon(__dirname + "/favicon.ico"));
 
 app.use(async (ctx: ParameterizedContext, next) => {
     try {
-        console.log(ctx.path);
-
         await next();
     } catch (err) {
         // will only respond with JSON
         console.log(err);
-
         ctx.status = err.statusCode || err.status || 500;
         ctx.body = {
             message: err.message
