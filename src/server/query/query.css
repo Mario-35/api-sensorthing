@@ -215,6 +215,9 @@ textarea:focus {
 .json-viewer ul li .type-date {
     color: #1161ee;
 }
+.json-viewer ul li .type-link {
+    color: #ee1111;
+}
 
 .json-viewer ul li .type-boolean {
     color: #f6bb42;

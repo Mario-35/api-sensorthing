@@ -18,8 +18,12 @@ var setJSON = function () {
 //   }
 };
 
+//Hide params url
+history.replaceState({}, null, "/Query");
+
 // load default value
 setJSON();
+
 
 
 go.onclick = async (e) => {
@@ -80,17 +84,13 @@ if (entity.value === "createDB") {
         jsonViewer.showJSON(jsonObj);
       }
       catch (err) {
-        // window.location.href = "/error";
-
-fetch(document.URL.split("/Query")[0]+"/error", {
-        method: "POST",
-        headers: {
+        fetch(document.URL.split("/Query")[0]+"/error", {
+          method: "POST",
+          headers: {
             "Content-Type": "application/json",
-        },
-        body: data.value,
-      });
-
-
+          },
+          body: data.value,
+        });
       }
     } else {
       let response = await fetch(url, {

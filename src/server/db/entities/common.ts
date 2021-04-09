@@ -280,10 +280,6 @@ export class Common {
 
         const results = await this.makeOdataQuery(query, propertyName);
 
-        // if (this.args.odada.skip) {
-        //     results = results.slice(this.args.odada.skip);
-        // }
-
         const limit = this.args.odada.limit ? this.args.odada.limit : Number(process.env.APILIMIT);
         const skip = this.args.odada.skip ? this.args.odada.skip : 0;
 
@@ -671,11 +667,11 @@ export class Common {
                         const tableName = names[subEntity.table];
                         const parentTableName = names[subParentEntity.table];
                         this.logger.info(`Add Relation ${tableName} in`, parentTableName);
-
                         addToQueryMaker(
                             OperationType.Table,
                             parentTableName,
-                            parentTableName,
+                            // parentTableName, correction: 9/4/2021
+                            subParentEntity.table,
                             {
                                 [`${subEntity.table}_id`]: `@(select ${tableName}.id from ${tableName})@`
                             },

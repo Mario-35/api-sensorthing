@@ -222,11 +222,19 @@
                  */
                 JSONViewer.prototype._createSimple = function (value) {
                     var spanEl = document.createElement("span");
+                    var alink = document.createElement("a");
                     var type = typeof value;
                     var txt = value;
 
                     if (type === "string") {
-                        txt = '"' + value + '"';
+                        if (value.includes("http://") &&  value.includes("v1.0")) {                             
+                            type = "link";
+                            txt = value;
+                            alink.href = this._createQueryLink(txt);
+                            alink.innerHTML = txt;
+                        } else {
+                            txt = '"' + value + '"';
+                        }
                     }
                     else if (value === null) {
                         type = "null";
@@ -241,8 +249,10 @@
                     }
 
                     spanEl.classList.add("type-" + type);
-                    spanEl.innerHTML = txt;
-
+                    spanEl.innerHTML = type == "link" ? "" : txt;
+                    if (type == "link") {
+                        spanEl.appendChild(alink);
+                    }
                     return spanEl;
                 };
 
@@ -288,6 +298,20 @@
                     return (count + " " + itemsTxt);
                 };
 
+
+                /**
+                 * Get correct item|s title for count.
+                 * 
+                 * @param  {Number} count Items count
+                 * @return {String}
+                 */
+                JSONViewer.prototype._createQueryLink = function (input) {
+                    const hostUrl = input.split("v1.0")[0];
+                    const splitStr = input.split("v1.0")[1].split("/").filter(word => word.length != "");
+                    const link = splitStr.length == 1 ? splitStr[0].replace("(", "&id=").replace(")", "") : splitStr[0].replace("(","&id=").replace(")","&options=") + splitStr[1];
+                    const result = hostUrl + "Query?&method=GET&entity=" + link;
+                    return result;
+                };
                 return JSONViewer;
             })();
         </script>
