@@ -87,7 +87,10 @@ export class Common {
         // creation of function for async foreach
         // https://gist.github.com/Atinux/fd2bcce63e44a7d3addddc166ce93fb2
         const request = async (): Promise<keyStrings | undefined> => {
-            const relationsKeys: string[] = this.entityProperty.relations ? Object.keys(this.entityProperty.relations) : [];
+            // hide all relations start with "_"
+            const relationsKeys: string[] = this.entityProperty.relations
+                ? Object.keys(this.entityProperty.relations).filter((word) => !this.entityProperty.relations[word].columnRelation.startsWith("_"))
+                : [];
             const result: keyStrings | keyStrings[] = {};
             if (linkBaseId) {
                 input["@iot.selfLink"] = `${linkBaseId}`;
@@ -147,7 +150,7 @@ export class Common {
 
                                             whereRaw = `id IN (${myId})`;
                                         } catch (error) {
-                                            if (this.args.debug) console.log(error);
+                                            if (this.args.debug) console.error(error);
                                             this.setError(error.message);
                                             whereRaw = "";
                                         }
@@ -162,7 +165,7 @@ export class Common {
 
                                             whereRaw = `id IN (${myId})`;
                                         } catch (error) {
-                                            if (this.args.debug) console.log(error);
+                                            if (this.args.debug) console.error(error);
                                             this.setError(error.message);
                                             whereRaw = "";
                                         }
@@ -243,7 +246,6 @@ export class Common {
     }
 
     async getAll(propertyName?: string): Promise<ReturnResult | undefined> {
-        // console.log("--------------------------------------");
         this.logger.head(`class common getAll [${this.constructor.name}]`);
         // Common.dbContext("get_log").insert({ url: this.args.baseUrl, dateexecuted: Common.dbContext("CURRENT_TIMESTAMP") });
         const query: Knex.QueryBuilder = Common.dbContext(this.entityProperty.table);
@@ -308,7 +310,7 @@ export class Common {
             const results = await Common.dbContext(this.entityProperty.table).whereRaw(condition);
             return results ? await this.formatResult(results) : undefined;
         } catch (error) {
-            if (this.args.debug) console.log(error);
+            if (this.args.debug) console.error(error);
             this.setError(error.message);
             return undefined;
         }
@@ -382,7 +384,7 @@ export class Common {
                     }
                 }
             } catch (error) {
-                if (this.args.debug) console.log(error);
+                if (this.args.debug) console.error(error);
                 this.setError(error.detail);
                 return this.formatReturnResult({});
             }
@@ -416,7 +418,7 @@ export class Common {
                     }
                 }
             } catch (error) {
-                if (this.args.debug) console.log(error);
+                if (this.args.debug) console.error(error);
                 this.setError(error.detail);
                 return this.formatReturnResult({});
             }
@@ -433,7 +435,7 @@ export class Common {
                 id: BigInt(results)
             });
         } catch (error) {
-            if (this.args.debug) console.log(error);
+            if (this.args.debug) console.error(error);
             this.setError(error.message.includes(" - ") ? error.message.split("-")[1].trim() : error.message, error.name);
         }
     }
@@ -657,6 +659,7 @@ export class Common {
                                 relation.tableName,
                                 {
                                     [`${subEntity.table}_id`]: `@(select ${tableName}.id from ${tableName})@`,
+                                    // [relation.columnRelation]: `@(select ${tableName}.id from ${tableName})@`,
                                     [`${subParentEntity.table}_id`]: `@(select ${parentTableName}.id from ${parentTableName})@`
                                 },
                                 relation.tableKey,
@@ -673,7 +676,8 @@ export class Common {
                             // parentTableName, correction: 9/4/2021
                             subParentEntity.table,
                             {
-                                [`${subEntity.table}_id`]: `@(select ${tableName}.id from ${tableName})@`
+                                // [`${subEntity.table}_id`]: `@(select ${tableName}.id from ${tableName})@`
+                                [relation.columnRelation]: `@(select ${tableName}.id from ${tableName})@`
                             },
                             relation.tableKey,
                             undefined

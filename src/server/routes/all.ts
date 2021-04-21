@@ -156,7 +156,7 @@ router.post("/(.*)", async (ctx) => {
                 ctx.body = results;
             } else {
                 const objectAccess = new apiAccess(ctx, args);
-                const result: ReturnResult | undefined | void = await objectAccess.add().catch((error) => console.log(error));
+                const result: ReturnResult | undefined | void = await objectAccess.add().catch((error) => console.error(error));
                 if (result) {
                     if (result.error) {
                         errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);

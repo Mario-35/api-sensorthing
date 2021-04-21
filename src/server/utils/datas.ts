@@ -69,6 +69,10 @@ export const databaseDatas: any = {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
                 comment: "A unique bigSerial."
             },
+            name: {
+                create: "text NOT NULL DEFAULT 'no name'::text",
+                comment: "This is a short description of the corresponding Thing entity."
+            },
             description: {
                 create: "text NOT NULL",
                 comment: "A property provides a label for Thing entity, commonly a descriptive name."
@@ -76,10 +80,6 @@ export const databaseDatas: any = {
             properties: {
                 create: "jsonb NULL",
                 comment: "A JSON Object containing user-annotated properties as key-value pairs."
-            },
-            name: {
-                create: "text NOT NULL DEFAULT 'no name'::text",
-                comment: "This is a short description of the corresponding Thing entity."
             }
         },
         constraints: {
@@ -122,31 +122,33 @@ export const databaseDatas: any = {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
                 comment: "A unique bigSerial."
             },
+            name: {
+                create: "text NOT NULL DEFAULT 'no name'::text",
+                comment: "A property provides a label for Location entity, commonly a descriptive name."
+            },
             description: {
                 create: "text NOT NULL",
                 comment: "The description about the location."
-            },
-            encodingType: {
-                create: "text NULL",
-                comment: "The encoding type of the location."
             },
             location: {
                 create: "jsonb NULL",
                 comment: "The location type is defined by encodingType."
             },
-            geom: {
-                create: "geometry NULL",
-                comment: "Geom."
+            encodingType: {
+                create: "text NULL",
+                comment: "The encoding type of the location."
             },
-            name: {
-                create: "text NOT NULL DEFAULT 'no name'::text",
-                comment: "A property provides a label for Location entity, commonly a descriptive name."
-            },
-            gen_fo_id: {
+            _default_foi: {
                 create: "BIGINT",
                 comment: "Default feature of interest."
             },
+            geom: {
+                // Not in Sensor 1.1
+                create: "geometry NULL",
+                comment: "Geom."
+            },
             properties: {
+                // Not in Sensor 1.1
                 create: "jsonb NULL",
                 comment: "Properties of the location."
             }
@@ -222,6 +224,7 @@ export const databaseDatas: any = {
                 comment: "A description about the ObservedProperty."
             },
             properties: {
+                // Not in Sensor 1.1
                 create: "jsonb NULL",
                 comment: "The detailed properties of the observed property."
             }
@@ -254,6 +257,7 @@ export const databaseDatas: any = {
                 comment: "The encoding type of the feature property."
             },
             properties: {
+                // Not in Sensor 1.1
                 create: "jsonb NULL",
                 comment: "The detailed description of the feature. The data type is defined by encodingType."
             }
@@ -277,13 +281,13 @@ export const databaseDatas: any = {
                 create: "text NULL",
                 comment: "The description of the Datastream entity."
             },
-            unitOfMeasurement: {
-                create: "jsonb NOT NULL",
-                comment: "The encoding type of the feature property."
-            },
             observationType: {
                 create: "text NULL",
                 comment: "The type of Observation (with unique result type), which is used by the service to encode observations."
+            },
+            unitOfMeasurement: {
+                create: "jsonb NOT NULL",
+                comment: "The encoding type of the feature property."
             },
             observedArea: {
                 create: "geometry NULL",
@@ -311,6 +315,7 @@ export const databaseDatas: any = {
                 comment: "A unique bigSerial for sensor."
             },
             properties: {
+                // Not in Sensor 1.1
                 create: "jsonb NULL",
                 comment: "The detailed description of the feature. The data type is defined by encodingType."
             }

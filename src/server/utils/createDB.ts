@@ -91,25 +91,25 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
                                                     results["Admin connection destroy"] = "Ok";
                                                 })
                                                 .catch((e) => {
-                                                    console.log(e);
+                                                    console.error(e);
                                                 });
                                         })
                                         .catch((e) => {
-                                            console.log(e);
+                                            console.error(e);
                                         });
                                 }
                             });
                         })
                         .catch((e) => {
-                            console.log(e);
+                            console.error(e);
                         });
                 })
                 .catch((e) => {
-                    console.log(e);
+                    console.error(e);
                 });
         })
         .catch((e) => {
-            console.log(e);
+            console.error(e);
         });
 
     await db
@@ -118,7 +118,7 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
             results["Create postgis"] = "Ok";
         })
         .catch((e) => {
-            console.log(e);
+            console.error(e);
         });
 
     await asyncForEach(Object.keys(databaseDatas), async (tableName: string) => {
@@ -146,7 +146,7 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
                 results[`Create table ${tableName}`] = "Ok";
             })
             .catch((e) => {
-                console.log(e);
+                console.error(e);
             });
 
         if (databaseDatas[tableName].hasOwnProperty("indexes")) {
@@ -161,7 +161,7 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
                     results[`Create indexes for ${tableName}`] = "Ok";
                 })
                 .catch((e) => {
-                    console.log(e);
+                    console.error(e);
                 });
         }
 
@@ -171,7 +171,7 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
                 results[`Create comments for ${tableName}`] = "Ok";
             })
             .catch((e) => {
-                console.log(e);
+                console.error(e);
             });
 
         if (databaseDatas[tableName].hasOwnProperty("after")) {
@@ -181,7 +181,7 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
                     results[`Something to do after for ${tableName}`] = "Ok";
                 })
                 .catch((e) => {
-                    console.log(e);
+                    console.error(e);
                 });
         }
     });

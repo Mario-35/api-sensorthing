@@ -34,7 +34,7 @@ app.use(async (ctx: ParameterizedContext, next) => {
         await next();
     } catch (err) {
         // will only respond with JSON
-        console.log(err);
+        console.error(err);
         ctx.status = err.statusCode || err.status || 500;
         ctx.body = {
             message: err.message
@@ -74,6 +74,7 @@ app.use(allRoutes);
 message("env", process.env.NODE_ENV, true);
 message("Host", process.env.PGHOST);
 message("Database", process.env.PGDATABASE);
+message("Api version", process.env.APIVERSION);
 message("Port", process.env.PGPORT);
 message("User", process.env.PGUSER);
 message("Listen port", process.env.PORT);

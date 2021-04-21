@@ -50,7 +50,6 @@ describe("routes : Observations", () => {
                 success.push(`{relation} [${elem}] ${elem}@iot.navigationLink`);
                 params.push(`{relation} [${elem}] ${elem}@iot.navigationLink`);
             });
-
             done();
         });
     });

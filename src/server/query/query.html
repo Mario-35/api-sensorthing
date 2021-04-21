@@ -227,7 +227,7 @@
                     var txt = value;
 
                     if (type === "string") {
-                        if (value.includes("http://") &&  value.includes("v1.0")) {                             
+                        if (value.includes("http://") &&  value.includes(APIVERSION)) {                             
                             type = "link";
                             txt = value;
                             alink.href = this._createQueryLink(txt);
@@ -306,8 +306,8 @@
                  * @return {String}
                  */
                 JSONViewer.prototype._createQueryLink = function (input) {
-                    const hostUrl = input.split("v1.0")[0];
-                    const splitStr = input.split("v1.0")[1].split("/").filter(word => word.length != "");
+                    const hostUrl = input.split(APIVERSION)[0];
+                    const splitStr = input.split(APIVERSION)[1].split("/").filter(word => word.length != "");
                     const link = splitStr.length == 1 ? splitStr[0].replace("(", "&id=").replace(")", "") : splitStr[0].replace("(","&id=").replace(")","&options=") + splitStr[1];
                     const result = hostUrl + "Query?&method=GET&entity=" + link;
                     return result;

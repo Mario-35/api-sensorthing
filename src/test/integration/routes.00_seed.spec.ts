@@ -66,8 +66,6 @@ describe("Add for tests.", () => {
                 })
                 .end((err: any, res: any) => {
                     should.not.exist(err);
-                    console.log(res.body);
-
                     res.status.should.equal(201);
                     done();
                 });
@@ -108,7 +106,7 @@ describe("Add for tests.", () => {
                                               `${Number(Math.floor(Math.random() * Math.floor(50)) + 1)}.05`
                                           ]
                                       },
-                                      gen_fo_id: Number(Math.floor(Math.random() * Math.floor(4)) + 1)
+                                      _default_foi: Number(Math.floor(Math.random() * Math.floor(4)) + 1)
                                   }
                               ]
                           }
@@ -201,7 +199,7 @@ describe("Add for tests.", () => {
                             `${Number(Math.floor(Math.random() * Math.floor(50)) + 1)}.05`
                         ]
                     },
-                    gen_fo_id: Number(Math.floor(Math.random() * Math.floor(4)) + 1),
+                    FeatureOfInterest: { "@iot.id": Number(Math.floor(Math.random() * Math.floor(4)) + 1) },
                     Things: [{ "@iot.id": "5" }]
                 })
                 .end((err: any, res: any) => {

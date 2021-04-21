@@ -40,6 +40,7 @@ export const queryHtml = (params: { [key: string]: string }): string => {
         .replace("@entity@", entities.join("\n"))
         .replace("@options@", params.options ? params.options : "")
         .replace("@id@", params.id ? params.id : "")
+        .replace("@version@", process.env.APIVERSION ? process.env.APIVERSION : "v1.0")
         .replace('"@array@"', arrayEntities.map((s: string) => `"${s}"`).join(","))
         .replace("@datas@", params.datas ? params.datas : "");
 };

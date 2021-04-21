@@ -1,5 +1,5 @@
 var jsonObj = {};
-const APIVERSION = "v1.0";
+const APIVERSION = "@version@";
 var jsonViewer = new JSONViewer();
 document.querySelector("#json").appendChild(jsonViewer.getContainer());
 

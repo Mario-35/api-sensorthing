@@ -66,13 +66,11 @@ export const urlRequestToRequestArgs = (ctx: ParameterizedContext): requestArgs 
     try {
         const result: requestArgs = {
             ENTITY_NAME: "",
-            // tableName: "",
             ENTITY_ID: NaN,
             PROPERTY_NAME: undefined,
             RELATION_NAME: undefined,
-            // ref: false,
             value: false,
-            baseUrl: ctx.header.host,
+            baseUrl: "",
             version: "",
             entities: [],
             odada:
@@ -112,10 +110,10 @@ export const urlRequestToRequestArgs = (ctx: ParameterizedContext): requestArgs 
                 : false;
             if (entitiesRequest[index] !== undefined) {
                 result.ENTITY_NAME = entitiesRequest[index].name;
-                // result.tableName = entitiesRequest[index].table;
                 result.ENTITY_ID = ENTITY_ID !== null ? Number(ENTITY_ID.join("")) : splitStr[splitStr.length - 1].indexOf("(") === -1 ? 0 : NaN;
                 result.PROPERTY_NAME = propertyOrRelationTest ? undefined : propertyOrRelation;
                 result.RELATION_NAME = propertyOrRelationTest ? propertyOrRelation : undefined;
+                result.baseUrl = ctx.request.headers["x-forwarded-host"] ? ctx.request.headers["x-forwarded-host"] : splitStr[0];
                 result.version = splitStr[version_index];
                 result.entities = entities;
                 result.value = ctx.request.url.includes("/$value");

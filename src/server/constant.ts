@@ -267,6 +267,14 @@ export const _ENTITIES: IEntityProperties = {
                 columnRelation: "featureofinterest_id",
                 entityColumn: "id",
                 tableKey: "id"
+            },
+            Locations: {
+                entityName: "Locations",
+                tableName: "location",
+                // hide all relations start with "_"
+                columnRelation: "_default_foi",
+                entityColumn: "id",
+                tableKey: "id"
             }
         },
         constraints: ["Observations"],
@@ -303,7 +311,7 @@ export const _ENTITIES: IEntityProperties = {
         name: "Locations",
         singular: "Location",
         table: "location",
-        columns: ["id", "description", "encodingType", "location", "geom", "name", "gen_fo_id", "properties"],
+        columns: ["id", "description", "encodingType", "location", "geom", "name", "_default_foi", "properties"],
         excludeColumn: ["id"],
         relations: {
             Things: {
@@ -317,6 +325,14 @@ export const _ENTITIES: IEntityProperties = {
                 entityName: "HistoricalLocation",
                 tableName: "location_historicalLocation",
                 columnRelation: "location_id",
+                entityColumn: "id",
+                tableKey: "id"
+            },
+            FeatureOfInterest: {
+                entityName: "FeaturesOfInterest",
+                tableName: "featureofinterest",
+                // hide all relations start with "_"
+                columnRelation: "_default_foi",
                 entityColumn: "id",
                 tableKey: "id"
             }
