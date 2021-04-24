@@ -308,8 +308,23 @@
                 JSONViewer.prototype._createQueryLink = function (input) {
                     const hostUrl = input.split(APIVERSION)[0];
                     const splitStr = input.split(APIVERSION)[1].split("/").filter(word => word.length != "");
-                    const link = splitStr.length == 1 ? splitStr[0].replace("(", "&id=").replace(")", "") : splitStr[0].replace("(","&id=").replace(")","&options=") + splitStr[1];
-                    const result = hostUrl + "Query?&method=GET&entity=" + link;
+                    let link = "";
+                    if (splitStr.length == 1) {
+
+                        link = splitStr[0].replace("(", "&id=").replace(")", "");
+                     } else {
+                        if (splitStr[1][0] == "?") {
+                            link = splitStr[0].replace("(","&id=").replace(")","&options=") + splitStr[1];
+                        } else {
+                            const temp = splitStr[1].split("?");
+                            if (temp.length == 1) {
+                                link = splitStr[0].replace("(","&id=").replace(")","&subentity=" + temp[0]);
+                            } else {
+                                link = splitStr[0].replace("(","&id=").replace(")","&subentity=" + temp[0] + "&options=") + temp[1];
+                            }
+                        }
+                     } 
+                    const result = hostUrl + "Query?&method=GET&entity=" + link.replace(/\&\$/g, "$");
                     return result;
                 };
                 return JSONViewer;
@@ -336,6 +351,10 @@
     
                     <button type="button" id="go" class="go">Go</button>
     
+                    <select class="form__select" tabindex="1" name="subentity" id="subentity" class="">
+                        @subentity@
+                    </select>
+
     
                     <input id="query" class="form__query" type="text" value="@options@" name="tab">
     

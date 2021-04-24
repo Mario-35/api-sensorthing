@@ -13,10 +13,18 @@ import { _ENTITIES } from "../constant";
 
 export const queryHtml = (params: { [key: string]: string }): string => {
     const entities: string[] = [];
+    const subEntities: string[] = ['<option value="none" "selected"> none </option>'];
     const methods: string[] = [];
     const arrayEntities = Object.keys(_ENTITIES);
     const entitiesArray = Object.keys(_ENTITIES);
     Object.keys(_ENTITIES).forEach((key: string) => arrayEntities.push(_ENTITIES[key].singular));
+
+    Object.keys(_ENTITIES).forEach((elem: string) => {
+        subEntities.push(`<option value="${elem}" ${elem == params.subentity ? "selected" : ""}> ${elem} </option>`);
+        const singular = _ENTITIES[elem].singular;
+        subEntities.push(`<option value="${singular}" ${singular == params.subentity ? "selected" : ""}> ${singular} </option>`);
+    });
+
     if (params.user == "true") {
         entitiesArray.push("CreateObservations");
         entitiesArray.push("createDB");
@@ -40,6 +48,7 @@ export const queryHtml = (params: { [key: string]: string }): string => {
     return file
         .replace("@Options@", params.user == "true" ? methods.join("\n") : '<option value="Get" selected>Get</option>')
         .replace("@entity@", entities.join("\n"))
+        .replace("@subentity@", subEntities.join("\n"))
         .replace("@options@", params.options ? params.options : "")
         .replace("@id@", params.id ? params.id : "")
         .replace("@version@", process.env.APIVERSION ? process.env.APIVERSION : "v1.0")

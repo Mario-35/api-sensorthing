@@ -19,13 +19,15 @@ var setJSON = function () {
 };
 
 //Hide params url
-history.replaceState({}, null, "/Query");
+// history.replaceState({}, null, "/Query");
 
 // load default value
 
 // @start@
 
-
+// query.value = query.value.replace("$", "&$");
+query.value = query.value.replace(/\$/g, "&$");
+if (query.value[0] == "&") query.value = query.value.substring(1);
 go.onclick = async (e) => {
   e.preventDefault();
   // const operation = document.getElementById("operation");
@@ -39,16 +41,23 @@ go.onclick = async (e) => {
   let query = (queryElem != null) ? queryElem.value : "";
 
   
-  if (query != "" && query[0] != "?" && query[0] != "/") {
-    query = (array.includes(query)) ? "\\" + query : "?" + query;
+  if (query != "" && query[0] != "?") {
+    query = "?" + query;
   }
 
   if (nb > 0) {
-    url = url + "/" + entity.value + "(" + nb + ")" + query;
+    url = url + "/" + entity.value + "(" + nb + ")";
   } else {
-    url = url + "/" + entity.value + query;
-  } 
-    if (operation.value === "Get") {
+    url = url + "/" + entity.value;
+  }
+  
+  if (subentity.value != "none") {
+    url = url + "/" + subentity.value + "/" + query;
+  } else {
+    url = url + query;
+  }  
+
+  if (operation.value === "Get") {
     let response = await fetch(url, {
             method: "GET",
             headers: {
@@ -66,32 +75,32 @@ go.onclick = async (e) => {
     }
   } else if (operation.value == "Post" || operation.value == "Patch") {
     const data = document.getElementById("input");
-if (entity.value === "createDB") {
-      const data = document.getElementById("input");
-      let response = await fetch(document.URL.split("/Query")[0]+`${APIVERSION}/createDB`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: data.value,
-      });
-      try {
-        const value = await response.text();
-        if (response.status == 401) {
-          window.location.href = "/login";
-        }
-        jsonObj = JSON.parse(value);
-        jsonViewer.showJSON(jsonObj);
-      }
-      catch (err) {
-        fetch(document.URL.split("/Query")[0]+"/error", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: data.value,
-        });
-      }
+    if (entity.value === "createDB") {
+          const data = document.getElementById("input");
+          let response = await fetch(document.URL.split("/Query")[0]+`${APIVERSION}/createDB`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: data.value,
+          });
+          try {
+            const value = await response.text();
+            if (response.status == 401) {
+              window.location.href = "/login";
+            }
+            jsonObj = JSON.parse(value);
+            jsonViewer.showJSON(jsonObj);
+          }
+          catch (err) {
+            fetch(document.URL.split("/Query")[0]+"/error", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: data.value,
+            });
+          }
     } else {
       let response = await fetch(url, {
         method: operation.value.toUpperCase(),

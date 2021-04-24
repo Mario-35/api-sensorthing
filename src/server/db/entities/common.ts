@@ -18,6 +18,7 @@ export class Common {
     public logger: logClass;
 
     public linkBase: string;
+    public nextLinkBase: string;
     public entityProperty: IEntityProperty;
     readonly args: requestArgs;
 
@@ -35,6 +36,8 @@ export class Common {
         if (knexInstance) Common.dbContext = knexInstance;
 
         this.entityProperty = _ENTITIES[this.constructor.name];
+
+        this.nextLinkBase = `http://${this.args.baseUrl}/${this.args.version}/${this.args.entities.join("/")}`;
 
         this.linkBase =
             process.env.NODE_ENV?.trim() == "test"
@@ -291,7 +294,7 @@ export class Common {
                   result: results,
                   nextLink:
                       process.env.APILIMIT && results.length >= Number(process.env.APILIMIT)
-                          ? `${this.linkBase}?$top=${limit}&$skip=${limit + skip}`
+                          ? `${this.nextLinkBase}?$top=${limit}&$skip=${limit + skip}`
                           : undefined,
                   value: await this.formatResult(results)
               })
