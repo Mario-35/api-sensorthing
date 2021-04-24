@@ -22,8 +22,8 @@ var setJSON = function () {
 history.replaceState({}, null, "/Query");
 
 // load default value
-setJSON();
 
+// @start@
 
 
 go.onclick = async (e) => {

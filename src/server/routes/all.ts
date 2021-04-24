@@ -8,8 +8,8 @@
 
 import Router from "koa-router";
 import { apiAccess } from "../db/dataAccess";
-import { IErrorApi, _ENTITIES, ReturnResult, formatResult, keyStrings, requestArgs } from "../constant";
-import { urlRequestToRequestArgs, createDB } from "../utils/";
+import { IErrorApi, _ENTITIES, ReturnResult, formatResult, keyValue, requestArgs, keyString } from "../constant";
+import { urlRequestToRequestArgs, createDB, upload } from "../utils/";
 import { ParameterizedContext } from "koa";
 import { Parser } from "json2csv";
 import { queryHtml } from "../query/";
@@ -43,7 +43,7 @@ const notAuthorized = (ctx: ParameterizedContext) => {
     ctx.body = "/login";
 };
 
-const convertToCsv = (inputDatas: keyStrings | keyStrings[] | undefined): string => {
+const convertToCsv = (inputDatas: keyValue | keyValue[] | undefined): string => {
     const opts = { delimiter: ";" };
     if (inputDatas)
         try {
@@ -70,10 +70,10 @@ const returnType = (args: requestArgs): string => {
     }
 };
 
-const returnBody = (args: requestArgs, input: string | keyStrings | keyStrings[]): string | keyStrings | keyStrings[] => {
+const returnBody = (args: requestArgs, input: string | keyValue | keyValue[]): string | keyValue | keyValue[] => {
     switch (args.formatResult) {
         case formatResult.CSV: {
-            return convertToCsv(input as keyStrings);
+            return convertToCsv(input as keyValue);
         }
         case formatResult.TXT: {
             return input as string;
@@ -116,7 +116,7 @@ router.get("/(.*)", async (ctx) => {
                               }
                             : (ctx.body = convertToCsv(results["value"]));
                     ctx.type = returnType(args);
-                    ctx.body = returnBody(args, temp as keyStrings);
+                    ctx.body = returnBody(args, temp as keyValue);
                 } else {
                     // element does not exist
                     errorCode(ctx, 404, undefined, _NotExist);
@@ -171,6 +171,52 @@ router.post("/(.*)", async (ctx) => {
             }
         } else {
             errorCode(ctx, 402);
+        }
+    } else if (ctx.request.type.startsWith("multipart/form-data")) {
+        const returnToQuery = ctx.request.header.referer.toLowerCase().endsWith("/query");
+
+        const getDatas = async (): Promise<keyString> => {
+            return new Promise(async (resolve, reject) => {
+                await upload(ctx)
+                    .then((data) => {
+                        console.log("then");
+                        resolve(data);
+                    })
+                    .catch((data: any) => {
+                        console.log("catch me");
+                        reject(data);
+                    });
+            });
+        };
+
+        const data = await getDatas();
+
+        console.log(data);
+
+        const args = urlRequestToRequestArgs(ctx, data);
+        if (args) {
+            const objectAccess = new apiAccess(ctx, args);
+            const result: ReturnResult | undefined | void = await objectAccess.add().catch((error) => console.error(error));
+            if (result) {
+                if (result.error) {
+                    errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
+                } else {
+                    if (returnToQuery == true) {
+                        ctx.type = "html";
+                        ctx.body = queryHtml({
+                            user: helperUsers.ensureAuthenticated(ctx) ? "true" : "false",
+                            results: JSON.stringify({ value: result.result }),
+                            ...ctx.query
+                        });
+                    } else {
+                        ctx.type = "application/json";
+                        ctx.status = 201;
+                        ctx.body = result.result ? result.result : result.value;
+                    }
+                }
+            } else {
+                errorCode(ctx, 400);
+            }
         }
     } else {
         // payload is malformed

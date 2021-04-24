@@ -35,6 +35,8 @@ export const queryHtml = (params: { [key: string]: string }): string => {
         .replace('<link rel="stylesheet" href="./query.css">', "<style>" + fs.readFileSync(__dirname + "/query.css", "utf-8") + "</style>")
         .replace('<script src="query.js"></script>', "<script>" + fs.readFileSync(__dirname + "/query.js", "utf-8") + "</script>");
 
+    const start = params.results ? "jsonObj = JSON.parse(`" + params.results + "`); jsonViewer.showJSON(jsonObj);" : "setJSON();";
+
     return file
         .replace("@Options@", params.user == "true" ? methods.join("\n") : '<option value="Get" selected>Get</option>')
         .replace("@entity@", entities.join("\n"))
@@ -42,5 +44,6 @@ export const queryHtml = (params: { [key: string]: string }): string => {
         .replace("@id@", params.id ? params.id : "")
         .replace("@version@", process.env.APIVERSION ? process.env.APIVERSION : "v1.0")
         .replace('"@array@"', arrayEntities.map((s: string) => `"${s}"`).join(","))
+        .replace("// @start@", start)
         .replace("@datas@", params.datas ? params.datas : "");
 };

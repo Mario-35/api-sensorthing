@@ -7,7 +7,7 @@
  */
 
 import Knex from "knex";
-import { requestArgs, IEntityProperty, _ENTITIES, ReturnResult, relationConfig, keyStrings, IErrorApi } from "../../constant";
+import { requestArgs, IEntityProperty, _ENTITIES, ReturnResult, relationConfig, keyValue, IErrorApi } from "../../constant";
 import * as entities from "./index";
 import { PGVisitor } from "../../utils/odata/visitor";
 import { logClass, asyncForEach, getEntityName, getId, renameProp } from "../../utils/index";
@@ -73,11 +73,11 @@ export class Common {
         return result;
     }
 
-    isObject(test: keyStrings): boolean {
+    isObject(test: keyValue): boolean {
         return test && typeof test === "object" && test.length > 0;
     }
 
-    async formatLineResult(input: keyStrings): Promise<keyStrings | undefined> {
+    async formatLineResult(input: keyValue): Promise<keyValue | undefined> {
         this.logger.head(`class common formatLineResult [${this.constructor.name}]`);
         const linkBaseId = input["id"] ? `${this.linkBase}(${input["id"].toString()})` : undefined;
 
@@ -86,12 +86,12 @@ export class Common {
         };
         // creation of function for async foreach
         // https://gist.github.com/Atinux/fd2bcce63e44a7d3addddc166ce93fb2
-        const request = async (): Promise<keyStrings | undefined> => {
+        const request = async (): Promise<keyValue | undefined> => {
             // hide all relations start with "_"
             const relationsKeys: string[] = this.entityProperty.relations
                 ? Object.keys(this.entityProperty.relations).filter((word) => !this.entityProperty.relations[word].columnRelation.startsWith("_"))
                 : [];
-            const result: keyStrings | keyStrings[] = {};
+            const result: keyValue | keyValue[] = {};
             if (linkBaseId) {
                 input["@iot.selfLink"] = `${linkBaseId}`;
             }
@@ -99,8 +99,8 @@ export class Common {
                 .filter((word) => !word.trim().endsWith("_id"))
                 .sort((a: string | number | bigint, b: string | number | bigint) => (a > b ? 1 : -1))
                 .forEach((element: string) => {
-                    if (this.isObject(input[element] as keyStrings)) {
-                        const subResult: keyStrings = {};
+                    if (this.isObject(input[element] as keyValue)) {
+                        const subResult: keyValue = {};
                         Object.keys(input[element])
                             .sort((a: string | number | bigint, b: string | number | bigint) => (a < b ? -1 : a > b ? 1 : 0))
                             .forEach((subElement) => {
@@ -190,12 +190,12 @@ export class Common {
         return await request();
     }
 
-    async formatResult(input: keyStrings[]): Promise<keyStrings[] | undefined> {
+    async formatResult(input: keyValue[]): Promise<keyValue[] | undefined> {
         this.logger.head(`class common formatResult [${this.constructor.name}]`);
         if (typeof input === "object") {
-            const values: keyStrings[] = [];
+            const values: keyValue[] = [];
             const request = async () => {
-                await asyncForEach(input, async (item: keyStrings) => {
+                await asyncForEach(input, async (item: keyValue) => {
                     const temp = await this.formatLineResult(item);
                     if (temp) {
                         values.push(temp);
@@ -304,7 +304,7 @@ export class Common {
         return await Common.dbContext(this.entityProperty.table).whereRaw(condition);
     }
 
-    async getWhereFormat(condition: string): Promise<keyStrings[] | keyStrings | undefined> {
+    async getWhereFormat(condition: string): Promise<keyValue[] | keyValue | undefined> {
         this.logger.head(`class common getWhereFormat [${this.constructor.name}]`);
         try {
             const results = await Common.dbContext(this.entityProperty.table).whereRaw(condition);
@@ -364,7 +364,7 @@ export class Common {
             }
     }
 
-    async add(dataInput: keyStrings[] | undefined): Promise<ReturnResult | undefined> {
+    async add(dataInput: keyValue[] | undefined): Promise<ReturnResult | undefined> {
         this.logger.head(`class Common add [${this.constructor.name}]`);
         if (dataInput) {
             const sql = this.creatAddUpdateQuery(dataInput);
@@ -372,7 +372,7 @@ export class Common {
                 const results = await Common.dbContext.raw(sql);
 
                 if (results.rows) {
-                    const result: keyStrings | undefined = await this.formatLineResult(results.rows[0]);
+                    const result: keyValue | undefined = await this.formatLineResult(results.rows[0]);
 
                     if (result) {
                         return this.formatReturnResult({
@@ -391,7 +391,7 @@ export class Common {
         }
     }
 
-    async update(idInput: bigint, dataInput: keyStrings[] | undefined): Promise<ReturnResult | undefined> {
+    async update(idInput: bigint, dataInput: keyValue[] | undefined): Promise<ReturnResult | undefined> {
         this.logger.head(`class Observations update [${this.constructor.name}]`);
 
         const testIfId = await this.verifyIdExist(idInput);
@@ -406,7 +406,7 @@ export class Common {
                 const results = await Common.dbContext.raw(sql);
 
                 if (results.rows) {
-                    const result: keyStrings | undefined = await this.formatLineResult(results.rows[0]);
+                    const result: keyValue | undefined = await this.formatLineResult(results.rows[0]);
 
                     if (result) {
                         return this.formatReturnResult({
@@ -440,14 +440,14 @@ export class Common {
         }
     }
 
-    creatAddUpdateQuery(datas: keyStrings[] | keyStrings, idInput?: bigint): string {
+    creatAddUpdateQuery(datas: keyValue[] | keyValue, idInput?: bigint): string {
         enum OperationType {
             Table,
             Relation,
             Association
         }
 
-        const queryMaker: { [key: string]: { type: OperationType; table: string; datas: keyStrings[] | keyStrings; keyId: string } } = {};
+        const queryMaker: { [key: string]: { type: OperationType; table: string; datas: keyValue[] | keyValue; keyId: string } } = {};
         const names: { [key: string]: string } = { [this.entityProperty.table]: this.entityProperty.table };
         let level = 0;
 
@@ -536,7 +536,7 @@ export class Common {
          * @param parentEntity parent entity for the datas if not root entity
          * @returns result
          */
-        const start = (datas: keyStrings | keyStrings[], entity?: IEntityProperty, parentEntity?: IEntityProperty): keyStrings[] | keyStrings | undefined => {
+        const start = (datas: keyValue | keyValue[], entity?: IEntityProperty, parentEntity?: IEntityProperty): keyValue[] | keyValue | undefined => {
             this.logger.head(`start level ${level++}`);
 
             const result = {};
@@ -575,7 +575,7 @@ export class Common {
                 type: OperationType,
                 name: string,
                 tableName: string,
-                datas: string | keyStrings[] | keyStrings,
+                datas: string | keyValue[] | keyValue,
                 keyId: string,
                 key: string | undefined
             ): void => {
@@ -691,7 +691,7 @@ export class Common {
              * @param key key Name
              * @param value Datas to process
              */
-            const subBlock = (key: string, value: keyStrings[] | keyStrings) => {
+            const subBlock = (key: string, value: keyValue[] | keyValue) => {
                 const entityNameSearch = getEntityName(key);
                 if (entityNameSearch) {
                     const newEntity = _ENTITIES[entityNameSearch];
@@ -716,7 +716,7 @@ export class Common {
                         Object.entries(datas[key]).forEach(([_key, value]) => {
                             if (entity && parentEntity && Object.keys(entity.relations).includes(key)) {
                                 this.logger.info(`Found a relation for ${entity.name}`, key);
-                                subBlock(key, value as keyStrings);
+                                subBlock(key, value as keyValue);
                             } else {
                                 this.logger.info(`data ${key}`, datas[key]);
                                 result[key] = datas[key];

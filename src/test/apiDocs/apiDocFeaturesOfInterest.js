@@ -45,8 +45,8 @@
 *                "feature": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-2.06",
-*                        "9.05"
+*                        "-91.06",
+*                        "15.05"
 *                    ]
 *                },
 *                "name": "Weather Station 1",
@@ -104,28 +104,28 @@
 *        "name": "Default Feature of Interest",
 *        "Observations": [
 *            {
-*                "@iot.id": "1",
-*                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)",
+*                "@iot.id": "3",
+*                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(3)",
 *                "parameters": null,
-*                "phenomenonTime": "2016-11-18T11:04:15.790Z",
-*                "result": 17.5,
+*                "phenomenonTime": "2016-11-18T05:15:15.790Z",
+*                "result": 11.6666666666667,
 *                "resultQuality": null,
-*                "resultTime": "2016-11-18T11:04:15.790Z",
+*                "resultTime": "2016-11-18T18:30:30.790Z",
 *                "validTime": null,
-*                "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/Datastream",
-*                "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/FeatureOfInterest"
+*                "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(3)/Datastream",
+*                "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(3)/FeatureOfInterest"
 *            },
 *            {
-*                "@iot.id": "9",
-*                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(9)",
+*                "@iot.id": "7",
+*                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(7)",
 *                "parameters": null,
-*                "phenomenonTime": "2016-11-18T01:15:15.790Z",
-*                "result": 45,
+*                "phenomenonTime": "2016-11-18T02:15:15.790Z",
+*                "result": 11.6666666666667,
 *                "resultQuality": null,
-*                "resultTime": "2016-11-18T11:30:30.790Z",
+*                "resultTime": "2016-11-18T18:30:30.790Z",
 *                "validTime": null,
-*                "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(9)/Datastream",
-*                "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(9)/FeatureOfInterest"
+*                "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(7)/Datastream",
+*                "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(7)/FeatureOfInterest"
 *            },
 *            "..."
 *        ]

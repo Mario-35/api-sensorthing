@@ -49,7 +49,7 @@
 *                "description": "A SensorWeb thing Number two",
 *                "name": "SensorWebThing 2",
 *                "properties": {
-*                    "owner": "Mozilla version eight",
+*                    "owner": "Mozilla version one",
 *                    "organization": "Mozilla"
 *                },
 *                "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(2)/Datastreams",

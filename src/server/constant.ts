@@ -8,6 +8,10 @@
 
 /* eslint-disable quotes */
 
+export interface keyString {
+    [key: string]: string;
+}
+
 import { PGVisitor } from "./utils/odata/visitor";
 export interface connectionDB {
     host: string | undefined;
@@ -24,8 +28,8 @@ export interface IErrorApi {
     message: string;
     value?: any;
 }
-export interface keyStrings {
-    [key: string]: string | number | bigint | keyStrings | keyStrings[] | ReturnResult;
+export interface keyValue {
+    [key: string]: string | number | bigint | keyValue | keyValue[] | ReturnResult;
 }
 
 export enum formatResult {
@@ -46,6 +50,7 @@ export interface requestArgs {
     odada: PGVisitor;
     debug: boolean;
     formatResult: formatResult;
+    extras: keyString | undefined;
 }
 
 export const errorCode: { [key: number]: string } = {
@@ -66,15 +71,15 @@ export interface apiCode {
     message: string | undefined;
 }
 export interface ResultType {
-    result: string[] | string | number | bigint | keyStrings[] | keyStrings | undefined;
+    result: string[] | string | number | bigint | keyValue[] | keyValue | undefined;
 }
 export interface ReturnResult extends ResultType {
     id: bigint | undefined;
     nextLink: string | undefined;
     entity: IEntityProperty | undefined;
     error: IErrorApi | undefined;
-    value: keyStrings[] | keyStrings | undefined;
-    body: keyStrings[] | keyStrings | string | undefined;
+    value: keyValue[] | keyValue | undefined;
+    body: keyValue[] | keyValue | string | undefined;
 }
 
 export interface relationConfig {

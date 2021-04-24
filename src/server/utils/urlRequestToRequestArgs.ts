@@ -6,7 +6,7 @@
  *
  */
 
-import { requestArgs, _ENTITIES, IEntityProperty, formatResult } from "../constant";
+import { requestArgs, _ENTITIES, IEntityProperty, formatResult, keyString } from "../constant";
 import { createQuery } from "./odata";
 import { ParameterizedContext } from "koa";
 import { logClass } from "./logClass";
@@ -31,7 +31,7 @@ const getEntityNameFromString = (input: string): string | undefined => {
     return undefined;
 };
 
-export const urlRequestToRequestArgs = (ctx: ParameterizedContext): requestArgs | undefined => {
+export const urlRequestToRequestArgs = (ctx: ParameterizedContext, extras?: keyString): requestArgs | undefined => {
     // URI Pattern: SERVICE_ROOT_URI/ENTITY_NAME(KEY_OF_THE_ENTITY)/LINK_NAME/$ref
     // URI Pattern: SERVICE_ROOT_URI/ENTITY_NAME(ENTITY_ID)/PROPERTY_NAME/$value
     const debug: boolean = ctx.request.url.includes("-debug-");
@@ -78,7 +78,8 @@ export const urlRequestToRequestArgs = (ctx: ParameterizedContext): requestArgs 
                     ? createQuery(splitStr[1].trim())
                     : createQuery(`$top=${process.env.APILIMIT ? Number(process.env.APILIMIT) : 200}`),
             debug: debug,
-            formatResult: getFormat()
+            formatResult: getFormat(),
+            extras: extras
         };
 
         splitStr = splitStr[0].replace("//", "/").split("/");

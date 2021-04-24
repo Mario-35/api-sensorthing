@@ -320,42 +320,50 @@
 
     <body>
         <div class="container">
-            <div id="first">               
+            <form name="test" enctype="multipart/form-data" action="http://localhost:8029/v1.0/CreateObservations?-debug-"
+                method="POST">
+                <div id="first">
                     <select class="form__operation" tabindex="1" name="operation" id="operation" class="">
                         @Options@
                     </select>
-                    
-
+    
+    
                     <select class="form__select" tabindex="1" name="entity" id="entity" class="">
                         @entity@
                     </select>
-                    
+    
                     <input id="nb" class="form__nb" type="text" value="@id@" name="nb">
-
+    
                     <button type="button" id="go" class="go">Go</button>
-
-
+    
+    
                     <input id="query" class="form__query" type="text" value="@options@" name="tab">
-
-
+    
+    
                     <textarea class="form__input" id="input" placeholder="Input json..." rows="6">@datas@</textarea>
-                    
-                    <button type="button" id="logout" class="logout">Logout</button>
-                    <button type="button" id="info" class="info">Status</button>
-                    <button type="button" id="populate" class="populate">Populate</button>
-                    <button type="button" id="doc" class="doc">Documentation</button>
-                    <button type="button" id="git" class="git">Github</button>
-            </div>
-                    
-            <div id="two">
-                <pre>
-                    <code>
-                        <div id="json"></div>
-                    </code>
-                </pre>
-            </div>
-        </div>
+    
+    
+                    <input type="text" name="filename">
+                    <input type="file" id="file" name="file" accept=".csv, .txt, .json">
+                    <button type="submit">SUBMIT</button>
+            </form> 
 
+            <button type="button" id="logout" class="logout">Logout</button>
+            <button type="button" id="info" class="info">Status</button>
+            <button type="button" id="populate" class="populate">Populate</button>
+            <button type="button" id="doc" class="doc">Documentation</button>
+            <button type="button" id="git" class="git">Github</button>
+        </div>
+    
+        <div id="two">
+            <pre>
+                        <code>
+                            <div id="json"></div>
+                        </code>
+                    </pre>
+        </div>
+        </div>
+    
         <script src="query.js"></script>
     </body>
 
