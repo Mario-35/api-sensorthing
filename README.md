@@ -42,7 +42,8 @@ For views a little :
  ┃ ┣ template "Apidoc Home template"
  ┃ ┗ test  "TDD tests"
  ┣ doc "MD documentation"
- ┗ .env "Environment variables"
+ ┣ .env "Environment variables"
+ ┗ favicon.ico
 ```
 
 ## Environment variables
@@ -85,6 +86,7 @@ For views a little :
 -   [koa-session](https://github.com/koajs/session)
 -   [koa-passport](https://github.com/rkusa/koa-passport)
 -   [passport-local](https://github.com/jaredhanson/passport-local)
+-   [koa-favicon](https://github.com/rkusa/koa-favicon)
 
 ---
 

@@ -22,7 +22,7 @@ The usual steps are:
 
 #### Request
 
-[Post http://localhost:8029/v1.0/Things](http://localhost:8029/Query?method=Post&entity=Thing&datas=%7B%0A%20%20%20%20%22description%22%3A%20%22A%20SensorWeb%20thing%22%2C%0A%20%20%20%20%22name%22%3A%20%22SensorWebThing%22%2C%0A%20%20%20%20%22properties%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22organization%22%3A%20%22Mozilla%22%2C%0A%20%20%20%20%20%20%20%20%22owner%22%3A%20%22Mozilla%22%0A%20%20%20%20%7D%0A%7D%0A)
+[Post http://sensorthings.geosas.fr/v1.0/Things](http://sensorthings.geosas.fr/Query?method=Post&entity=Things&datas=%7B%0A%20%20%20%20%22description%22%3A%20%22A%20SensorWeb%20thing%22%2C%0A%20%20%20%20%22name%22%3A%20%22SensorWebThing%22%2C%0A%20%20%20%20%22properties%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22organization%22%3A%20%22Mozilla%22%2C%0A%20%20%20%20%20%20%20%20%22owner%22%3A%20%22Mozilla%22%0A%20%20%20%20%7D%0A%7D%0A)
 
 ```json
 {
@@ -40,10 +40,10 @@ The usual steps are:
 ```json
 {
     "@iot.id": 1,
-    "@iot.selfLink": "http://localhost:8029/v1.0/Things(1)",
-    "Locations@iot.navigationLink": "http://localhost:8029/v1.0/Things(1)/Locations",
-    "HistoricalLocation@iot.navigationLink": "http://localhost:8029/v1.0/Things(1)/HistoricalLocation",
-    "Datastreams@iot.navigationLink": "http://localhost:8029/v1.0/Things(1)/Datastreams",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Things(1)",
+    "Locations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/Locations",
+    "HistoricalLocation@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/HistoricalLocation",
+    "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/Datastreams",
     "description": "A SensorWeb thing",
     "name": "SensorWebThing",
     "properties": {
@@ -61,7 +61,7 @@ to the previously created Thing.
 
 #### Request
 
-[Post http://localhost:8029/v1.0/Things(1)/Location](http://localhost:8029/Query?method=Post&entity=Things&id=1&options=Locations&datas=%7B%0A%20%20%20%20%22description%22%3A%20%22My%20backyard%22%2C%0A%20%20%20%20%22name%22%3A%20%22My%20backyard%22%2C%0A%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%20%20%22location%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%20%20%22coordinates%22%3A%20%5B-117.123%2C%2054.123%5D%0A%20%20%20%20%7D%0A%7D)
+[Post http://sensorthings.geosas.fr/v1.0/Things(1)/Location](http://sensorthings.geosas.fr/Query?method=Post&entity=Things&id=1&options=Locations&datas=%7B%0A%20%20%20%20%22description%22%3A%20%22My%20backyard%22%2C%0A%20%20%20%20%22name%22%3A%20%22My%20backyard%22%2C%0A%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%20%20%22location%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%20%20%22coordinates%22%3A%20%5B-117.123%2C%2054.123%5D%0A%20%20%20%20%7D%0A%7D)
 
 ```json
 {
@@ -80,9 +80,9 @@ to the previously created Thing.
 ```json
 {
     "@iot.id": 1,
-    "@iot.selfLink": "http://localhost:8029/v1.0/Locations(1)",
-    "Things@iot.navigationLink": "http://localhost:8029/v1.0/Locations(1)/Things",
-    "HistoricalLocation@iot.navigationLink": "http://localhost:8029/v1.0/Locations(1)/HistoricalLocation",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)",
+    "Things@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)/Things",
+    "HistoricalLocation@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)/HistoricalLocation",
     "description": "My backyard",
     "name": "My backyard",
     "encodingType": "application/vnd.geo+json",
@@ -97,7 +97,7 @@ to the previously created Thing.
 
 #### Request
 
-[Post http://localhost:8029/v1.0/ObservedProperties](http://localhost:8029/Query?method=Post&entity=ObservedProperties&datas=%7B%0A%20%20%22name%22%3A%20%22PM%202.5%22%2C%0A%20%20%22description%22%3A%20%22Particle%20pollution%2C%20also%20called%20particulate%20matter%20or%20PM%2C%20is%20a%20mixture%20of%20solids%20and%20liquid%20droplets%20floating%20in%20the%20air.%22%2C%0A%20%20%22definition%22%3A%20%22https%3A%2F%2Fairnow.gov%2Findex.cfm%3Faction%3Daqibasics.particle%22%0A%7D)
+[Post http://sensorthings.geosas.fr/v1.0/ObservedProperties](http://sensorthings.geosas.fr/Query?method=Post&entity=ObservedProperties&datas=%7B%0A%20%20%22name%22%3A%20%22PM%202.5%22%2C%0A%20%20%22description%22%3A%20%22Particle%20pollution%2C%20also%20called%20particulate%20matter%20or%20PM%2C%20is%20a%20mixture%20of%20solids%20and%20liquid%20droplets%20floating%20in%20the%20air.%22%2C%0A%20%20%22definition%22%3A%20%22https%3A%2F%2Fairnow.gov%2Findex.cfm%3Faction%3Daqibasics.particle%22%0A%7D)
 
 ```json
 {
@@ -112,8 +112,8 @@ to the previously created Thing.
 ```json
 {
     "@iot.id": 1,
-    "@iot.selfLink": "http://localhost:8029/v1.0/ObservedProperties(1)",
-    "Datastreams@iot.navigationLink": "http://localhost:8029/v1.0/ObservedProperties(1)/Datastreams",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/ObservedProperties(1)",
+    "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/ObservedProperties(1)/Datastreams",
     "name": "PM 2.5",
     "description": "Particle pollution, also called particulate matter or PM, is a mixture of solids and liquid droplets floating in the air.",
     "definition": "https://airnow.gov/index.cfm?action=aqibasics.particle"
@@ -124,7 +124,7 @@ to the previously created Thing.
 
 #### Request
 
-[Post http://localhost:8029/v1.0/Sensors](http://localhost:8029/Query?method=Post&entity=Sensors&datas=%7B%0A%09%22description%22%3A%20%22PM%202.5%20sensor%22%2C%0A%20%20%20%20%22name%22%3A%20%22PM25sensor%22%2C%0A%20%20%20%20%22encodingType%22%3A%20%22application%2Fpdf%22%2C%0A%20%20%20%20%22metadata%22%3A%20%22http%3A%2F%2Fparticle-sensor.com%2F%22%0A%7D)
+[Post http://sensorthings.geosas.fr/v1.0/Sensors](http://sensorthings.geosas.fr/Query?method=Post&entity=Sensors&datas=%7B%0A%09%22description%22%3A%20%22PM%202.5%20sensor%22%2C%0A%20%20%20%20%22name%22%3A%20%22PM25sensor%22%2C%0A%20%20%20%20%22encodingType%22%3A%20%22application%2Fpdf%22%2C%0A%20%20%20%20%22metadata%22%3A%20%22http%3A%2F%2Fparticle-sensor.com%2F%22%0A%7D)
 
 ```json
 {
@@ -140,8 +140,8 @@ to the previously created Thing.
 ```json
 {
     "@iot.id": 1,
-    "@iot.selfLink": "http://localhost:8029/v1.0/Sensors(1)",
-    "Datastreams@iot.navigationLink": "http://localhost:8029/v1.0/Sensors(1)/Datastreams",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Sensors(1)",
+    "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Sensors(1)/Datastreams",
     "description": "PM 2.5 sensor",
     "name": "PM25sensor",
     "encodingType": "application/pdf",
@@ -156,7 +156,7 @@ to the previously created Thing.
 Note that we used the `@iot.id` values from the recently created Thing, ObservedProperty
 and Sensor to associate this Datastream to those entities.
 
-[Post http://localhost:8029/v1.0/Datastreams](<http://localhost:8029/Query?method=Post&entity=Datastreams&datas=%7B%0A%22unitOfMeasurement%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22symbol%22%3A%20%22%CE%BCg%2Fm%C2%B3%22%2C%0A%20%20%20%20%20%20%20%20%22name%22%3A%20%22PM%202.5%20Particulates%20(ug%2Fm3)%22%2C%0A%20%20%20%20%20%20%20%20%22definition%22%3A%20%22http%3A%2F%2Funitsofmeasure.org%2Fucum.html%22%0A%20%20%20%20%7D%2C%0A%20%20%22observationType%22%3A%22http%3A%2F%2Fwww.opengis.net%2Fdef%2FobservationType%2FOGC-OM%2F2.0%2FOM_Measurement%22%2C%0A%20%20%22description%22%3A%20%22Air%20quality%20readings%22%2C%0A%20%20%22name%22%3A%20%22air_quality_readings%22%2C%0A%20%20%22Thing%22%3A%20%7B%22%40iot.id%22%3A%201%7D%2C%0A%20%20%22ObservedProperty%22%3A%20%7B%22%40iot.id%22%3A%201%7D%2C%0A%20%20%22Sensor%22%3A%20%7B%22%40iot.id%22%3A%201%7D%0A%7D>)
+[Post http://sensorthings.geosas.fr/v1.0/Datastreams](<http://sensorthings.geosas.fr/Query?method=Post&entity=Datastreams&datas=%7B%0A%22unitOfMeasurement%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22symbol%22%3A%20%22%CE%BCg%2Fm%C2%B3%22%2C%0A%20%20%20%20%20%20%20%20%22name%22%3A%20%22PM%202.5%20Particulates%20(ug%2Fm3)%22%2C%0A%20%20%20%20%20%20%20%20%22definition%22%3A%20%22http%3A%2F%2Funitsofmeasure.org%2Fucum.html%22%0A%20%20%20%20%7D%2C%0A%20%20%22observationType%22%3A%22http%3A%2F%2Fwww.opengis.net%2Fdef%2FobservationType%2FOGC-OM%2F2.0%2FOM_Measurement%22%2C%0A%20%20%22description%22%3A%20%22Air%20quality%20readings%22%2C%0A%20%20%22name%22%3A%20%22air_quality_readings%22%2C%0A%20%20%22Thing%22%3A%20%7B%22%40iot.id%22%3A%201%7D%2C%0A%20%20%22ObservedProperty%22%3A%20%7B%22%40iot.id%22%3A%201%7D%2C%0A%20%20%22Sensor%22%3A%20%7B%22%40iot.id%22%3A%201%7D%0A%7D>)
 
 ```json
 {
@@ -179,11 +179,11 @@ and Sensor to associate this Datastream to those entities.
 ```json
 {
     "@iot.id": 1,
-    "@iot.selfLink": "http://localhost:8029/v1.0/Datastreams(1)",
-    "Thing@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Thing",
-    "Sensor@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Sensor",
-    "ObservedProperty@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/ObservedProperty",
-    "Observations@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Observations",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)",
+    "Thing@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Thing",
+    "Sensor@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Sensor",
+    "ObservedProperty@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/ObservedProperty",
+    "Observations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Observations",
     "unitOfMeasurement": {
         "name": "PM 2.5 Particulates (ug/m3)",
         "symbol": "μg/m³",
@@ -199,7 +199,7 @@ and Sensor to associate this Datastream to those entities.
 
 #### Request
 
-[Post http://localhost:8029/v1.0/FeaturesOfInterest](http://localhost:8029/Query?method=Post&entity=FeaturesOfInterest&datas=%7B%0A%20%20%22name%22%3A%20%22Weather%20Station%20YYC.%22%2C%0A%20%20%22description%22%3A%20%22This%20is%20a%20weather%20station%20located%20at%20the%20Calgary%20Airport.%22%2C%0A%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%22feature%22%3A%20%7B%0A%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%22coordinates%22%3A%20%5B%0A%20%20%20%20%20%20-114.06%2C%0A%20%20%20%20%20%2051.05%0A%20%20%20%20%5D%0A%20%20%7D%0A%7D)
+[Post http://sensorthings.geosas.fr/v1.0/FeaturesOfInterest](http://sensorthings.geosas.fr/Query?method=Post&entity=FeaturesOfInterest&datas=%7B%0A%20%20%22name%22%3A%20%22Weather%20Station%20YYC.%22%2C%0A%20%20%22description%22%3A%20%22This%20is%20a%20weather%20station%20located%20at%20the%20Calgary%20Airport.%22%2C%0A%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%22feature%22%3A%20%7B%0A%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%22coordinates%22%3A%20%5B%0A%20%20%20%20%20%20-114.06%2C%0A%20%20%20%20%20%2051.05%0A%20%20%20%20%5D%0A%20%20%7D%0A%7D)
 
 ```json
 {
@@ -218,8 +218,8 @@ and Sensor to associate this Datastream to those entities.
 ```json
 {
     "@iot.id": "2",
-    "@iot.selfLink": "http://localhost:8029/v1.0/FeaturesOfInterest(1)",
-    "Observations@iot.navigationLink": "http://localhost:8029/v1.0/FeaturesOfInterest(1)/Observations",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/FeaturesOfInterest(1)",
+    "Observations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/FeaturesOfInterest(1)/Observations",
     "name": "Weather Station YYC.",
     "description": "This is a weather station located at the Calgary Airport.",
     "encodingType": "application/vnd.geo+json",
@@ -234,7 +234,7 @@ and Sensor to associate this Datastream to those entities.
 
 #### Request
 
-[Post http://localhost:8029/v1.0/Observations](http://localhost:8029/Query?method=Post&entity=Observations&datas=%7B%0A%20%20%22phenomenonTime%22%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22resultTime%22%20%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22result%22%20%3A%2012.4%2C%0A%20%20%22Datastream%22%3A%7B%22%40iot.id%22%3A%201%7D%2C%0A%20%20%22FeatureOfInterest%22%3A%7B%22%40iot.id%22%3A%202%7D%0A%7D)
+[Post http://sensorthings.geosas.fr/v1.0/Observations](http://sensorthings.geosas.fr/Query?method=Post&entity=Observations&datas=%7B%0A%20%20%22phenomenonTime%22%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22resultTime%22%20%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22result%22%20%3A%2012.4%2C%0A%20%20%22Datastream%22%3A%7B%22%40iot.id%22%3A%201%7D%2C%0A%20%20%22FeatureOfInterest%22%3A%7B%22%40iot.id%22%3A%202%7D%0A%7D)
 
 ```json
 {
@@ -251,9 +251,9 @@ and Sensor to associate this Datastream to those entities.
 ```json
 {
     "@iot.id": 1,
-    "@iot.selfLink": "http://localhost:8029/v1.0/Observations(1)",
-    "Datastream@iot.navigationLink": "http://localhost:8029/v1.0/Observations(1)/Datastream",
-    "FeatureOfInterest@iot.navigationLink": "http://localhost:8029/v1.0/Observations(1)/FeaturesOfInterest(2)",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)",
+    "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/Datastream",
+    "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/FeaturesOfInterest(2)",
     "phenomenonTime": "2016-11-18T11:04:15.790Z",
     "resultTime": "2016-11-18T11:04:15.790Z",
     "result": 12.4,
@@ -269,7 +269,7 @@ and a Sensor with all its details on a single request.
 
 ### Request to deep insert a Datastream
 
-[Post http://localhost:8029/v1.0/Datastreams](<http://localhost:8029/Query?method=Post&entity=Datastreams&datas=%7B%0A%20%20%22unitOfMeasurement%22%3A%20%7B%0A%20%20%20%20%22symbol%22%3A%20%22%CE%BCg%2Fm%C2%B3%22%2C%0A%20%20%20%20%22name%22%3A%20%22PM%202.5%20Particulates%20(ug%2Fm3)%22%2C%0A%20%20%20%20%22definition%22%3A%20%22http%3A%2F%2Funitsofmeasure.org%2Fucum.html%22%0A%20%20%7D%2C%0A%20%20%22observationType%22%3A%22http%3A%2F%2Fwww.opengis.net%2Fdef%2FobservationType%2FOGC-OM%2F2.0%2FOM_Measurement%22%2C%0A%20%20%22description%22%3A%20%22Air%20quality%20readings%22%2C%0A%20%20%22name%22%3A%20%22air_quality_readings%22%2C%0A%20%20%22Thing%22%3A%20%7B%0A%20%20%20%20%22description%22%3A%20%22A%20SensorWeb%20thing%22%2C%0A%20%20%20%20%22name%22%3A%22SensorWebThing%22%2C%0A%20%20%20%20%22properties%22%3A%20%7B%0A%20%20%20%20%20%20%22organisation%22%3A%20%22Mozilla%22%2C%0A%20%20%20%20%20%20%22owner%22%3A%20%22Mozilla%22%0A%20%20%20%20%7D%2C%0A%20%20%20%20%22Locations%22%3A%20%5B%7B%0A%20%20%20%20%20%20%22description%22%3A%20%22My%20backyard%22%2C%0A%20%20%20%20%20%20%22name%22%3A%20%22My%20backyard%22%2C%0A%20%20%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%20%20%20%20%22location%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%20%20%22coordinates%22%3A%20%5B-117.123%2C%2054.123%5D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%5D%0A%20%20%7D%2C%0A%20%20%22ObservedProperty%22%3A%20%7B%0A%20%20%20%20%22name%22%3A%20%22PM%202.5%22%2C%0A%20%20%20%20%22description%22%3A%20%22Particle%20pollution%2C%20also%20called%20particulate%20matter%20or%20PM%2C%20is%20a%20mixture%20of%20solids%20and%20liquid%20droplets%20floating%20in%20the%20air.%22%2C%0A%20%20%20%20%22definition%22%3A%20%22https%3A%2F%2Fairnow.gov%2Findex.cfm%3Faction%3Daqibasics.particle%22%0A%20%20%7D%2C%0A%20%20%22Sensor%22%3A%20%7B%0A%20%20%20%20%22description%22%3A%20%22PM%202.5%20sensor%22%2C%0A%20%20%20%20%22name%22%3A%20%22PM25sensor%22%2C%0A%20%20%20%20%22encodingType%22%3A%20%22application%2Fpdf%22%2C%0A%20%20%20%20%22metadata%22%3A%20%22http%3A%2F%2Fparticle-sensor.com%2F%22%0A%20%20%7D%0A%7D>)
+[Post http://sensorthings.geosas.fr/v1.0/Datastreams](<http://sensorthings.geosas.fr/Query?method=Post&entity=Datastreams&datas=%7B%0A%20%20%22unitOfMeasurement%22%3A%20%7B%0A%20%20%20%20%22symbol%22%3A%20%22%CE%BCg%2Fm%C2%B3%22%2C%0A%20%20%20%20%22name%22%3A%20%22PM%202.5%20Particulates%20(ug%2Fm3)%22%2C%0A%20%20%20%20%22definition%22%3A%20%22http%3A%2F%2Funitsofmeasure.org%2Fucum.html%22%0A%20%20%7D%2C%0A%20%20%22observationType%22%3A%22http%3A%2F%2Fwww.opengis.net%2Fdef%2FobservationType%2FOGC-OM%2F2.0%2FOM_Measurement%22%2C%0A%20%20%22description%22%3A%20%22Air%20quality%20readings%22%2C%0A%20%20%22name%22%3A%20%22air_quality_readings%22%2C%0A%20%20%22Thing%22%3A%20%7B%0A%20%20%20%20%22description%22%3A%20%22A%20SensorWeb%20thing%22%2C%0A%20%20%20%20%22name%22%3A%22SensorWebThing%22%2C%0A%20%20%20%20%22properties%22%3A%20%7B%0A%20%20%20%20%20%20%22organisation%22%3A%20%22Mozilla%22%2C%0A%20%20%20%20%20%20%22owner%22%3A%20%22Mozilla%22%0A%20%20%20%20%7D%2C%0A%20%20%20%20%22Locations%22%3A%20%5B%7B%0A%20%20%20%20%20%20%22description%22%3A%20%22My%20backyard%22%2C%0A%20%20%20%20%20%20%22name%22%3A%20%22My%20backyard%22%2C%0A%20%20%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%20%20%20%20%22location%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%20%20%22coordinates%22%3A%20%5B-117.123%2C%2054.123%5D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%5D%0A%20%20%7D%2C%0A%20%20%22ObservedProperty%22%3A%20%7B%0A%20%20%20%20%22name%22%3A%20%22PM%202.5%22%2C%0A%20%20%20%20%22description%22%3A%20%22Particle%20pollution%2C%20also%20called%20particulate%20matter%20or%20PM%2C%20is%20a%20mixture%20of%20solids%20and%20liquid%20droplets%20floating%20in%20the%20air.%22%2C%0A%20%20%20%20%22definition%22%3A%20%22https%3A%2F%2Fairnow.gov%2Findex.cfm%3Faction%3Daqibasics.particle%22%0A%20%20%7D%2C%0A%20%20%22Sensor%22%3A%20%7B%0A%20%20%20%20%22description%22%3A%20%22PM%202.5%20sensor%22%2C%0A%20%20%20%20%22name%22%3A%20%22PM25sensor%22%2C%0A%20%20%20%20%22encodingType%22%3A%20%22application%2Fpdf%22%2C%0A%20%20%20%20%22metadata%22%3A%20%22http%3A%2F%2Fparticle-sensor.com%2F%22%0A%20%20%7D%0A%7D>)
 
 ```json
 {
@@ -319,11 +319,11 @@ and a Sensor with all its details on a single request.
 ```json
 {
     "@iot.id": "1",
-    "@iot.selfLink": "http://localhost:8029/v1.0/Datastreams(1)",
-    "Thing@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Thing",
-    "Sensor@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Sensor",
-    "ObservedProperty@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/ObservedProperty",
-    "Observations@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Observations",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)",
+    "Thing@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Thing",
+    "Sensor@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Sensor",
+    "ObservedProperty@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/ObservedProperty",
+    "Observations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Observations",
     "unitOfMeasurement": {
         "name": "PM 2.5 Particulates (ug/m3)",
         "symbol": "μg/m³",
@@ -341,7 +341,7 @@ just need to specify the id of the Datastream where you want to push these obser
 In this case, if you want to push an Observation to the Datastream you just created
 via deep insert, you can send this request:
 
-[Post http://localhost:8029/v1.0/Observations](http://localhost:8029/Query?method=Post&entity=Observations&datas=%7B%0A%20%20%22phenomenonTime%22%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22resultTime%22%20%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22result%22%20%3A%2012.4%2C%0A%20%20%22FeatureOfInterest%22%3A%20%7B%0A%20%20%20%20%22name%22%3A%20%22Weather%20Station%20YYC.%22%2C%0A%20%20%20%20%22description%22%3A%20%22This%20is%20a%20weather%20station%20located%20at%20the%20Calgary%20Airport.%22%2C%0A%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%20%20%22feature%22%3A%20%7B%0A%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%22coordinates%22%3A%20%5B%0A%20%20%20%20%20%20%20%20-114.06%2C%0A%20%20%20%20%20%20%20%2051.05%0A%20%20%20%20%20%20%5D%0A%20%20%20%20%7D%0A%20%20%7D%2C%0A%20%20%22Datastream%22%3A%20%7B%20%22%40iot.id%22%3A%201%20%7D%0A%7D)
+[Post http://sensorthings.geosas.fr/v1.0/Observations](http://sensorthings.geosas.fr/Query?method=Post&entity=Observations&datas=%7B%0A%20%20%22phenomenonTime%22%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22resultTime%22%20%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22result%22%20%3A%2012.4%2C%0A%20%20%22FeatureOfInterest%22%3A%20%7B%0A%20%20%20%20%22name%22%3A%20%22Weather%20Station%20YYC.%22%2C%0A%20%20%20%20%22description%22%3A%20%22This%20is%20a%20weather%20station%20located%20at%20the%20Calgary%20Airport.%22%2C%0A%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%20%20%22feature%22%3A%20%7B%0A%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%22coordinates%22%3A%20%5B%0A%20%20%20%20%20%20%20%20-114.06%2C%0A%20%20%20%20%20%20%20%2051.05%0A%20%20%20%20%20%20%5D%0A%20%20%20%20%7D%0A%20%20%7D%2C%0A%20%20%22Datastream%22%3A%20%7B%20%22%40iot.id%22%3A%201%20%7D%0A%7D)
 
 ```json
 {
@@ -366,9 +366,9 @@ Which should reply with something like:
 ```json
 {
     "@iot.id": "1",
-    "@iot.selfLink": "http://localhost:8029/v1.0/Observations(1)",
-    "Datastream@iot.navigationLink": "http://localhost:8029/v1.0/Observations(1)/Datastream",
-    "FeatureOfInterest@iot.navigationLink": "http://localhost:8029/v1.0/Observations(1)/FeatureOfInterest",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)",
+    "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/Datastream",
+    "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/FeatureOfInterest",
     "phenomenonTime": "2016-11-18T11:04:15.790Z",
     "resultTime": "2016-11-18T11:04:15.790Z",
     "result": 12.4,
@@ -401,7 +401,7 @@ query language, you'll get the entire list (sorry!).
 
 #### Request
 
-[Get http://localhost:8029/v1.0/Datastreams](http://localhost:8029/Query?method=GET&entity=Datastreams)
+[Get http://sensorthings.geosas.fr/v1.0/Datastreams](http://sensorthings.geosas.fr/Query?method=GET&entity=Datastreams)
 
 #### Response
 
@@ -411,11 +411,11 @@ query language, you'll get the entire list (sorry!).
     "value": [
         {
             "@iot.id": "1",
-            "@iot.selfLink": "http://localhost:8029/v1.0/Datastreams(1)",
-            "Thing@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Thing",
-            "Sensor@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Sensor",
-            "ObservedProperty@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/ObservedProperty",
-            "Observations@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Observations",
+            "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)",
+            "Thing@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Thing",
+            "Sensor@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Sensor",
+            "ObservedProperty@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/ObservedProperty",
+            "Observations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Observations",
             "name": "air_quality_readings",
             "description": "Air quality readings",
             "unitOfMeasurement": {
@@ -442,17 +442,17 @@ Thing by following the `Thing@iot.navigationLink` navigation link.
 
 #### Request
 
-[Get http://localhost:8029/v1.0/Datastreams(1)/Thing](http://localhost:8029/Query?method=GET&entity=Datastreams&id=1&options=Thing)
+[Get http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Thing](http://sensorthings.geosas.fr/Query?method=GET&entity=Datastreams&id=1&options=Thing)
 
 #### Response
 
 ```json
 {
     "@iot.id": "1",
-    "@iot.selfLink": "http://localhost:8029/v1.0/Things(1)",
-    "Locations@iot.navigationLink": "http://localhost:8029/v1.0/Things(1)/Locations",
-    "HistoricalLocation@iot.navigationLink": "http://localhost:8029/v1.0/Things(1)/HistoricalLocation",
-    "Datastreams@iot.navigationLink": "http://localhost:8029/v1.0/Things(1)/Datastreams",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Things(1)",
+    "Locations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/Locations",
+    "HistoricalLocation@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/HistoricalLocation",
+    "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/Datastreams",
     "name": "SensorWebThing",
     "description": "A SensorWeb thing",
     "properties": {
@@ -466,7 +466,7 @@ Once we have the Datastream associated Thing, we query its Locations.
 
 #### Request
 
-[Get http://localhost:8029/v1.0/Things(1)/Locations](http://localhost:8029/Query?method=GET&entity=Things&id=1&options=Locations)
+[Get http://sensorthings.geosas.fr/v1.0/Things(1)/Locations](http://sensorthings.geosas.fr/Query?method=GET&entity=Things&id=1&options=Locations)
 
 #### Response
 
@@ -476,9 +476,9 @@ Once we have the Datastream associated Thing, we query its Locations.
     "value": [
         {
             "@iot.id": "1",
-            "@iot.selfLink": "http://localhost:8029/v1.0/Locations(1)",
-            "Things@iot.navigationLink": "http://localhost:8029/v1.0/Locations(1)/Things",
-            "HistoricalLocation@iot.navigationLink": "http://localhost:8029/v1.0/Locations(1)/HistoricalLocation",
+            "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)",
+            "Things@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)/Things",
+            "HistoricalLocation@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)/HistoricalLocation",
             "name": "My backyard",
             "description": "My backyard",
             "encodingType": "application/vnd.geo+json",
@@ -500,7 +500,7 @@ navigation link that we got in the first request.
 
 #### Request
 
-[Get http://localhost:8029/v1.0/Datastreams(1)/Observations](http://localhost:8029/Query?method=GET&entity=Datastreams&id=1&options=Observations)
+[Get http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Observations](http://sensorthings.geosas.fr/Query?method=GET&entity=Datastreams&id=1&options=Observations)
 
 #### Response
 
@@ -510,9 +510,9 @@ navigation link that we got in the first request.
     "value": [
         {
             "@iot.id": "1",
-            "@iot.selfLink": "http://localhost:8029/v1.0/Observations(1)",
-            "Datastream@iot.navigationLink": "http://localhost:8029/v1.0/Observations(1)/Datastream",
-            "FeatureOfInterest@iot.navigationLink": "http://localhost:8029/v1.0/Observations(1)/FeatureOfInterest",
+            "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)",
+            "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/Datastream",
+            "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/FeatureOfInterest",
             "phenomenonTime": "2016-11-18T11:04:15.790Z",
             "result": 12.4,
             "resultTime": "2016-11-18T11:04:15.790Z",
@@ -520,9 +520,9 @@ navigation link that we got in the first request.
         },
         {
             "@iot.id": "2",
-            "@iot.selfLink": "http://localhost:8029/v1.0/Observations(2)",
-            "Datastream@iot.navigationLink": "http://localhost:8029/v1.0/Observations(2)/Datastream",
-            "FeatureOfInterest@iot.navigationLink": "http://localhost:8029/v1.0/Observations(2)/FeatureOfInterest",
+            "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(2)",
+            "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(2)/Datastream",
+            "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(2)/FeatureOfInterest",
             "phenomenonTime": "2016-11-18T11:04:15.790Z",
             "result": 14.4,
             "resultTime": "2016-11-18T11:04:15.790Z",

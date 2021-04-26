@@ -80,6 +80,7 @@ export interface ReturnResult extends ResultType {
     error: IErrorApi | undefined;
     value: keyValue[] | keyValue | undefined;
     body: keyValue[] | keyValue | string | undefined;
+    total: bigint | undefined;
 }
 
 export interface relationConfig {

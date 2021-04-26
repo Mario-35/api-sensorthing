@@ -35,15 +35,15 @@
 *            {
 *                "@iot.id": "1",
 *                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)",
-*                "_default_foi": "1",
+*                "_default_foi": "2",
 *                "description": "University of Calgary, CCIT building",
 *                "encodingType": "application/vnd.geo+json",
 *                "geom": null,
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-185.06",
-*                        "45.05"
+*                        "-181.06",
+*                        "33.05"
 *                    ]
 *                },
 *                "name": "UofC (Created new location) Number six",
@@ -54,15 +54,15 @@
 *            {
 *                "@iot.id": "2",
 *                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Locations(2)",
-*                "_default_foi": "1",
+*                "_default_foi": "4",
 *                "description": "University of Calgary, CCIT building",
 *                "encodingType": "application/vnd.geo+json",
 *                "geom": null,
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-184.06",
-*                        "1.05"
+*                        "-145.06",
+*                        "33.05"
 *                    ]
 *                },
 *                "name": "UofC (Created new location) Number seven",
@@ -88,15 +88,15 @@
 *    {
 *        "@iot.id": "1",
 *        "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)",
-*        "_default_foi": "1",
+*        "_default_foi": "2",
 *        "description": "University of Calgary, CCIT building",
 *        "encodingType": "application/vnd.geo+json",
 *        "geom": null,
 *        "location": {
 *            "type": "Point",
 *            "coordinates": [
-*                "-185.06",
-*                "45.05"
+*                "-181.06",
+*                "33.05"
 *            ]
 *        },
 *        "name": "UofC (Created new location) Number six",
@@ -134,15 +134,15 @@
 *            {
 *                "@iot.id": "6",
 *                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Locations(6)",
-*                "_default_foi": "2",
+*                "_default_foi": "3",
 *                "description": "This is the Location Number six",
 *                "encodingType": "application/vnd.geo+json",
 *                "geom": null,
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-138.06",
-*                        "3.05"
+*                        "-140.06",
+*                        "39.05"
 *                    ]
 *                },
 *                "name": "My Location 6",
@@ -153,15 +153,15 @@
 *            {
 *                "@iot.id": "7",
 *                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Locations(7)",
-*                "_default_foi": "4",
+*                "_default_foi": "3",
 *                "description": "This is the Location Number seven",
 *                "encodingType": "application/vnd.geo+json",
 *                "geom": null,
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-186.06",
-*                        "29.05"
+*                        "-175.06",
+*                        "8.05"
 *                    ]
 *                },
 *                "name": "My Location 7",

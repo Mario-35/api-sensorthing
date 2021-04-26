@@ -21,6 +21,7 @@ export class Observations extends Common {
         this.logger.head("class Observations add createObservation");
 
         const results: string[] = [];
+        let total = 0;
 
         // http://docs.opengeospatial.org/is/15-078r6/15-078r6.html#82
 
@@ -43,11 +44,13 @@ export class Observations extends Common {
             ELSE
             cast(REPLACE(value,',','.') as float)
             END
-            from "${tempTable}" returning id) select updated.id from updated limit ${process.env.APILIMIT ? Number(process.env.APILIMIT) : 200}`;
-
+            from "${tempTable}" returning id) select count(*) over () as total, updated.id from updated limit ${
+                        process.env.APILIMIT ? Number(process.env.APILIMIT) : 200
+                    }`;
                     const importDatas = await importCsv(Common.dbContext, tempTable, filename, sql);
 
                     this.logger.info("importCsv OK");
+                    total = Number(importDatas.shift());
 
                     importDatas.forEach((element: string) => {
                         results.push(this.linkBase + "(" + element + ")");
@@ -85,6 +88,7 @@ export class Observations extends Common {
             }
             if (results) {
                 return this.formatReturnResult({
+                    total: total,
                     result: results
                 });
             }

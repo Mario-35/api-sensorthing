@@ -62,19 +62,18 @@ export const importCsv = async (knex: Knex | Knex.Transaction, tableName: string
                 console.log("streamError", err);
                 cleanup();
             });
-
-            // fileStream.on("data", () => {
-            //     console.log("processing...");
-            // });
             fileStream.on("end", async () => {
-                console.log("COPY TO Ok");
+                process.stdout.write(`COPY TO ${tableName}\r`);
                 const res = await client.query(sql);
-                console.log("SQL OK");
+                process.stdout.write("SQL Executing Ok\r");
+                // ATTENTION the first value is total lines updated
+                results.push(res.rows[0].total);
                 res.rows
                     .map((elem: { [key: string]: string }) => elem["id"])
                     .forEach((element: string) => {
                         results.push(element);
                     });
+                await knex.schema.dropTable(tableName);
                 cleanup();
                 resolve(true);
             });

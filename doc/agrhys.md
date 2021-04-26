@@ -32,6 +32,8 @@ Afin de comprendre l'API SensorThings, il est essentiel de comprendre le modèle
 
 ![entitées](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/entite.jpg "entitées")
 
+Un ajout a êté ajouté par rapport a la norme sensorthing est un feature of interest par defaut dans location, ceci permet d'utiliser ce feature of interest si observation ne l'indique pas.
+
 pour cet example nous allons utiliser un exutoir situé à Kervidy et deux des sensors que sont la hauteur d'eau et la temperature.
 
 Appliqué au modèle (pour la hauteur d'eau) ont pourrai :
@@ -53,7 +55,7 @@ La creation de lu "Thing", de sa "location" et des 2 "datastreams" dans la meme 
 
 #### Request
 
-[Post http://localhost:8029/v1.0/Things](http://localhost:8029/Query?method=Post&entity=Things&datas=%7B%0A%20%20%20%20%22description%22%3A%20%22Niveau%20de%20Kervidy%22%2C%0A%20%20%20%20%22name%22%3A%20%22Exutoir%20Kervidy%22%2C%0A%20%20%20%20%22properties%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22hydras%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22domaine%22%3A%20%22C_Naizin%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22region%22%3A%20%22C_Naizin__03%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22station%22%3A%20%22KERVIDY_C_EXU%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22capteur%22%3A%20%220102%22%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%2C%0A%20%20%20%20%22Locations%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22Kervidy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22Kervidy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22location%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coordinates%22%3A%20%5B-117.05%2C%2051.05%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%5D%2C%0A%20%20%20%20%22Datastreams%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22kervidy%20hauteur%20d'eau%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22Niveau%20d'eau%20de%20kervidy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22unitOfMeasurement%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22Hauteur%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22symbol%22%3A%20%22m%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22ObservedProperty%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22Niveau%20d'eau%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22valeur%20en%20m%C3%A8tre%20de%20la%20hauteur%20de%20l'eau%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22Sensor%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22Niveau%20du%20cours%20d'eau%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22sensor%20name%201%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22encodingType%22%3A%20%22application%2Fpdf%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22metadata%22%3A%20%22hauteur%20d'eau%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22kervidy%20temperature%20d'eau%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22temperature%20de%20kervidy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22unitOfMeasurement%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22temperature%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22symbol%22%3A%20%22C%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22ObservedProperty%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22temperature%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22temperature%20en%20centigrade%20de%20l'eau%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22Sensor%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22Temperature%20du%20cours%20d'eau%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22sensor%20name%201%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22encodingType%22%3A%20%22application%2Fpdf%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22metadata%22%3A%20%22temperature%20d'eau%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%5D%0A%7D)
+[Post http://sensorthings.geosas.fr/v1.0/Things](http://sensorthings.geosas.fr/Query?method=Post&entity=Things&datas=%7B%0A%20%20%20%20%22description%22%3A%20%22Exutoir%20Kervidy%22%2C%0A%20%20%20%20%22name%22%3A%20%22Exutoir%20Kervidy%22%2C%0A%20%20%20%20%22properties%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22hydras%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22domaine%22%3A%20%22C_Naizin%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22region%22%3A%20%22C_Naizin__03%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22station%22%3A%20%22KERVIDY_C_EXU%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22capteur%22%3A%20%220102%22%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%2C%0A%20%20%20%20%22Locations%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22description%22%3A%20%22Kervidy%22%2C%0A%20%20%20%20%20%20%20%20%22name%22%3A%20%22Kervidy%22%2C%0A%20%20%20%20%20%20%20%20%22location%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22coordinates%22%3A%20%5B-117.05%2C%2051.05%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%20%20%20%20%20%20%22FeatureOfInterest%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22Capteur%20Kervidy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22Niveau%20d'eau%20du%20capteur%20kervidy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22feature%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coordinates%22%3A%20%5B-114.133%2C%2051.08%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%2C%0A%20%20%20%20%22Datastreams%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22kervidy%20hauteur%20d'eau%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22Niveau%20d'eau%20de%20kervidy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22unitOfMeasurement%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22Hauteur%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22symbol%22%3A%20%22m%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22ObservedProperty%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22Niveau%20d'eau%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22valeur%20en%20m%C3%A8tre%20de%20la%20hauteur%20de%20l'eau%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22Sensor%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22Niveau%20du%20cours%20d'eau%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22sensor%20name%201%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22encodingType%22%3A%20%22application%2Fpdf%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22metadata%22%3A%20%22hauteur%20d'eau%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22kervidy%20temperature%20d'eau%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22temperature%20de%20kervidy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22unitOfMeasurement%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22temperature%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22symbol%22%3A%20%22C%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22ObservedProperty%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22temperature%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22temperature%20en%20centigrade%20de%20l'eau%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22Sensor%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22description%22%3A%20%22Temperature%20du%20cours%20d'eau%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22name%22%3A%20%22sensor%20name%201%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22encodingType%22%3A%20%22application%2Fpdf%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22metadata%22%3A%20%22temperature%20d'eau%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%5D%0A%7D)
 
 ```json
 {
@@ -67,17 +69,24 @@ La creation de lu "Thing", de sa "location" et des 2 "datastreams" dans la meme 
             "capteur": "0102"
         }
     },
-    "Locations": [
-        {
-            "description": "Kervidy",
-            "name": "Kervidy",
-            "location": {
+    "Locations": {
+        "description": "Kervidy",
+        "name": "Kervidy",
+        "location": {
+            "type": "Point",
+            "coordinates": [-117.05, 51.05]
+        },
+        "encodingType": "application/vnd.geo+json",
+        "FeatureOfInterest": {
+            "name": "Capteur Kervidy",
+            "description": "Niveau d'eau du capteur kervidy",
+            "encodingType": "application/vnd.geo+json",
+            "feature": {
                 "type": "Point",
-                "coordinates": [-117.05, 51.05]
-            },
-            "encodingType": "application/vnd.geo+json"
+                "coordinates": [-114.133, 51.08]
+            }
         }
-    ],
+    },
     "Datastreams": [
         {
             "name": "kervidy hauteur d'eau",
@@ -124,7 +133,7 @@ La creation de lu "Thing", de sa "location" et des 2 "datastreams" dans la meme 
 ```json
 {
     "@iot.id": 1,
-    "@iot.selfLink": "http://localhost:8029/v1.0/Things(1)",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Things(1)",
     "description": "Niveau du cours d'eau de Kervidy",
     "name": "Niveau d'eau kervidy",
     "properties": {
@@ -135,9 +144,9 @@ La creation de lu "Thing", de sa "location" et des 2 "datastreams" dans la meme 
             "station": "KERVIDY_C_EXU"
         }
     },
-    "Datastreams@iot.navigationLink": "http://localhost:8029/v1.0/Things(1)/Datastreams",
-    "HistoricalLocation@iot.navigationLink": "http://localhost:8029/v1.0/Things(1)/HistoricalLocation",
-    "Locations@iot.navigationLink": "http://localhost:8029/v1.0/Things(1)/Locations"
+    "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/Datastreams",
+    "HistoricalLocation@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/HistoricalLocation",
+    "Locations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/Locations"
 }
 ```
 
@@ -145,15 +154,7 @@ La creation de lu "Thing", de sa "location" et des 2 "datastreams" dans la meme 
                 {
                     "phenomenonTime": "1993-02-01T00:00:00Z",
                     "result": 0.155,
-                    "FeatureOfInterest": {
-                        "name": "Capteur Kervidy",
-                        "description": "Niveau d'eau du capteur kervidy",
-                        "encodingType": "application/vnd.geo+json",
-                        "feature": {
-                            "type": "Point",
-                            "coordinates": [-114.133, 51.08]
-                        }
-                    }
+
                 }
             ]
 
@@ -161,28 +162,26 @@ La creation de lu "Thing", de sa "location" et des 2 "datastreams" dans la meme 
 
 #### Request
 
-[Post http://localhost:8029/v1.0/Observations](http://localhost:8029/Query?method=Post&entity=Observations&datas=%7B%0A%20%20%22phenomenonTime%22%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22resultTime%22%20%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22result%22%20%3A%2012.4%2C%0A%20%20%22Datastream%22%3A%7B%22%40iot.id%22%3A%201%7D%2C%0A%20%20%22FeatureOfInterest%22%3A%7B%22%40iot.id%22%3A%202%7D%0A%7D)
+[Post http://sensorthings.geosas.fr/v1.0/Observations](http://sensorthings.geosas.fr/Query?method=Post&entity=Observations&datas=%7B%0A%20%20%20%20%22phenomenonTime%22%3A%20%221993-02-01T00%3A50%3A00Z%22%2C%0A%20%20%20%20%22resultTime%22%3A%20%221993-02-01T00%3A50%3A00Z%22%2C%0A%20%20%20%20%22result%22%3A%200.152%2C%0A%20%20%20%20%22Datastream%22%3A%20%7B%20%22%40iot.id%22%3A%201%20%7D%0A%7D)
 
 ```json
 {
     "phenomenonTime": "1993-02-01T00:50:00Z",
     "resultTime": "1993-02-01T00:50:00Z",
     "result": 0.152,
-    "Datastream": { "@iot.id": 1 },
-    "FeatureOfInterest": { "@iot.id": 2 }
+    "Datastream": { "@iot.id": 1 }
 }
 ```
 
 ou
 
-[Post http://localhost:8029/v1.0/Datastream(1)/Observations](http://localhost:8029/Query?method=Post&entity=Datastreams&id=1&options=Observations&datas=%7B%0A%20%20%20%20%22phenomenonTime%22%3A%20%221993-02-01T00%3A50%3A00Z%22%2C%0A%20%20%20%20%22resultTime%22%3A%20%221993-02-01T00%3A50%3A00Z%22%2C%0A%20%20%20%20%22result%22%3A%200.152%2C%0A%20%20%20%20%22FeatureOfInterest%22%3A%20%7B%20%22%40iot.id%22%3A%202%20%7D%0A%7D)
+[Post http://sensorthings.geosas.fr/v1.0/Datastream(1)/Observations](http://sensorthings.geosas.fr/Query?method=Post&entity=Datastreams&id=1&options=Observations&datas=%7B%0A%20%20%20%20%22phenomenonTime%22%3A%20%221993-02-01T00%3A50%3A00Z%22%2C%0A%20%20%20%20%22resultTime%22%3A%20%221993-02-01T00%3A50%3A00Z%22%2C%0A%20%20%20%20%22result%22%3A%200.152%0A%7D)
 
 ```json
 {
     "phenomenonTime": "1993-02-01T00:50:00Z",
     "resultTime": "1993-02-01T00:50:00Z",
-    "result": 0.152,
-    "FeatureOfInterest": { "@iot.id": 2 }
+    "result": 0.152
 }
 ```
 
@@ -221,9 +220,9 @@ KERV_C_EXU;0102;02/02/1993;08:40:00;34002,36111;0,150;;"m"
 ```json
 {
     "@iot.id": 1,
-    "@iot.selfLink": "http://localhost:8029/v1.0/Observations(1)",
-    "Datastream@iot.navigationLink": "http://localhost:8029/v1.0/Observations(1)/Datastream",
-    "FeatureOfInterest@iot.navigationLink": "http://localhost:8029/v1.0/Observations(1)/FeaturesOfInterest(2)",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)",
+    "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/Datastream",
+    "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/FeaturesOfInterest(2)",
     "phenomenonTime": "2016-11-18T11:04:15.790Z",
     "resultTime": "2016-11-18T11:04:15.790Z",
     "result": 12.4,
@@ -239,7 +238,7 @@ and a Sensor with all its details on a single request.
 
 ### Request to deep insert a Datastream
 
-[Post http://localhost:8029/v1.0/Datastreams](<http://localhost:8029/Query?method=Post&entity=Datastreams&datas=%7B%0A%20%20%22unitOfMeasurement%22%3A%20%7B%0A%20%20%20%20%22symbol%22%3A%20%22%CE%BCg%2Fm%C2%B3%22%2C%0A%20%20%20%20%22name%22%3A%20%22PM%202.5%20Particulates%20(ug%2Fm3)%22%2C%0A%20%20%20%20%22definition%22%3A%20%22http%3A%2F%2Funitsofmeasure.org%2Fucum.html%22%0A%20%20%7D%2C%0A%20%20%22observationType%22%3A%22http%3A%2F%2Fwww.opengis.net%2Fdef%2FobservationType%2FOGC-OM%2F2.0%2FOM_Measurement%22%2C%0A%20%20%22description%22%3A%20%22Air%20quality%20readings%22%2C%0A%20%20%22name%22%3A%20%22air_quality_readings%22%2C%0A%20%20%22Thing%22%3A%20%7B%0A%20%20%20%20%22description%22%3A%20%22A%20SensorWeb%20thing%22%2C%0A%20%20%20%20%22name%22%3A%22SensorWebThing%22%2C%0A%20%20%20%20%22properties%22%3A%20%7B%0A%20%20%20%20%20%20%22organisation%22%3A%20%22Mozilla%22%2C%0A%20%20%20%20%20%20%22owner%22%3A%20%22Mozilla%22%0A%20%20%20%20%7D%2C%0A%20%20%20%20%22Locations%22%3A%20%5B%7B%0A%20%20%20%20%20%20%22description%22%3A%20%22My%20backyard%22%2C%0A%20%20%20%20%20%20%22name%22%3A%20%22My%20backyard%22%2C%0A%20%20%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%20%20%20%20%22location%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%20%20%22coordinates%22%3A%20%5B-117.123%2C%2054.123%5D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%5D%0A%20%20%7D%2C%0A%20%20%22ObservedProperty%22%3A%20%7B%0A%20%20%20%20%22name%22%3A%20%22PM%202.5%22%2C%0A%20%20%20%20%22description%22%3A%20%22Particle%20pollution%2C%20also%20called%20particulate%20matter%20or%20PM%2C%20is%20a%20mixture%20of%20solids%20and%20liquid%20droplets%20floating%20in%20the%20air.%22%2C%0A%20%20%20%20%22definition%22%3A%20%22https%3A%2F%2Fairnow.gov%2Findex.cfm%3Faction%3Daqibasics.particle%22%0A%20%20%7D%2C%0A%20%20%22Sensor%22%3A%20%7B%0A%20%20%20%20%22description%22%3A%20%22PM%202.5%20sensor%22%2C%0A%20%20%20%20%22name%22%3A%20%22PM25sensor%22%2C%0A%20%20%20%20%22encodingType%22%3A%20%22application%2Fpdf%22%2C%0A%20%20%20%20%22metadata%22%3A%20%22http%3A%2F%2Fparticle-sensor.com%2F%22%0A%20%20%7D%0A%7D>)
+[Post http://sensorthings.geosas.fr/v1.0/Datastreams](<http://sensorthings.geosas.fr/Query?method=Post&entity=Datastreams&datas=%7B%0A%20%20%22unitOfMeasurement%22%3A%20%7B%0A%20%20%20%20%22symbol%22%3A%20%22%CE%BCg%2Fm%C2%B3%22%2C%0A%20%20%20%20%22name%22%3A%20%22PM%202.5%20Particulates%20(ug%2Fm3)%22%2C%0A%20%20%20%20%22definition%22%3A%20%22http%3A%2F%2Funitsofmeasure.org%2Fucum.html%22%0A%20%20%7D%2C%0A%20%20%22observationType%22%3A%22http%3A%2F%2Fwww.opengis.net%2Fdef%2FobservationType%2FOGC-OM%2F2.0%2FOM_Measurement%22%2C%0A%20%20%22description%22%3A%20%22Air%20quality%20readings%22%2C%0A%20%20%22name%22%3A%20%22air_quality_readings%22%2C%0A%20%20%22Thing%22%3A%20%7B%0A%20%20%20%20%22description%22%3A%20%22A%20SensorWeb%20thing%22%2C%0A%20%20%20%20%22name%22%3A%22SensorWebThing%22%2C%0A%20%20%20%20%22properties%22%3A%20%7B%0A%20%20%20%20%20%20%22organisation%22%3A%20%22Mozilla%22%2C%0A%20%20%20%20%20%20%22owner%22%3A%20%22Mozilla%22%0A%20%20%20%20%7D%2C%0A%20%20%20%20%22Locations%22%3A%20%5B%7B%0A%20%20%20%20%20%20%22description%22%3A%20%22My%20backyard%22%2C%0A%20%20%20%20%20%20%22name%22%3A%20%22My%20backyard%22%2C%0A%20%20%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%20%20%20%20%22location%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%20%20%22coordinates%22%3A%20%5B-117.123%2C%2054.123%5D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%5D%0A%20%20%7D%2C%0A%20%20%22ObservedProperty%22%3A%20%7B%0A%20%20%20%20%22name%22%3A%20%22PM%202.5%22%2C%0A%20%20%20%20%22description%22%3A%20%22Particle%20pollution%2C%20also%20called%20particulate%20matter%20or%20PM%2C%20is%20a%20mixture%20of%20solids%20and%20liquid%20droplets%20floating%20in%20the%20air.%22%2C%0A%20%20%20%20%22definition%22%3A%20%22https%3A%2F%2Fairnow.gov%2Findex.cfm%3Faction%3Daqibasics.particle%22%0A%20%20%7D%2C%0A%20%20%22Sensor%22%3A%20%7B%0A%20%20%20%20%22description%22%3A%20%22PM%202.5%20sensor%22%2C%0A%20%20%20%20%22name%22%3A%20%22PM25sensor%22%2C%0A%20%20%20%20%22encodingType%22%3A%20%22application%2Fpdf%22%2C%0A%20%20%20%20%22metadata%22%3A%20%22http%3A%2F%2Fparticle-sensor.com%2F%22%0A%20%20%7D%0A%7D>)
 
 ```json
 {
@@ -289,11 +288,11 @@ and a Sensor with all its details on a single request.
 ```json
 {
     "@iot.id": "1",
-    "@iot.selfLink": "http://localhost:8029/v1.0/Datastreams(1)",
-    "Thing@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Thing",
-    "Sensor@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Sensor",
-    "ObservedProperty@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/ObservedProperty",
-    "Observations@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Observations",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)",
+    "Thing@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Thing",
+    "Sensor@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Sensor",
+    "ObservedProperty@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/ObservedProperty",
+    "Observations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Observations",
     "unitOfMeasurement": {
         "name": "PM 2.5 Particulates (ug/m3)",
         "symbol": "μg/m³",
@@ -311,7 +310,7 @@ just need to specify the id of the Datastream where you want to push these obser
 In this case, if you want to push an Observation to the Datastream you just created
 via deep insert, you can send this request:
 
-[Post http://localhost:8029/v1.0/Observations](http://localhost:8029/Query?method=Post&entity=Observations&datas=%7B%0A%20%20%22phenomenonTime%22%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22resultTime%22%20%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22result%22%20%3A%2012.4%2C%0A%20%20%22FeatureOfInterest%22%3A%20%7B%0A%20%20%20%20%22name%22%3A%20%22Weather%20Station%20YYC.%22%2C%0A%20%20%20%20%22description%22%3A%20%22This%20is%20a%20weather%20station%20located%20at%20the%20Calgary%20Airport.%22%2C%0A%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%20%20%22feature%22%3A%20%7B%0A%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%22coordinates%22%3A%20%5B%0A%20%20%20%20%20%20%20%20-114.06%2C%0A%20%20%20%20%20%20%20%2051.05%0A%20%20%20%20%20%20%5D%0A%20%20%20%20%7D%0A%20%20%7D%2C%0A%20%20%22Datastream%22%3A%20%7B%20%22%40iot.id%22%3A%201%20%7D%0A%7D)
+[Post http://sensorthings.geosas.fr/v1.0/Observations](http://sensorthings.geosas.fr/Query?method=Post&entity=Observations&datas=%7B%0A%20%20%22phenomenonTime%22%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22resultTime%22%20%3A%20%222016-11-18T11%3A04%3A15.790Z%22%2C%0A%20%20%22result%22%20%3A%2012.4%2C%0A%20%20%22FeatureOfInterest%22%3A%20%7B%0A%20%20%20%20%22name%22%3A%20%22Weather%20Station%20YYC.%22%2C%0A%20%20%20%20%22description%22%3A%20%22This%20is%20a%20weather%20station%20located%20at%20the%20Calgary%20Airport.%22%2C%0A%20%20%20%20%22encodingType%22%3A%20%22application%2Fvnd.geo%2Bjson%22%2C%0A%20%20%20%20%22feature%22%3A%20%7B%0A%20%20%20%20%20%20%22type%22%3A%20%22Point%22%2C%0A%20%20%20%20%20%20%22coordinates%22%3A%20%5B%0A%20%20%20%20%20%20%20%20-114.06%2C%0A%20%20%20%20%20%20%20%2051.05%0A%20%20%20%20%20%20%5D%0A%20%20%20%20%7D%0A%20%20%7D%2C%0A%20%20%22Datastream%22%3A%20%7B%20%22%40iot.id%22%3A%201%20%7D%0A%7D)
 
 ```json
 {
@@ -336,9 +335,9 @@ Which should reply with something like:
 ```json
 {
     "@iot.id": "1",
-    "@iot.selfLink": "http://localhost:8029/v1.0/Observations(1)",
-    "Datastream@iot.navigationLink": "http://localhost:8029/v1.0/Observations(1)/Datastream",
-    "FeatureOfInterest@iot.navigationLink": "http://localhost:8029/v1.0/Observations(1)/FeatureOfInterest",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)",
+    "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/Datastream",
+    "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/FeatureOfInterest",
     "phenomenonTime": "2016-11-18T11:04:15.790Z",
     "resultTime": "2016-11-18T11:04:15.790Z",
     "result": 12.4,
@@ -371,7 +370,7 @@ query language, you'll get the entire list (sorry!).
 
 #### Request
 
-[Get http://localhost:8029/v1.0/Datastreams](http://localhost:8029/Query?method=GET&entity=Datastreams)
+[Get http://sensorthings.geosas.fr/v1.0/Datastreams](http://sensorthings.geosas.fr/Query?method=GET&entity=Datastreams)
 
 #### Response
 
@@ -381,11 +380,11 @@ query language, you'll get the entire list (sorry!).
     "value": [
         {
             "@iot.id": "1",
-            "@iot.selfLink": "http://localhost:8029/v1.0/Datastreams(1)",
-            "Thing@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Thing",
-            "Sensor@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Sensor",
-            "ObservedProperty@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/ObservedProperty",
-            "Observations@iot.navigationLink": "http://localhost:8029/v1.0/Datastreams(1)/Observations",
+            "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)",
+            "Thing@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Thing",
+            "Sensor@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Sensor",
+            "ObservedProperty@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/ObservedProperty",
+            "Observations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Observations",
             "name": "air_quality_readings",
             "description": "Air quality readings",
             "unitOfMeasurement": {
@@ -412,17 +411,17 @@ Thing by following the `Thing@iot.navigationLink` navigation link.
 
 #### Request
 
-[Get http://localhost:8029/v1.0/Datastreams(1)/Thing](http://localhost:8029/Query?method=GET&entity=Datastreams&id=1&options=Thing)
+[Get http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Thing](http://sensorthings.geosas.fr/Query?method=GET&entity=Datastreams&id=1&options=Thing)
 
 #### Response
 
 ```json
 {
     "@iot.id": "1",
-    "@iot.selfLink": "http://localhost:8029/v1.0/Things(1)",
-    "Locations@iot.navigationLink": "http://localhost:8029/v1.0/Things(1)/Locations",
-    "HistoricalLocation@iot.navigationLink": "http://localhost:8029/v1.0/Things(1)/HistoricalLocation",
-    "Datastreams@iot.navigationLink": "http://localhost:8029/v1.0/Things(1)/Datastreams",
+    "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Things(1)",
+    "Locations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/Locations",
+    "HistoricalLocation@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/HistoricalLocation",
+    "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/Datastreams",
     "name": "SensorWebThing",
     "description": "A SensorWeb thing",
     "properties": {
@@ -436,7 +435,7 @@ Once we have the Datastream associated Thing, we query its Locations.
 
 #### Request
 
-[Get http://localhost:8029/v1.0/Things(1)/Locations](http://localhost:8029/Query?method=GET&entity=Things&id=1&options=Locations)
+[Get http://sensorthings.geosas.fr/v1.0/Things(1)/Locations](http://sensorthings.geosas.fr/Query?method=GET&entity=Things&id=1&options=Locations)
 
 #### Response
 
@@ -446,9 +445,9 @@ Once we have the Datastream associated Thing, we query its Locations.
     "value": [
         {
             "@iot.id": "1",
-            "@iot.selfLink": "http://localhost:8029/v1.0/Locations(1)",
-            "Things@iot.navigationLink": "http://localhost:8029/v1.0/Locations(1)/Things",
-            "HistoricalLocation@iot.navigationLink": "http://localhost:8029/v1.0/Locations(1)/HistoricalLocation",
+            "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)",
+            "Things@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)/Things",
+            "HistoricalLocation@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)/HistoricalLocation",
             "name": "My backyard",
             "description": "My backyard",
             "encodingType": "application/vnd.geo+json",
@@ -470,7 +469,7 @@ navigation link that we got in the first request.
 
 #### Request
 
-[Get http://localhost:8029/v1.0/Datastreams(1)/Observations](http://localhost:8029/Query?method=GET&entity=Datastreams&id=1&options=Observations)
+[Get http://sensorthings.geosas.fr/v1.0/Datastreams(1)/Observations](http://sensorthings.geosas.fr/Query?method=GET&entity=Datastreams&id=1&options=Observations)
 
 #### Response
 
@@ -480,9 +479,9 @@ navigation link that we got in the first request.
     "value": [
         {
             "@iot.id": "1",
-            "@iot.selfLink": "http://localhost:8029/v1.0/Observations(1)",
-            "Datastream@iot.navigationLink": "http://localhost:8029/v1.0/Observations(1)/Datastream",
-            "FeatureOfInterest@iot.navigationLink": "http://localhost:8029/v1.0/Observations(1)/FeatureOfInterest",
+            "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)",
+            "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/Datastream",
+            "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(1)/FeatureOfInterest",
             "phenomenonTime": "2016-11-18T11:04:15.790Z",
             "result": 12.4,
             "resultTime": "2016-11-18T11:04:15.790Z",
@@ -490,9 +489,9 @@ navigation link that we got in the first request.
         },
         {
             "@iot.id": "2",
-            "@iot.selfLink": "http://localhost:8029/v1.0/Observations(2)",
-            "Datastream@iot.navigationLink": "http://localhost:8029/v1.0/Observations(2)/Datastream",
-            "FeatureOfInterest@iot.navigationLink": "http://localhost:8029/v1.0/Observations(2)/FeatureOfInterest",
+            "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Observations(2)",
+            "Datastream@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(2)/Datastream",
+            "FeatureOfInterest@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Observations(2)/FeatureOfInterest",
             "phenomenonTime": "2016-11-18T11:04:15.790Z",
             "result": 14.4,
             "resultTime": "2016-11-18T11:04:15.790Z",

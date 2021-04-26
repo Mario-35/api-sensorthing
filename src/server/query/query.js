@@ -2,21 +2,18 @@ var jsonObj = {};
 const APIVERSION = "@version@";
 var jsonViewer = new JSONViewer();
 document.querySelector("#json").appendChild(jsonViewer.getContainer());
-
-const array = ["@array@"];
+const listOperations = ["GET", "POST", "PATCH", "DELETE"];
+const paramentity = "";
+const paramsubentity = "";
+const paramid = "";
+const parammethod = "";
+const paramuser = "";
+const paramoptions = "";
+const relations = "@relations@";
+let importFile = false;
 
 // textarea value to JSON object
-var setJSON = function () {
-  
-// const entity = document.getElementById("entity");
-// if (entity != null)
-//   for (let i = 0; i < array.length; i++) {
-//       var option = document.createElement("option");
-//       option.value = array[i];
-//       option.text = array[i]; 
-//       entity.appendChild(option);
-//   }
-};
+
 
 //Hide params url
 // history.replaceState({}, null, "/Query");
@@ -26,27 +23,72 @@ var setJSON = function () {
 // @start@
 
 // query.value = query.value.replace("$", "&$");
-query.value = query.value.replace(/\$/g, "&$");
-if (query.value[0] == "&") query.value = query.value.substring(1);
+
+var goOrSubmit =  function () {
+  if (importFile == true) {
+    go.style.display = "none";
+
+    if (Number(nb.value) > 0) { 
+      submit.style.display = "inline-block";
+    } else {
+      submit.style.display = "none";
+    }
+  } else {
+    go.style.display = "inline-block";
+    submit.style.display = "none";
+  }
+};
+
+var createSelect =  function (obj, list, defValue, addNone) {
+  obj.options.length = 0;
+  if (list) {
+    if (addNone) list.unshift("none");
+    list.forEach((element) => {
+      obj.add(new Option(element));
+    });
+  
+    obj.selectedIndex = list.indexOf(defValue);
+  }
+};
+
+var init =  function () {
+  source.style.display = "none";
+  source.value = "query";
+  tempentity = Object.keys(relations).includes(paramentity) ? paramentity : "Things";
+  createSelect(method, paramuser == "true" ? listOperations : ["GET"] ,paramuser == "true" ?  parammethod.toUpperCase() : "GET");
+  createSelect(entity, Object.keys(relations), tempentity);
+  createSelect(subentity, relations[entity.value], relations[tempentity].includes(paramsubentity) ? paramsubentity : "none", true);
+  
+  nb.value = paramid;
+  options.value = paramoptions;
+  options.value = options.value.replace(/\$/g, "&$");
+  if (options.value[0] == "&") options.value = options.value.substring(1);
+  goOrSubmit();
+  logout.style.display = paramuser == "true" ? "inline-block" : "none";
+  populate.style.display = paramuser == "true" ? "inline-block" : "none";
+  fileone.style.display = paramuser == "true" ? "inline-block" : "none";
+  fileonelabel.style.display = paramuser == "true" ? "inline-block" : "none";
+  datas.style.display = paramuser == "true" ? "inline-block" : "none";
+};
+
+init();
+
 go.onclick = async (e) => {
   e.preventDefault();
-  // const operation = document.getElementById("operation");
-  const queryElem = document.getElementById("query");
-  const nbElem = document.getElementById("nb");
 
-  const nb = nbElem != null ? Number(nbElem.value) : 0;
+  const index = Number(nb.value);
 
   let url = document.URL.split("/Query")[0]+`/${APIVERSION}`;
 
-  let query = (queryElem != null) ? queryElem.value : "";
+  let query = options.value;
 
   
   if (query != "" && query[0] != "?") {
     query = "?" + query;
   }
 
-  if (nb > 0) {
-    url = url + "/" + entity.value + "(" + nb + ")";
+  if (index > 0) {
+    url = url + "/" + entity.value + "(" + index + ")";
   } else {
     url = url + "/" + entity.value;
   }
@@ -55,16 +97,15 @@ go.onclick = async (e) => {
     url = url + "/" + subentity.value + "/" + query;
   } else {
     url = url + query;
-  }  
+  }
 
-  if (operation.value === "Get") {
+  if (method.value === "GET") {
     let response = await fetch(url, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
             },
     });
-
     try {
       var value = await response.text();
       jsonObj = JSON.parse(value);
@@ -73,16 +114,14 @@ go.onclick = async (e) => {
     catch (err) {
         window.location.href = "/error";
     }
-  } else if (operation.value == "Post" || operation.value == "Patch") {
-    const data = document.getElementById("input");
+  } else if (method.value == "POST" || method.value == "PATCH") {
     if (entity.value === "createDB") {
-          const data = document.getElementById("input");
           let response = await fetch(document.URL.split("/Query")[0]+`${APIVERSION}/createDB`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: data.value,
+            body: datas.value,
           });
           try {
             const value = await response.text();
@@ -98,16 +137,16 @@ go.onclick = async (e) => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: data.value,
+              body: datas.value,
             });
           }
     } else {
       let response = await fetch(url, {
-        method: operation.value.toUpperCase(),
+        method: method.value,
         headers: {
             "Content-Type": "application/json",
         },
-        body: data.value,
+        body: datas.value,
       });
       try {
         const value = await response.text();
@@ -125,12 +164,12 @@ go.onclick = async (e) => {
         headers: {
             "Content-Type": "application/json",
         },
-        body: data.value,
+        body: datas.value,
       });
       }
       // alert(err);
     }
-  } else if (operation.value === "Delete" && nb && nb > 0) {
+  } else if (operation.value === "DELETE" && nb && nb > 0) {
     let response = await fetch(url, {
             method: "DELETE",
             headers: {
@@ -168,10 +207,9 @@ git.onclick = () => {
 };
 
 populate.onclick = () => {
-  operation.value = "Post";
+  method.value = "POST";
   entity.value = "Things";
-  const data = document.getElementById("input");
-  data.value = `{
+  datas.value = `{
     "description": "thing 1",
     "name": "thing name 1",
     "properties": {
@@ -258,8 +296,47 @@ populate.onclick = () => {
 }`;
 };
 
+  nb.addEventListener("change", () => {
+      goOrSubmit();
+  });
+
   entity.addEventListener("change", () => {
+    subentity.options.length = 0;
     if (["CreateObservations", "createDB"].includes(entity.value)) {
-      operation.value = "Post";
+      method.value = "POST";
+    } else {
+      // let items = relations[entity.value];
+      // items.unshift("none");
+
+  createSelect(subentity, items, paramsubentity, true);
+
+      // const items = relations[entity.value];
+      // subentity.add(new Option("none"));
+      // items.forEach(element => {        
+      //   subentity.add(new Option(element));
+      // });
+      // subentity.selectedIndex = items.indexOf(paramsubentity) + 1;
     }
   });
+
+fileone.addEventListener( "change", ( e ) => 	{
+  console.log("passage");
+  var fileName = "";
+
+  if (this.files && this.files.length > 1 )
+    fileName = ( this.getAttribute( "data-multiple-caption" ) || "" ).replace( "{count}", this.files.length );
+  else
+    fileName = e.target.value.split( "\\" ).pop();
+  
+  if( fileName ) {
+    fileonelabel.querySelector( "span" ).innerHTML = fileName;
+    method.value = "POST";
+    entity.value = "Datastreams";
+    subentity.value = "Observations";
+    importFile = true;
+  }
+  else {
+    fileonelabel.innerHTML = labelVal;
+  }
+  goOrSubmit();
+});

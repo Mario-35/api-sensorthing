@@ -60,7 +60,8 @@ export class Common {
             error: undefined,
             result: undefined,
             value: undefined,
-            body: undefined
+            body: undefined,
+            total: undefined
         };
 
         if (Common.errorMessage) {

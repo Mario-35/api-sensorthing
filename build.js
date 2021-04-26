@@ -150,6 +150,8 @@ copyFileSync( "./src/server/query/query.css", "build/query/" );
 copyFileSync( "./src/server/query/query.html", "build/query/" );
 copyFileSync( "./src/server/query/query.js", "build/query/" );
 copyFileSync( "./.env", "build/" );
+copyFileSync( "./.env", "build/" );
+copyFileSync( "./src/server/favicon.ico", "build/" );
 
 const packageJson = require("./package.json");
 delete packageJson.scripts;
@@ -160,54 +162,55 @@ fs.writeFileSync("build/package.json", JSON.stringify(packageJson, null, 2), {
 });
 
 if (process.argv.includes("ugly")) {
-ugly("./build/apidoc", {
-  compressor: htmlMinifier ,
-  output: "build/apidoc",
-  extension: ".html",
-  patterns: ["**/*.html"],
-  options: {
-    removeAttributeQuotes: true,
-    collapseInlineTagWhitespace: true,
-    minifyCSS: true,
-    minifyJS: true,
-    removeComments: true
-  }
-});
-
-ugly("./build/apidoc", {
-  compressor: jsonminify ,
-  output: "build/apidoc",
-  extension: ".json",
-  patterns: ["**/*.json"],
+  ugly("./build/apidoc", {
+    compressor: htmlMinifier ,
+    output: "build/apidoc",
+    extension: ".html",
+    patterns: ["**/*.html"],
     options: {
-    removeAttributeQuotes: true,
-    collapseInlineTagWhitespace: true,
-    removeComments: true
-  }
-});
+      removeAttributeQuotes: true,
+      collapseInlineTagWhitespace: true,
+      minifyCSS: true,
+      minifyJS: true,
+      removeComments: true
+    }
+  });
 
-ugly("./build/apidoc", {
-  compressor: cleanCSS ,
-  output: "build/apidoc",
-  extension: ".css",
-  patterns: ["**/*.css"],
-    options: {
-    removeAttributeQuotes: true,
-    collapseInlineTagWhitespace: true,
-    removeComments: true
-  }
-});
+  ugly("./build/apidoc", {
+    compressor: jsonminify ,
+    output: "build/apidoc",
+    extension: ".json",
+    patterns: ["**/*.json"],
+      options: {
+      removeAttributeQuotes: true,
+      collapseInlineTagWhitespace: true,
+      removeComments: true
+    }
+  });
 
-uglyJs("./build", {
-  comments: true,
-  output: "build",
-  extension: ".js",
-  patterns: ["**/*.js"],
-  configFile: null,
-  callback: null,
-  logLevel: "info"
-});
+  ugly("./build/apidoc", {
+    compressor: cleanCSS ,
+    output: "build/apidoc",
+    extension: ".css",
+    patterns: ["**/*.css"],
+      options: {
+      removeAttributeQuotes: true,
+      collapseInlineTagWhitespace: true,
+      removeComments: true
+    }
+  });
+
+  uglyJs("./build", {
+    comments: true,
+    output: "build",
+    extension: ".js",
+    patterns: ["**/*.js"],
+    configFile: null,
+    callback: null,
+    logLevel: "info"
+  });
 }
+
 function writeFile(filePath, code, state) {
   state.processCounter++;
 

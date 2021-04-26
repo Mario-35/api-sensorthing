@@ -27,14 +27,14 @@
 *            {
 *                "@iot.id": "1",
 *                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/HistoricalLocations(1)",
-*                "time": "2021-04-24T08:00:37.036Z",
+*                "time": "2021-04-26T15:51:37.651Z",
 *                "Locations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/HistoricalLocations(1)/Locations",
 *                "Thing@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/HistoricalLocations(1)/Thing"
 *            },
 *            {
 *                "@iot.id": "2",
 *                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/HistoricalLocations(2)",
-*                "time": "2021-04-24T08:00:37.049Z",
+*                "time": "2021-04-26T15:51:37.663Z",
 *                "Locations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/HistoricalLocations(2)/Locations",
 *                "Thing@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/HistoricalLocations(2)/Thing"
 *            },
@@ -56,7 +56,7 @@
 *    {
 *        "@iot.id": "1",
 *        "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/HistoricalLocations(1)",
-*        "time": "2021-04-24T08:00:37.036Z",
+*        "time": "2021-04-26T15:51:37.651Z",
 *        "Locations@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/HistoricalLocations(1)/Locations",
 *        "Thing@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/HistoricalLocations(1)/Thing"
 *    }
@@ -75,20 +75,20 @@
 *    {
 *        "@iot.id": "6",
 *        "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/HistoricalLocations(6)",
-*        "time": "2021-04-24T08:00:37.261Z",
+*        "time": "2021-04-26T15:51:37.851Z",
 *        "Locations": [
 *            {
 *                "@iot.id": "6",
 *                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Locations(6)",
-*                "_default_foi": "2",
+*                "_default_foi": "3",
 *                "description": "This is the Location Number six",
 *                "encodingType": "application/vnd.geo+json",
 *                "geom": null,
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-138.06",
-*                        "3.05"
+*                        "-140.06",
+*                        "39.05"
 *                    ]
 *                },
 *                "name": "My Location 6",
@@ -112,7 +112,7 @@
 *    @apiSampleRequest http://sensorthings.geosas.fr/v1.0/HistoricalLocations(6?$select=time
 *    @apiSuccessExample {json} Success-Response:
 *    {
-*        "time": "2021-04-24T08:00:37.261Z"
+*        "time": "2021-04-26T15:51:37.851Z"
 *    }
 *    @apiErrorExample {json} Error-Response:
 *    {

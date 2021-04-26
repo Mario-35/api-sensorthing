@@ -14,6 +14,7 @@ import { ParameterizedContext } from "koa";
 import { Parser } from "json2csv";
 import { queryHtml } from "../query/";
 import { helperUsers } from "./_helpers";
+import fs from "fs";
 
 const router: Router = new Router();
 
@@ -85,12 +86,13 @@ const returnBody = (args: requestArgs, input: string | keyValue | keyValue[]): s
 };
 
 router.get("/(.*)", async (ctx) => {
+    const host = ctx.request.headers["x-forwarded-host"] ? ctx.request.headers["x-forwarded-host"] : ctx.request.header.host;
     if (ctx.request.url.endsWith(`/${process.env.APIVERSION}/`)) {
         const expectedResponse: Record<string, unknown>[] = [{}];
         Object.keys(_ENTITIES).forEach((value: string) => {
             expectedResponse.push({
                 name: _ENTITIES[value].name,
-                url: `http://${ctx.request.header.host}/${process.env.APIVERSION}/${value}`
+                url: `http://${host}/${process.env.APIVERSION}/${value}`
             });
         });
         ctx.type = "application/json";
@@ -99,7 +101,7 @@ router.get("/(.*)", async (ctx) => {
         };
     } else if (ctx.request.url.toLowerCase().includes("/query")) {
         ctx.type = "html";
-        ctx.body = queryHtml({ user: helperUsers.ensureAuthenticated(ctx) ? "true" : "false", ...ctx.query });
+        ctx.body = queryHtml({ user: helperUsers.ensureAuthenticated(ctx) ? "true" : "false", host: host, ...ctx.query });
     } else if (ctx.request.url.includes(`/${process.env.APIVERSION}/`)) {
         const args = urlRequestToRequestArgs(ctx);
         if (args && args.ENTITY_NAME != "") {
@@ -173,17 +175,13 @@ router.post("/(.*)", async (ctx) => {
             errorCode(ctx, 402);
         }
     } else if (ctx.request.type.startsWith("multipart/form-data")) {
-        const returnToQuery = ctx.request.header.referer.toLowerCase().endsWith("/query");
-
         const getDatas = async (): Promise<keyString> => {
             return new Promise(async (resolve, reject) => {
                 await upload(ctx)
                     .then((data) => {
-                        console.log("then");
                         resolve(data);
                     })
                     .catch((data: any) => {
-                        console.log("catch me");
                         reject(data);
                     });
             });
@@ -191,21 +189,22 @@ router.post("/(.*)", async (ctx) => {
 
         const data = await getDatas();
 
-        console.log(data);
-
         const args = urlRequestToRequestArgs(ctx, data);
         if (args) {
             const objectAccess = new apiAccess(ctx, args);
             const result: ReturnResult | undefined | void = await objectAccess.add().catch((error) => console.error(error));
+            if (args.extras) fs.unlinkSync(args.extras.file);
+
             if (result) {
                 if (result.error) {
                     errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
                 } else {
-                    if (returnToQuery == true) {
+                    if (data["source"] == "query") {
                         ctx.type = "html";
                         ctx.body = queryHtml({
                             user: helperUsers.ensureAuthenticated(ctx) ? "true" : "false",
-                            results: JSON.stringify({ value: result.result }),
+
+                            results: JSON.stringify({ added: result.total, value: result.result }),
                             ...ctx.query
                         });
                     } else {
