@@ -10,7 +10,6 @@ export const upload = (ctx: ParameterizedContext): Promise<keyString> => {
     return new Promise(async (resolve, reject) => {
         const uploadPath = "./upload";
         const allowedExtName = ["csv", "txt", "json"];
-
         if (!fs.existsSync(uploadPath)) {
             const mkdir = util.promisify(fs.mkdir);
             await mkdir(uploadPath).catch((error) => {
@@ -29,14 +28,9 @@ export const upload = (ctx: ParameterizedContext): Promise<keyString> => {
                 reject(data);
             } else {
                 file.pipe(fs.createWriteStream(uploadPath + "/" + filename));
-                const size = fs.statSync(filename).size;
-                let written = 0;
-
                 data["file"] = uploadPath + "/" + filename;
                 file.on("data", (chunk) => {
                     data.state = `GET ${chunk.length} bytes`;
-                    written += chunk.length;
-                    process.stdout.write(`${((written / size) * 100).toFixed(0)} %\r`);
                 });
                 file.on("error", (error: Error) => {
                     console.error(error);

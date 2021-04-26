@@ -85,64 +85,80 @@ const returnBody = (args: requestArgs, input: string | keyValue | keyValue[]): s
     }
 };
 
-router.get("/(.*)", async (ctx) => {
+const minimal = (ctx: ParameterizedContext): keyString => {
     const host = ctx.request.headers["x-forwarded-host"] ? ctx.request.headers["x-forwarded-host"] : ctx.request.header.host;
-    if (ctx.request.url.endsWith(`/${process.env.APIVERSION}/`)) {
-        const expectedResponse: Record<string, unknown>[] = [{}];
-        Object.keys(_ENTITIES).forEach((value: string) => {
-            expectedResponse.push({
-                name: _ENTITIES[value].name,
-                url: `http://${host}/${process.env.APIVERSION}/${value}`
+    return {
+        user: helperUsers.ensureAuthenticated(ctx) ? "true" : "false",
+        host: host,
+        version: process.env.APIVERSION || "v1.0",
+        ...ctx.query
+    };
+};
+
+router.get("/(.*)", async (ctx) => {
+    try {
+        const host = ctx.request.headers["x-forwarded-host"] ? ctx.request.headers["x-forwarded-host"] : ctx.request.header.host;
+        if (ctx.request.url.endsWith(`/${process.env.APIVERSION}/`)) {
+            const expectedResponse: Record<string, unknown>[] = [{}];
+            Object.keys(_ENTITIES).forEach((value: string) => {
+                expectedResponse.push({
+                    name: _ENTITIES[value].name,
+                    url: `http://${host}/${process.env.APIVERSION}/${value}`
+                });
             });
-        });
-        ctx.type = "application/json";
-        ctx.body = {
-            value: expectedResponse.filter((elem) => Object.keys(elem).length)
-        };
-    } else if (ctx.request.url.toLowerCase().includes("/query")) {
-        ctx.type = "html";
-        ctx.body = queryHtml({ user: helperUsers.ensureAuthenticated(ctx) ? "true" : "false", host: host, ...ctx.query });
-    } else if (ctx.request.url.includes(`/${process.env.APIVERSION}/`)) {
-        const args = urlRequestToRequestArgs(ctx);
-        if (args && args.ENTITY_NAME != "") {
-            const objectAccess = new apiAccess(ctx, args);
-            if (args.ENTITY_ID === 0) {
-                const results = await objectAccess.getAll();
-                if (results) {
-                    const temp =
-                        args.formatResult == formatResult.JSON
-                            ? {
-                                  "@iot.count": results.id?.toString(),
-                                  "@iot.nextLink": results.nextLink,
-                                  value: results["value"]
-                              }
-                            : (ctx.body = convertToCsv(results["value"]));
-                    ctx.type = returnType(args);
-                    ctx.body = returnBody(args, temp as keyValue);
+            ctx.type = "application/json";
+            ctx.body = {
+                value: expectedResponse.filter((elem) => Object.keys(elem).length)
+            };
+        } else if (ctx.request.url.toLowerCase().includes("/query")) {
+            ctx.type = "html";
+            ctx.body = queryHtml(minimal(ctx));
+        } else if (ctx.request.url.includes(`/${process.env.APIVERSION}/`)) {
+            const args = urlRequestToRequestArgs(ctx);
+            if (args && args.ENTITY_NAME != "") {
+                const objectAccess = new apiAccess(ctx, args);
+                if (args.ENTITY_ID === 0) {
+                    const results = await objectAccess.getAll();
+                    if (results) {
+                        const temp =
+                            args.formatResult == formatResult.JSON
+                                ? {
+                                      "@iot.count": results.id?.toString(),
+                                      "@iot.nextLink": results.nextLink,
+                                      value: results["value"]
+                                  }
+                                : (ctx.body = convertToCsv(results["value"]));
+                        ctx.type = returnType(args);
+                        ctx.body = returnBody(args, temp as keyValue);
+                    } else {
+                        // element does not exist
+                        errorCode(ctx, 404, undefined, _NotExist);
+                    }
+                } else if (args.ENTITY_ID && args.ENTITY_ID > 0) {
+                    const results: ReturnResult | undefined = await objectAccess.getSingle(
+                        BigInt(args.ENTITY_ID),
+                        args.PROPERTY_NAME,
+                        args.RELATION_NAME,
+                        args.value
+                    );
+                    if (results && results.body) {
+                        ctx.type = returnType(args);
+                        ctx.body = returnBody(args, results.body);
+                    } else {
+                        // element does not exist:
+                        errorCode(ctx, 404, undefined, _NotExist);
+                    }
                 } else {
-                    // element does not exist
-                    errorCode(ctx, 404, undefined, _NotExist);
-                }
-            } else if (args.ENTITY_ID && args.ENTITY_ID > 0) {
-                const results: ReturnResult | undefined = await objectAccess.getSingle(
-                    BigInt(args.ENTITY_ID),
-                    args.PROPERTY_NAME,
-                    args.RELATION_NAME,
-                    args.value
-                );
-                if (results && results.body) {
-                    ctx.type = returnType(args);
-                    ctx.body = returnBody(args, results.body);
-                } else {
-                    // element does not exist:
-                    errorCode(ctx, 404, undefined, _NotExist);
+                    errorCode(ctx, 402, undefined, _NotExist);
                 }
             } else {
-                errorCode(ctx, 402, undefined, _NotExist);
+                errorCode(ctx, 404);
             }
         } else {
             errorCode(ctx, 404);
         }
+    } catch (err) {
+        errorCode(ctx, 404);
     }
 });
 
@@ -194,7 +210,6 @@ router.post("/(.*)", async (ctx) => {
             const objectAccess = new apiAccess(ctx, args);
             const result: ReturnResult | undefined | void = await objectAccess.add().catch((error) => console.error(error));
             if (args.extras) fs.unlinkSync(args.extras.file);
-
             if (result) {
                 if (result.error) {
                     errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
@@ -202,10 +217,8 @@ router.post("/(.*)", async (ctx) => {
                     if (data["source"] == "query") {
                         ctx.type = "html";
                         ctx.body = queryHtml({
-                            user: helperUsers.ensureAuthenticated(ctx) ? "true" : "false",
-
-                            results: JSON.stringify({ added: result.total, value: result.result }),
-                            ...ctx.query
+                            ...minimal(ctx),
+                            results: JSON.stringify({ added: result.total, value: result.result })
                         });
                     } else {
                         ctx.type = "application/json";

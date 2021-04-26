@@ -1,5 +1,4 @@
 var jsonObj = {};
-const APIVERSION = "@version@";
 var jsonViewer = new JSONViewer();
 document.querySelector("#json").appendChild(jsonViewer.getContainer());
 const listOperations = ["GET", "POST", "PATCH", "DELETE"];
@@ -9,20 +8,19 @@ const paramid = "";
 const parammethod = "";
 const paramuser = "";
 const paramoptions = "";
+const paramversion = "";
+
+
 const relations = "@relations@";
 let importFile = false;
-
-// textarea value to JSON object
-
-
-//Hide params url
-// history.replaceState({}, null, "/Query");
-
-// load default value
-
+// DON'T REMOVE !!!!
 // @start@
 
-// query.value = query.value.replace("$", "&$");
+//Hide params url
+history.replaceState({}, null, "/Query");
+
+
+
 
 var goOrSubmit =  function () {
   if (importFile == true) {
@@ -55,7 +53,7 @@ var init =  function () {
   source.style.display = "none";
   source.value = "query";
   tempentity = Object.keys(relations).includes(paramentity) ? paramentity : "Things";
-  createSelect(method, paramuser == "true" ? listOperations : ["GET"] ,paramuser == "true" ?  parammethod.toUpperCase() : "GET");
+  createSelect(method, paramuser == "true" ? listOperations : ["GET"] ,paramuser == "true" ?  listOperations.includes(parammethod.toUpperCase()) ? parammethod.toUpperCase() : "GET" : "GET");
   createSelect(entity, Object.keys(relations), tempentity);
   createSelect(subentity, relations[entity.value], relations[tempentity].includes(paramsubentity) ? paramsubentity : "none", true);
   
@@ -73,12 +71,15 @@ var init =  function () {
 
 init();
 
+
+
 go.onclick = async (e) => {
   e.preventDefault();
 
   const index = Number(nb.value);
 
-  let url = document.URL.split("/Query")[0]+`/${APIVERSION}`;
+  let url =  document.URL.split("/Query")[0];
+  url =  `${url}${url[url.length -1 ] == "/" ? "" : "/"}${paramversion}`;
 
   let query = options.value;
 
@@ -110,13 +111,14 @@ go.onclick = async (e) => {
       var value = await response.text();
       jsonObj = JSON.parse(value);
       jsonViewer.showJSON(jsonObj);
+  
     }
     catch (err) {
         window.location.href = "/error";
     }
   } else if (method.value == "POST" || method.value == "PATCH") {
     if (entity.value === "createDB") {
-          let response = await fetch(document.URL.split("/Query")[0]+`${APIVERSION}/createDB`, {
+          let response = await fetch(document.URL.split("/Query")[0]+`${paramversion}/createDB`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -302,25 +304,13 @@ populate.onclick = () => {
 
   entity.addEventListener("change", () => {
     subentity.options.length = 0;
-    if (["CreateObservations", "createDB"].includes(entity.value)) {
+    if (["CreateObservations", "createDB"].includes(entity.value)) 
       method.value = "POST";
-    } else {
-      // let items = relations[entity.value];
-      // items.unshift("none");
-
-  createSelect(subentity, items, paramsubentity, true);
-
-      // const items = relations[entity.value];
-      // subentity.add(new Option("none"));
-      // items.forEach(element => {        
-      //   subentity.add(new Option(element));
-      // });
-      // subentity.selectedIndex = items.indexOf(paramsubentity) + 1;
-    }
+    else 
+      createSelect(subentity, items, paramsubentity, true);
   });
 
 fileone.addEventListener( "change", ( e ) => 	{
-  console.log("passage");
   var fileName = "";
 
   if (this.files && this.files.length > 1 )

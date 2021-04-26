@@ -13,7 +13,6 @@ import { _ENTITIES } from "../constant";
 
 export const queryHtml = (params: { [key: string]: string }): string => {
     const action = `http://${params.host}/v1.0/CreateObservations`;
-
     const relations: { [key: string]: string[] } = {};
 
     Object.keys(_ENTITIES).forEach((key: string) => {
@@ -38,7 +37,6 @@ export const queryHtml = (params: { [key: string]: string }): string => {
 
     return file
         .replace(`"@relations@"`, JSON.stringify(relations))
-        .replace("@version@", process.env.APIVERSION ? process.env.APIVERSION : "v1.0")
         .replace("// @start@", start)
         .replace("@action@", action)
         .replace("@datas@", params.datas ? params.datas : "");
