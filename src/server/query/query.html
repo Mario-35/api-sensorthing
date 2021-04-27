@@ -5,6 +5,7 @@
         <link rel="stylesheet" href="./query.css">
 
         <script>
+
             JSONViewer = (function () {
                 var JSONViewer = function () {
                     this._dom = {};
@@ -338,23 +339,33 @@
     </head>
 
     <body>
-        <div class="container">
+
+
+
+        
+        <div id ="container" class="container">
             <div id="first">
                 <form name="import" id="import" enctype="multipart/form-data" action="@action@"  method="POST">
+                    
+                    <hr>
+
                     <select class="form__select" tabindex="1" name="entity" id="entity">
                     </select>
-
-                    <select class="form__operation" tabindex="1" name="method" id="method">
-                    </select>
-    
-                    <input id="nb" class="form__nb" type="text" name="nb">
-    
-                    <button type="button" id="go" class="go">Go</button>
-                    <button type="submit" id="submit" class="submit">Go</button>
-    
+                    
                     <select class="form__select" tabindex="1" name="subentity" id="subentity">
                     </select>
 
+                    <button type="button" id="go" class="go">Go</button>
+                    <button type="submit" id="submit" class="submit">Go</button>
+                    <hr>
+                    
+                    <select class="form__operation" tabindex="1" name="method" id="method">
+                    </select>
+                    
+                    <input id="nb" class="form__nb" type="text" name="nb">
+                    
+                    
+                    
                     <input type="file" name="file-1[]" id="fileone" class="inputfile inputfile-1" accept=".csv, .txt, .json" data-multiple-caption="{count} files selected" multiple />
                     <label id="fileonelabel" for="fileone">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
@@ -362,11 +373,12 @@
                         </svg> 
                         <span>Fichier csv, json&hellip;</span>
                     </label>
-                
+                    
+
                     <hr>
-    
+                    
                     <input id="options" class="form__query" type="text" value="" name="tab">  
-    
+                    
                     <textarea class="form__input" id="datas" placeholder="Input json..." rows="6">@datas@</textarea>
                     
                     <div class="spinner-pipo">
