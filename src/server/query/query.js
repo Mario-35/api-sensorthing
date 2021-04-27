@@ -1,14 +1,14 @@
 var jsonObj = {};
 var jsonViewer = new JSONViewer();
 document.querySelector("#json").appendChild(jsonViewer.getContainer());
-const listOperations = ["GET", "POST", "PATCH", "DELETE"];
-const paramentity = "";
-const paramsubentity = "";
-const paramid = "";
-const parammethod = "";
-const paramuser = "";
-const paramoptions = "";
-const paramversion = "";
+listOperations = ["GET", "POST", "PATCH", "DELETE"]
+,paramentity=""
+,paramsubentity=""
+,paramid=""
+,parammethod=""
+,paramuser=""
+,paramoptions=""
+,paramversion="";
 
 
 const relations = "@relations@";
@@ -17,7 +17,7 @@ let importFile = false;
 // @start@
 
 //Hide params url
-history.replaceState({}, null, "/Query");
+
 
 
 
@@ -67,6 +67,7 @@ var init =  function () {
   fileone.style.display = paramuser == "true" ? "inline-block" : "none";
   fileonelabel.style.display = paramuser == "true" ? "inline-block" : "none";
   datas.style.display = paramuser == "true" ? "inline-block" : "none";
+  history.replaceState({}, null, "/Query");
 };
 
 init();

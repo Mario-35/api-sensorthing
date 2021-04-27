@@ -287,8 +287,6 @@ export class Common {
 
         const results = await this.makeOdataQuery(query, propertyName);
 
-        console.log(this.args.odada);
-
         const limit = this.args.odada.limit ? this.args.odada.limit : Number(process.env.APILIMIT);
         const skip = this.args.odada.skip ? this.args.odada.skip : 0;
 

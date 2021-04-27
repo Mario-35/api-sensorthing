@@ -32,7 +32,7 @@ export const queryHtml = (params: { [key: string]: string }): string => {
     const start = params.results ? "jsonObj = JSON.parse(`" + params.results + "`); jsonViewer.showJSON(jsonObj);" : "";
 
     Object.keys(params).forEach((element: string) => {
-        file = file.replace(`const param${element} = ""`, `const param${element} = "${params[element]}"`);
+        file = file.replace(`,param${element}=""`, `,param${element}="${params[element]}"`);
     });
 
     return file
