@@ -11,7 +11,9 @@
                     this._dom.container = document.createElement("pre");
                     this._dom.container.classList.add("json-viewer");
                 };
+
                 JSONViewer.prototype.showJSON = function (json, maxLvl, colAt) {
+                    spinner.style.display = "none";
                     maxLvl = typeof maxLvl === "number" ? maxLvl : -1; // max level
                     colAt = typeof colAt === "number" ? colAt : -1; // collapse at
 
@@ -338,7 +340,7 @@
     <body>
         <div class="container">
             <div id="first">
-                <form name="test" enctype="multipart/form-data" action="@action@"  method="POST">
+                <form name="import" id="import" enctype="multipart/form-data" action="@action@"  method="POST">
                     <select class="form__select" tabindex="1" name="entity" id="entity">
                     </select>
 
@@ -353,8 +355,6 @@
                     <select class="form__select" tabindex="1" name="subentity" id="subentity">
                     </select>
 
-
-
                     <input type="file" name="file-1[]" id="fileone" class="inputfile inputfile-1" accept=".csv, .txt, .json" data-multiple-caption="{count} files selected" multiple />
                     <label id="fileonelabel" for="fileone">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
@@ -365,10 +365,15 @@
                 
                     <hr>
     
-                    <input id="options" class="form__query" type="text" value="" name="tab">    
+                    <input id="options" class="form__query" type="text" value="" name="tab">  
     
                     <textarea class="form__input" id="datas" placeholder="Input json..." rows="6">@datas@</textarea>
-
+                    
+                    <div class="spinner-pipo">
+                        <div id="spinner" class="lds-spinner">
+                            <div></div> <div></div> <div></div> <div></div> <div></div> <div></div> <div></div> <div></div> <div></div> <div></div> <div></div> <div></div>
+                        </div>
+                    </div>
                     <input type="text" id="source" name="source">
                 </form>
                 <hr>
@@ -378,10 +383,8 @@
                 <button type="button" id="populate" class="populate">Populate</button>
                 <button type="button" id="doc" class="doc">Documentation</button>
                 <button type="button" id="git" class="git">Github</button>
-            </div>
-
-
-            
+            </div>  
+                
             <div id="two">
                 <pre>
                     <code>
@@ -389,7 +392,6 @@
                     </code>
                 </pre>
             </div>
-            
         </div>
         <script src="query.js"></script>
     </body>

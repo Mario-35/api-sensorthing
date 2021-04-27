@@ -13,14 +13,9 @@ listOperations = ["GET", "POST", "PATCH", "DELETE"]
 
 const relations = "@relations@";
 let importFile = false;
+
 // DON'T REMOVE !!!!
 // @start@
-
-//Hide params url
-
-
-
-
 
 var goOrSubmit =  function () {
   if (importFile == true) {
@@ -37,6 +32,10 @@ var goOrSubmit =  function () {
   }
 };
 
+var wait = function (on) {
+  spinner.style.display = on == true ? "inline-block" : "none";
+};
+
 var createSelect =  function (obj, list, defValue, addNone) {
   obj.options.length = 0;
   if (list) {
@@ -50,6 +49,8 @@ var createSelect =  function (obj, list, defValue, addNone) {
 };
 
 var init =  function () {
+  history.replaceState({}, null, "/Query");
+  wait(false);
   source.style.display = "none";
   source.value = "query";
   tempentity = Object.keys(relations).includes(paramentity) ? paramentity : "Things";
@@ -67,15 +68,18 @@ var init =  function () {
   fileone.style.display = paramuser == "true" ? "inline-block" : "none";
   fileonelabel.style.display = paramuser == "true" ? "inline-block" : "none";
   datas.style.display = paramuser == "true" ? "inline-block" : "none";
-  history.replaceState({}, null, "/Query");
 };
 
 init();
 
-
+submit.onclick = () => {
+  wait(true);
+  document.getElementById("import").submit(); 
+};
 
 go.onclick = async (e) => {
   e.preventDefault();
+  wait(true);
 
   const index = Number(nb.value);
 
@@ -299,17 +303,17 @@ populate.onclick = () => {
 }`;
 };
 
-  nb.addEventListener("change", () => {
-      goOrSubmit();
-  });
+nb.addEventListener("change", () => {
+    goOrSubmit();
+});
 
-  entity.addEventListener("change", () => {
-    subentity.options.length = 0;
-    if (["CreateObservations", "createDB"].includes(entity.value)) 
-      method.value = "POST";
-    else 
-      createSelect(subentity, items, paramsubentity, true);
-  });
+entity.addEventListener("change", () => {
+  subentity.options.length = 0;
+  if (["CreateObservations", "createDB"].includes(entity.value)) 
+    method.value = "POST";
+  else 
+    createSelect(subentity, items, paramsubentity, true);
+});
 
 fileone.addEventListener( "change", ( e ) => 	{
   var fileName = "";
