@@ -340,9 +340,18 @@
 
     <body>
 
+        <a id="message" class="hidden" href="#popup1"></a>
 
+        <div id="popup1" class="overlay">
+            <div class="popup">
+                <h2 id="titre">Here i am</h2>
+                <a class="close" href="#">&times;</a>
+                <div id="corps" class="content">
+                    Thank to pop me out of that button, but now i'm done so you can close this window.
+                </div>
+            </div>
+        </div>
 
-        
         <div id ="container" class="container">
             <div id="first">
                 <form name="import" id="import" enctype="multipart/form-data" action="@action@"  method="POST">
@@ -355,8 +364,8 @@
                     <select class="form__select" tabindex="1" name="subentity" id="subentity">
                     </select>
 
-                    <button type="button" id="go" class="go">Go</button>
-                    <button type="submit" id="submit" class="submit">Go</button>
+                    <button type="button" id="go" class="btn_go">Go</button>
+                    <button type="submit" id="submit" class="btn_submit">Go</button>
                     <hr>
                     
                     <select class="form__operation" tabindex="1" name="method" id="method">
@@ -390,11 +399,12 @@
                 </form>
                 <hr>
     
-                <button type="button" id="logout" class="logout">Logout</button>
-                <button type="button" id="info" class="info">Status</button>
-                <button type="button" id="populate" class="populate">Populate</button>
-                <button type="button" id="doc" class="doc">Documentation</button>
-                <button type="button" id="git" class="git">Github</button>
+                <button type="button" id="preview" class="btn_preview">preview</button>
+                <button type="button" id="logout" class="btn_logout">Logout</button>
+                <button type="button" id="info" class="btn_info">Status</button>
+                <button type="button" id="populate" class="btn_populate">Populate</button>
+                <button type="button" id="doc" class="btn_doc">Documentation</button>
+                <button type="button" id="git" class="btn_git">Github</button>
             </div>  
                 
             <div id="two">

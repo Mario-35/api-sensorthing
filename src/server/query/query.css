@@ -49,10 +49,6 @@ body {
     clear: both;
     display: block;
 }
-a {
-    color: inherit;
-    text-decoration: none;
-}
 
 textarea {
     /* display: none; */
@@ -163,7 +159,7 @@ textarea:focus {
     font-weight: 300;
 }
 
-[type^="button"] {
+[class^="btn_"] {
     display: inline-block;
     padding: 0.2em 0.5em;
     border: 0;
@@ -173,76 +169,62 @@ textarea:focus {
     font-size: 1em;
     font-weight: 400;
     transition: opacity 0.2s;
+    outline: none;
 }
-[type^="button"]:hover {
+[class^="btn_"]:hover {
     opacity: 0.75;
     cursor: pointer;
 }
 
-[type^="submit"] {
-    display: hidden;
-    padding: 0.2em 0.5em;
-    border: 0;
-    border-radius: 0.4em;
-    color: #fff;
-    text-transform: uppercase;
-    font-size: 1em;
-    font-weight: 400;
-    transition: opacity 0.2s;
-}
-[type^="submit"]:hover {
-    opacity: 0.75;
-    cursor: pointer;
-}
-
-.go {
+.btn_go {
     display: inline-block;
     width: 45px;
     background-color: #3bda78;
 }
 
-.submit {
+.btn_submit {
     display: hidden;
     width: 45px;
     background-color: #42acdd;
 }
 
-.git {
+.btn_preview {
+    display: inline-block;
+    width: 75px;
+    background-color: #da3ba5d3;
+}
+
+.btn_git {
     display: inline-block;
     width: 75px;
     background-color: #daa83bd3;
 }
-.info {
+.btn_info {
     display: inline-block;
     width: 75px;
     background-color: #3bafda;
 }
-.doc {
+.btn_doc {
     display: inline-block;
     width: 145px;
     background-color: #3bda78;
 }
-.login {
+.btn_login {
     display: inline-block;
     width: 75px;
     background-color: #3bda78;
 }
-.logout {
+.btn_logout {
     display: inline-block;
     width: 75px;
     background-color: #e87376;
 }
-.populate {
+.btn_populate {
     display: inline-block;
     width: 85px;
     background-color: #b32778;
 }
 
-[type^="button"] {
-    margin-bottom: 1.42857em;
-
-    outline: none;
-}
 .json-viewer {
     display: inline-block;
     overflow: scroll;
@@ -467,4 +449,67 @@ textarea:focus {
     }
 }
 
-https: ; //loading.io/asset/474817
+/* Alert */
+
+.hidden {
+    display: none;
+}
+
+.overlay {
+    z-index: 200;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    transition: opacity 500ms;
+    visibility: hidden;
+    opacity: 0;
+}
+.overlay:target {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popup {
+    margin: 70px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 30%;
+    position: relative;
+    transition: all 5s ease-in-out;
+}
+
+.popup h2 {
+    margin-top: 0;
+    color: #333;
+    font-family: Tahoma, Arial, sans-serif;
+}
+.popup .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    transition: all 200ms;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+}
+.popup .close:hover {
+    color: #06d85f;
+}
+.popup .content {
+    max-height: 30%;
+    overflow: auto;
+}
+
+@media screen and (max-width: 700px) {
+    .box {
+        width: 70%;
+    }
+    .popup {
+        width: 70%;
+    }
+}

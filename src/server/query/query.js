@@ -204,6 +204,23 @@ go.onclick = async (e) => {
   }
 };
   
+var notify =  function (titleMess, bodyMess) {
+  titre.innerHTML = titleMess;
+  corps.innerHTML = bodyMess;
+  message.click();
+};
+
+preview.addEventListener("click", function () {
+  try {
+    const value = datas.value;
+    jsonObj = JSON.parse(value);
+  }
+  catch (err) {
+      notify("Error", err.message);
+  }
+  jsonViewer.showJSON(jsonObj);
+});
+
 
 logout.onclick = () => {
   window.location.href = "/logout";
@@ -326,21 +343,24 @@ entity.addEventListener("change", () => {
 
 fileone.addEventListener( "change", ( e ) => 	{
   var fileName = "";
-
-  if (this.files && this.files.length > 1 )
-    fileName = ( this.getAttribute( "data-multiple-caption" ) || "" ).replace( "{count}", this.files.length );
-  else
-    fileName = e.target.value.split( "\\" ).pop();
-  
-  if( fileName ) {
-    fileonelabel.querySelector( "span" ).innerHTML = fileName;
-    method.value = "POST";
-    entity.value = "Datastreams";
-    subentity.value = "Observations";
-    importFile = true;
-  }
-  else {
-    fileonelabel.innerHTML = labelVal;
+  try {
+    if (this.files && this.files.length > 1 )
+      fileName = ( this.getAttribute( "data-multiple-caption" ) || "" ).replace( "{count}", this.files.length );
+    else
+      fileName = e.target.value.split( "\\" ).pop();
+    
+    if( fileName ) {
+      fileonelabel.querySelector( "span" ).innerHTML = fileName;
+      method.value = "POST";
+      entity.value = "Datastreams";
+      subentity.value = "Observations";
+      importFile = true;
+    }
+    else {
+      fileonelabel.innerHTML = labelVal;
+    }
+  } catch (err) {
+      notify("Error", err.message);
   }
   goOrSubmit();
 });
