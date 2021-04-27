@@ -30,7 +30,7 @@ Afin de comprendre l'API SensorThings, il est essentiel de comprendre le modèle
 
     Le FeatureOfInterest est l'objet sur lequel la mesure a été effectuée.
 
-![entitées](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/entite.jpg "entitées")
+![entitées](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/agrhys.jpg "entitées")
 
 Un ajout a êté ajouté par rapport a la norme sensorthing est un feature of interest par defaut dans location, ceci permet d'utiliser ce feature of interest si observation ne l'indique pas.
 
