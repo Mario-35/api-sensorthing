@@ -125,6 +125,7 @@ router.get("/(.*)", async (ctx) => {
                                 ? {
                                       "@iot.count": results.id?.toString(),
                                       "@iot.nextLink": results.nextLink,
+                                      "@iot.prevLink": results.prevLink,
                                       value: results["value"]
                                   }
                                 : (ctx.body = convertToCsv(results["value"]));

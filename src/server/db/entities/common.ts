@@ -57,6 +57,7 @@ export class Common {
             id: undefined,
             entity: this.entityProperty,
             nextLink: args.nextLink ? (args.nextLink as string) : undefined,
+            prevLink: args.prevLink ? (args.prevLink as string) : undefined,
             error: undefined,
             result: undefined,
             value: undefined,
@@ -286,17 +287,26 @@ export class Common {
 
         const results = await this.makeOdataQuery(query, propertyName);
 
+        console.log(this.args.odada);
+
         const limit = this.args.odada.limit ? this.args.odada.limit : Number(process.env.APILIMIT);
         const skip = this.args.odada.skip ? this.args.odada.skip : 0;
+
+        const next = skip + limit;
+        const prev = skip - limit;
 
         return results && results.length > 0
             ? this.formatReturnResult({
                   id: BigInt(results.length),
                   result: results,
                   nextLink:
-                      process.env.APILIMIT && results.length >= Number(process.env.APILIMIT)
-                          ? `${this.nextLinkBase}?$top=${limit}&$skip=${limit + skip}`
+                      process.env.APILIMIT && results.length >= Number(process.env.APILIMIT) ? `${this.nextLinkBase}?$top=${limit}&$skip=${next}` : undefined,
+
+                  prevLink:
+                      process.env.APILIMIT && results.length >= Number(process.env.APILIMIT) && prev >= 0
+                          ? `${this.nextLinkBase}?$top=${limit}&$skip=${prev}`
                           : undefined,
+
                   value: await this.formatResult(results)
               })
             : undefined;

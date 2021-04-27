@@ -76,6 +76,7 @@ export interface ResultType {
 export interface ReturnResult extends ResultType {
     id: bigint | undefined;
     nextLink: string | undefined;
+    prevLink: string | undefined;
     entity: IEntityProperty | undefined;
     error: IErrorApi | undefined;
     value: keyValue[] | keyValue | undefined;
