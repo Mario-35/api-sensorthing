@@ -36,7 +36,7 @@
 *                "description": "A SensorWeb thing Number one",
 *                "name": "SensorWebThing 1",
 *                "properties": {
-*                    "owner": "Mozilla version seven",
+*                    "owner": "Mozilla version one",
 *                    "organization": "Mozilla"
 *                },
 *                "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/Datastreams",
@@ -49,7 +49,7 @@
 *                "description": "A SensorWeb thing Number two",
 *                "name": "SensorWebThing 2",
 *                "properties": {
-*                    "owner": "Mozilla version five",
+*                    "owner": "Mozilla version four",
 *                    "organization": "Mozilla"
 *                },
 *                "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(2)/Datastreams",
@@ -77,7 +77,7 @@
 *        "description": "A SensorWeb thing Number one",
 *        "name": "SensorWebThing 1",
 *        "properties": {
-*            "owner": "Mozilla version seven",
+*            "owner": "Mozilla version one",
 *            "organization": "Mozilla"
 *        },
 *        "Datastreams@iot.navigationLink": "http://sensorthings.geosas.fr/v1.0/Things(1)/Datastreams",

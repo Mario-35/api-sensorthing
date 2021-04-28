@@ -35,15 +35,15 @@
 *            {
 *                "@iot.id": "1",
 *                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)",
-*                "_default_foi": "2",
+*                "_default_foi": "3",
 *                "description": "University of Calgary, CCIT building",
 *                "encodingType": "application/vnd.geo+json",
 *                "geom": null,
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-181.06",
-*                        "33.05"
+*                        "-188.06",
+*                        "2.05"
 *                    ]
 *                },
 *                "name": "UofC (Created new location) Number six",
@@ -61,8 +61,8 @@
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-145.06",
-*                        "33.05"
+*                        "-63.06",
+*                        "39.05"
 *                    ]
 *                },
 *                "name": "UofC (Created new location) Number seven",
@@ -88,15 +88,15 @@
 *    {
 *        "@iot.id": "1",
 *        "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Locations(1)",
-*        "_default_foi": "2",
+*        "_default_foi": "3",
 *        "description": "University of Calgary, CCIT building",
 *        "encodingType": "application/vnd.geo+json",
 *        "geom": null,
 *        "location": {
 *            "type": "Point",
 *            "coordinates": [
-*                "-181.06",
-*                "33.05"
+*                "-188.06",
+*                "2.05"
 *            ]
 *        },
 *        "name": "UofC (Created new location) Number six",
@@ -134,15 +134,15 @@
 *            {
 *                "@iot.id": "6",
 *                "@iot.selfLink": "http://sensorthings.geosas.fr/v1.0/Locations(6)",
-*                "_default_foi": "3",
+*                "_default_foi": "1",
 *                "description": "This is the Location Number six",
 *                "encodingType": "application/vnd.geo+json",
 *                "geom": null,
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-140.06",
-*                        "39.05"
+*                        "-53.06",
+*                        "14.05"
 *                    ]
 *                },
 *                "name": "My Location 6",
@@ -160,8 +160,8 @@
 *                "location": {
 *                    "type": "Point",
 *                    "coordinates": [
-*                        "-175.06",
-*                        "8.05"
+*                        "-125.06",
+*                        "47.05"
 *                    ]
 *                },
 *                "name": "My Location 7",
