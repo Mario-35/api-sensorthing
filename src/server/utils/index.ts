@@ -16,3 +16,4 @@ export { renameProp } from "./renameProp";
 export { message } from "./message";
 export { importCsv } from "./importCsv";
 export { upload } from "./upload";
+export { camelCase } from "./camelCase";

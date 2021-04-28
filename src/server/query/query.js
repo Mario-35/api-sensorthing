@@ -2,21 +2,31 @@ var jsonObj = {};
 var jsonViewer = new JSONViewer();
 document.querySelector("#json").appendChild(jsonViewer.getContainer());
 listOperations = ["GET", "POST", "PATCH", "DELETE"]
-,paramentity=""
-,paramsubentity=""
-,paramid=""
-,parammethod=""
-,paramuser=""
-,paramoptions=""
-,paramversion="";
+,paramEntity=""
+,paramSubEntity=""
+,paramId=""
+,paramMethod=""
+,paramUser=""
+,paramOptions=""
+,paramVersion="";
 
 
 const relations = "@relations@";
+
+// load file json
 let importFile = false;
 
 // DON'T REMOVE !!!!
 // @start@
 
+// message dialog
+var notify =  function (titleMess, bodyMess) {
+  titre.innerHTML = titleMess;
+  corps.innerHTML = bodyMess;
+  message.click();
+};
+
+// btn Go or Submit 
 var goOrSubmit =  function () {
   if (importFile == true) {
     go.style.display = "none";
@@ -32,11 +42,13 @@ var goOrSubmit =  function () {
   }
 };
 
+  // show spinner
 var wait = function (on) {
   spinner.style.display = on == true ? "inline-block" : "none";
 };
 
-var createSelect =  function (obj, list, defValue, addNone) {
+// populate Select
+var populateSelect =  function (obj, list, defValue, addNone) {
   obj.options.length = 0;
   if (list) {
     if (addNone) list.unshift("none");
@@ -48,26 +60,31 @@ var createSelect =  function (obj, list, defValue, addNone) {
   }
 };
 
+
 var init =  function () {
-  history.replaceState({}, null, "/Query");
   wait(false);
+  // hide params
+  history.replaceState({}, null, "/Query");
+
   source.style.display = "none";
   source.value = "query";
-  tempentity = Object.keys(relations).includes(paramentity) ? paramentity : "Things";
-  createSelect(method, paramuser == "true" ? listOperations : ["GET"] ,paramuser == "true" ?  listOperations.includes(parammethod.toUpperCase()) ? parammethod.toUpperCase() : "GET" : "GET");
-  createSelect(entity, Object.keys(relations), tempentity);
-  createSelect(subentity, relations[entity.value], relations[tempentity].includes(paramsubentity) ? paramsubentity : "none", true);
+
+  tempEntity = Object.keys(relations).includes(paramEntity) ? paramEntity : "Things";
   
-  nb.value = paramid;
-  options.value = paramoptions;
+  populateSelect(method, paramUser == "true" ? listOperations : ["GET"] ,paramUser == "true" ?  listOperations.includes(paramMethod.toUpperCase()) ? paramMethod.toUpperCase() : "GET" : "GET");
+  populateSelect(entity, Object.keys(relations), tempEntity);
+  populateSelect(subentity, relations[entity.value], relations[tempEntity].includes(paramSubEntity) ? paramSubEntity : "none", true);
+  
+  nb.value = paramId;
+  options.value = paramOptions;
   options.value = options.value.replace(/\$/g, "&$");
   if (options.value[0] == "&") options.value = options.value.substring(1);
   goOrSubmit();
-  logout.style.display = paramuser == "true" ? "inline-block" : "none";
-  populate.style.display = paramuser == "true" ? "inline-block" : "none";
-  fileone.style.display = paramuser == "true" ? "inline-block" : "none";
-  fileonelabel.style.display = paramuser == "true" ? "inline-block" : "none";
-  datas.style.display = paramuser == "true" ? "inline-block" : "none";
+  logout.style.display = paramUser == "true" ? "inline-block" : "none";
+  populate.style.display = paramUser == "true" ? "inline-block" : "none";
+  fileone.style.display = paramUser == "true" ? "inline-block" : "none";
+  fileonelabel.style.display = paramUser == "true" ? "inline-block" : "none";
+  datas.style.display = paramUser == "true" ? "inline-block" : "none";
 };
 
 
@@ -87,12 +104,13 @@ submit.onclick = () => {
 
 go.onclick = async (e) => {
   e.preventDefault();
+
   wait(true);
 
   const index = Number(nb.value);
 
   let url =  document.URL.split("/Query")[0];
-  url =  `${url}${url[url.length -1 ] == "/" ? "" : "/"}${paramversion}`;
+  url =  `${url}${url[url.length -1 ] == "/" ? "" : "/"}${paramVersion}`;
 
   let query = options.value;
 
@@ -131,7 +149,7 @@ go.onclick = async (e) => {
     }
   } else if (method.value == "POST" || method.value == "PATCH") {
     if (entity.value === "createDB") {
-          let response = await fetch(document.URL.split("/Query")[0]+`${paramversion}/createDB`, {
+          let response = await fetch(document.URL.split("/Query")[0]+`${paramVersion}/createDB`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -204,11 +222,7 @@ go.onclick = async (e) => {
   }
 };
   
-var notify =  function (titleMess, bodyMess) {
-  titre.innerHTML = titleMess;
-  corps.innerHTML = bodyMess;
-  message.click();
-};
+
 
 preview.addEventListener("click", function () {
   try {
@@ -337,7 +351,7 @@ entity.addEventListener("change", () => {
   if (["CreateObservations", "createDB"].includes(entity.value)) 
     method.value = "POST";
   else
-    createSelect(subentity, relations[entity.value], relations[tempentity].includes(paramsubentity) ? paramsubentity : "none", true);
+    populateSelect(subentity, relations[entity.value], relations[tempEntity].includes(paramSubEntity) ? paramSubEntity : "none", true);
 
 });
 
@@ -388,30 +402,26 @@ const SplitterBar = function(container, leftContent, rightContent) {
     
     container.appendChild(splitter);
     
-    splitter.style.width = "10px";
-    // splitter.style.left = splitter.parentElement.offsetWidth / 2 - (splitter.offsetWidth / 2) + 'px';
+    splitter.style.width = "5px";
     splitter.style.left = "25%";
     splitter.style.transform = "translateX(-25%)";
-    // leftSide.style.background = 'red';
-    // rightSide.style.background = 'blue';
+    leftSide.style.background = "rgba(121, 137, 177, 0.9)";
+    rightSide.style.background = "rgba(38, 207, 219, 0.445)";
     splitter.style.background = "black";
     
 
     leftSide.style.left = 0;
     leftSide.style.top = 0;
-    // leftSide.style.width = splitter.style.left;
     leftSide.style.width = splitter.offsetLeft - splitter.offsetWidth / 2 + "px";
-
-    console.log("splitter offset left plus width is ", splitter.offsetLeft + splitter.offsetWidth);
   
 
     rightSide.style.left = (splitter.offsetLeft + splitter.offsetWidth / 2) + "px";
     rightSide.style.top = 0;
-    rightSide.style.width = container.offsetWidth - splitter.offsetLeft - 10 +  "px";
+    rightSide.style.width = container.offsetWidth - splitter.offsetLeft - 5 +  "px";
     
     container.appendChild(leftSide);
     container.appendChild(rightSide);
-    console.log("left of right pane is ", rightSide.offsetLeft);
+    
     let mouseIsDown = false;
     let startX = null;
     let globalXCoordinate = null;
@@ -443,11 +453,11 @@ const SplitterBar = function(container, leftContent, rightContent) {
     });
 
 
-    document.body.addEventListener("mouseup", function(evt) {
+    document.body.addEventListener("mouseup", function() {
         mouseIsDown = false;
     });
 
-    document.addEventListener("mouseup", function(evt) {
+    document.addEventListener("mouseup", function() {
         mouseIsDown = false;
     });
 

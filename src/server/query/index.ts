@@ -10,6 +10,7 @@
 
 import fs from "fs";
 import { _ENTITIES } from "../constant";
+import { camelCase } from "../utils";
 
 export const queryHtml = (params: { [key: string]: string }): string => {
     const action = `http://${params.host}/v1.0/CreateObservations`;
@@ -32,7 +33,7 @@ export const queryHtml = (params: { [key: string]: string }): string => {
     const start = params.results ? "jsonObj = JSON.parse(`" + params.results + "`); jsonViewer.showJSON(jsonObj);" : "";
 
     Object.keys(params).forEach((element: string) => {
-        file = file.replace(`,param${element}=""`, `,param${element}="${params[element]}"`);
+        file = file.replace(`,param${camelCase(element, true)}=""`, `,param${camelCase(element, true)}="${params[element]}"`);
     });
 
     return file

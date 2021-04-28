@@ -33,6 +33,7 @@
 body {
     margin: 0;
     background: rgba(121, 137, 177, 0.9);
+    /* background: rgba(38, 207, 219, 0.445); */
     font: 600 16px/18px "Open Sans", sans-serif;
 }
 *,
@@ -49,35 +50,31 @@ body {
     clear: both;
     display: block;
 }
-
-textarea {
-    /* display: none; */
-    outline: 0;
-    border: 0;
+a {
+    color: inherit;
+    text-decoration: none;
 }
 
-textarea:focus {
-    transition: 0.2s;
+textarea {
+    outline: 0;
+    border: 0;
 }
 
 .container {
     width: 100%;
     margin: 30px auto;
 }
-#first {
-    width: 95%;
-    float: left;
-    margin-left: 1%;
-    margin-right: 1%;
-    margin-top: 1%;
-}
+
+#first,
 #two {
     width: 95%;
+    height: 91%;
     float: left;
     margin-left: 1%;
     margin-right: 1%;
     margin-top: 1%;
 }
+
 .form__label {
     display: block;
     margin-bottom: 0.625em;
@@ -147,18 +144,6 @@ textarea:focus {
     font-weight: 150;
 }
 
-.form__modal {
-    width: 83%;
-    font-size: 1em;
-    padding: 0.83333em;
-    margin-bottom: 5px;
-    border-bottom: 6px solid #1161ee;
-    border-radius: 0.4em;
-    background: #ebecec;
-    color: #656d78;
-    font-weight: 300;
-}
-
 [class^="btn_"] {
     display: inline-block;
     padding: 0.2em 0.5em;
@@ -176,52 +161,39 @@ textarea:focus {
     cursor: pointer;
 }
 
-.btn_go {
+.btn_svg {
     display: inline-block;
-    width: 45px;
+    width: 40px;
+}
+
+._go {
     background-color: #3bda78;
 }
 
-.btn_submit {
-    display: hidden;
-    width: 45px;
+._submit {
     background-color: #42acdd;
 }
 
-.btn_preview {
-    display: inline-block;
-    width: 75px;
+._preview {
     background-color: #da3ba5d3;
 }
 
-.btn_git {
-    display: inline-block;
-    width: 75px;
+._git {
     background-color: #daa83bd3;
 }
-.btn_info {
-    display: inline-block;
-    width: 75px;
+._info {
     background-color: #3bafda;
 }
-.btn_doc {
-    display: inline-block;
-    width: 145px;
+._doc {
     background-color: #3bda78;
 }
-.btn_login {
-    display: inline-block;
-    width: 75px;
+._login {
     background-color: #3bda78;
 }
-.btn_logout {
-    display: inline-block;
-    width: 75px;
+._logout {
     background-color: #e87376;
 }
-.btn_populate {
-    display: inline-block;
-    width: 85px;
+._populate {
     background-color: #b32778;
 }
 
