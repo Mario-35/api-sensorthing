@@ -3,7 +3,7 @@ var jsonViewer = new JSONViewer();
 document.querySelector("#json").appendChild(jsonViewer.getContainer());
 listOperations = ["GET", "POST", "PATCH", "DELETE"]
 ,paramEntity=""
-,paramSubEntity=""
+,paramSubentity=""
 ,paramId=""
 ,paramMethod=""
 ,paramUser=""
@@ -61,42 +61,6 @@ var populateSelect =  function (obj, list, defValue, addNone) {
 };
 
 
-var init =  function () {
-  wait(false);
-  // hide params
-  history.replaceState({}, null, "/Query");
-
-  source.style.display = "none";
-  source.value = "query";
-
-  tempEntity = Object.keys(relations).includes(paramEntity) ? paramEntity : "Things";
-  
-  populateSelect(method, paramUser == "true" ? listOperations : ["GET"] ,paramUser == "true" ?  listOperations.includes(paramMethod.toUpperCase()) ? paramMethod.toUpperCase() : "GET" : "GET");
-  populateSelect(entity, Object.keys(relations), tempEntity);
-  populateSelect(subentity, relations[entity.value], relations[tempEntity].includes(paramSubEntity) ? paramSubEntity : "none", true);
-  
-  nb.value = paramId;
-  options.value = paramOptions;
-  options.value = options.value.replace(/\$/g, "&$");
-  if (options.value[0] == "&") options.value = options.value.substring(1);
-  goOrSubmit();
-  logout.style.display = paramUser == "true" ? "inline-block" : "none";
-  populate.style.display = paramUser == "true" ? "inline-block" : "none";
-  fileone.style.display = paramUser == "true" ? "inline-block" : "none";
-  fileonelabel.style.display = paramUser == "true" ? "inline-block" : "none";
-  datas.style.display = paramUser == "true" ? "inline-block" : "none";
-};
-
-
-
-
-
-
-
-
-
-init();
-
 submit.onclick = () => {
   wait(true);
   document.getElementById("import").submit(); 
@@ -145,7 +109,8 @@ go.onclick = async (e) => {
   
     }
     catch (err) {
-        window.location.href = "/error";
+      notify("Error", err.message);
+        // window.location.href = "/error";
     }
   } else if (method.value == "POST" || method.value == "PATCH") {
     if (entity.value === "createDB") {
@@ -351,7 +316,7 @@ entity.addEventListener("change", () => {
   if (["CreateObservations", "createDB"].includes(entity.value)) 
     method.value = "POST";
   else
-    populateSelect(subentity, relations[entity.value], relations[tempEntity].includes(paramSubEntity) ? paramSubEntity : "none", true);
+    populateSelect(subentity, relations[entity.value], relations[tempEntity].includes(paramSubentity) ? paramSubentity : "none", true);
 
 });
 
@@ -406,7 +371,6 @@ const SplitterBar = function(container, leftContent, rightContent) {
     splitter.style.left = "25%";
     splitter.style.transform = "translateX(-25%)";
     leftSide.style.background = "rgba(121, 137, 177, 0.9)";
-    rightSide.style.background = "rgba(38, 207, 219, 0.445)";
     splitter.style.background = "black";
     
 
@@ -508,5 +472,33 @@ const SplitterBar = function(container, leftContent, rightContent) {
     });
 };
 
-const splitterBar = new SplitterBar(container, first, two);
 
+var init =  function () {
+  new SplitterBar(container, first, two);
+
+  wait(false);
+  // hide params
+  history.replaceState({}, null, "/Query");
+
+  source.style.display = "none";
+  source.value = "query";
+
+  tempEntity = Object.keys(relations).includes(paramEntity) ? paramEntity : "Things";
+  
+  populateSelect(method, paramUser == "true" ? listOperations : ["GET"] ,paramUser == "true" ?  listOperations.includes(paramMethod.toUpperCase()) ? paramMethod.toUpperCase() : "GET" : "GET");
+  populateSelect(entity, Object.keys(relations), tempEntity);
+  populateSelect(subentity, relations[entity.value], relations[tempEntity].includes(paramSubentity) ? paramSubentity : "none", true);
+  
+  nb.value = paramId;
+  options.value = paramOptions;
+  options.value = options.value.replace(/\$/g, "&$");
+  if (options.value[0] == "&") options.value = options.value.substring(1);
+  goOrSubmit();
+  const visible = paramUser == "true" ? "inline-block" : "none";
+  logout.style.display = visible;
+  populate.style.display = visible;
+  fileone.style.display = visible;
+  fileonelabel.style.display = visible;
+};
+
+init();

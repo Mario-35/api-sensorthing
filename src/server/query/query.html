@@ -59,6 +59,7 @@
                  */
                 JSONViewer.prototype._walk = function (value, maxLvl, colAt, lvl) {
                     var frag = document.createDocumentFragment();
+                    var actual= "";
                     var isMaxLvl = maxLvl >= 0 && lvl >= maxLvl;
                     var isCollapse = colAt >= 0 && lvl >= colAt;
 
@@ -72,7 +73,7 @@
                                     // root level
                                     var rootCount = this._createItemsCount(items.length);
                                     // hide/show
-                                    var rootLink = this._createLink(isArray ? "[" : "{");
+                                    var rootLink = this._createLink(isArray ? "[" : "{", lvl);
 
                                     if (items.length) {
                                         rootLink.addEventListener("click", function () {
@@ -126,9 +127,9 @@
                                                     li.appendChild(document.createTextNode(key + ": " + (itemIsArray ? "[]" : "{}")));
                                                 }
                                                 else {
-                                                    // 1+ items
+                                                    // 1+ items                                                   
                                                     var itemTitle = (typeof key === "string" ? key + ": " : "") + (itemIsArray ? "[" : "{");
-                                                    var itemLink = this._createLink(itemTitle);
+                                                    var itemLink = this._createLink(itemTitle, lvl);
                                                     var itemsCount = this._createItemsCount(itemLen);
 
                                                     // maxLvl - only text, no link
@@ -278,14 +279,25 @@
                  * Create clickable link.
                  * 
                  * @param  {String} title Link title
+                 * @param  {Number} lvl Level lvl
                  * @return {Element}
                  */
-                JSONViewer.prototype._createLink = function (title) {
+                JSONViewer.prototype._createLink = function (title, lvl) {
                     var linkEl = document.createElement("a");
-                    linkEl.classList.add("list-link");
+                    linkEl.classList.add("list-link" );
                     linkEl.href = "javascript:void(0)";
                     linkEl.innerHTML = title || "";
-
+                    color = "#656d78";
+                    if (lvl === 0) {
+                        const temp = title.split(":")[0];
+                        if (Object.keys(relations).includes(temp)) {
+                            this.actual = temp;
+                            color = "#23a84b";
+                        }
+                    } else if (this.actual && this.actual !== "") {
+                        if (relations[this.actual].includes(title.split(":")[0])) color = "#c9a221";    
+                    }
+                    linkEl.style.color = color;                    
                     return linkEl;
                 };
 
