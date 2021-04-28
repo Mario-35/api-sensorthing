@@ -34,7 +34,9 @@ Afin de comprendre l'API SensorThings, il est essentiel de comprendre le modèle
 
 Dans le cadre d'Agrhys on pourrai :
 
-![entitées](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/agrhys.jpg "entitées")
+![entitées](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/sensorThingFr.jpg "entitées")
+
+Applique dans le contexte d'un capteur mesurant la hauteur et la temperature sur le cours d'eau de kervidy.
 
 ![entitées](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/agrhys_example.jpg "entitées")
 
