@@ -1,13 +1,15 @@
 var jsonObj = {};
 var jsonViewer = new JSONViewer();
+
 document.querySelector("#json").appendChild(jsonViewer.getContainer());
+
 listOperations = ["GET", "POST", "PATCH", "DELETE"]
 ,paramEntity=""
 ,paramSubentity=""
 ,paramId=""
 ,paramMethod=""
 ,paramUser=""
-,paramOptions=""
+,paramOptions="$resultFormat=CSV"
 ,paramVersion="";
 
 
@@ -30,7 +32,7 @@ var notify =  function (titleMess, bodyMess) {
 var goOrSubmit =  function () {
   if (importFile == true) {
     go.style.display = "none";
-
+    
     if (Number(nb.value) > 0) { 
       submit.style.display = "inline-block";
     } else {
@@ -42,7 +44,7 @@ var goOrSubmit =  function () {
   }
 };
 
-  // show spinner
+// show spinner
 var wait = function (on) {
   spinner.style.display = on == true ? "inline-block" : "none";
 };
@@ -55,7 +57,7 @@ var populateSelect =  function (obj, list, defValue, addNone) {
     list.forEach((element) => {
       obj.add(new Option(element));
     });
-  
+    
     obj.selectedIndex = list.indexOf(defValue);
   }
 };
@@ -66,23 +68,60 @@ submit.onclick = () => {
   document.getElementById("import").submit(); 
 };
 
+/**
+ * 
+ * @param {*} input csv Array Input
+ * @param {*} separator seprator
+ */      
+
+buildTableWithCsv = (input, separator) => {
+  json.style.display = "none";
+  var tableArea = document.getElementById("two");
+  var allRows = input.split(/\r?\n|\r/).filter((row) => row !== "");
+
+  var _table = document.createElement("table");
+  _table.setAttribute("id", "csv");
+
+  for (var singleRow = 0; singleRow < allRows.length; singleRow++) {
+    _tr = document.createElement(singleRow === 0 ? "thead" : "tr"); 
+    const rowCells = allRows[singleRow].split(separator);
+    for(var rowCell = 0; rowCell < rowCells.length; rowCell++){
+      const _td = document.createElement(singleRow === 0 ? "th" : "td");
+      const text = document.createTextNode(rowCells[rowCell].replace(/\"/g, ""));
+      _td.appendChild(text);
+      console.log(rowCells[rowCell]);
+      _tr.appendChild(_td);
+    }
+    _table.appendChild(_tr);
+  }
+  
+  wait(false);
+  const old = document.getElementById("csv");
+  if (old) 
+  {  
+    tableArea.replaceChild(_table, old);
+  }
+  else 
+  {
+    tableArea.appendChild(_table);
+  }
+};
 go.onclick = async (e) => {
   e.preventDefault();
-
   wait(true);
-
+  
   const index = Number(nb.value);
-
+  
   let url =  document.URL.split("/Query")[0];
   url =  `${url}${url[url.length -1 ] == "/" ? "" : "/"}${paramVersion}`;
-
+  
   let query = options.value;
-
+  
   
   if (query != "" && query[0] != "?") {
     query = "?" + query;
   }
-
+  
   if (index > 0) {
     url = url + "/" + entity.value + "(" + index + ")";
   } else {
@@ -90,59 +129,63 @@ go.onclick = async (e) => {
   }
   
   if (subentity.value != "none") {
-    url = url + "/" + subentity.value + "/" + query;
+    url = url + "/" + subentity.value + query;
   } else {
     url = url + query;
   }
-
+  
   if (method.value === "GET") {
     let response = await fetch(url, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     try {
       var value = await response.text();
-      jsonObj = JSON.parse(value);
-      jsonViewer.showJSON(jsonObj);
-  
+      if (query.includes("resultFormat=CSV")) {
+        buildTableWithCsv(value,";");
+      } else {
+        jsonObj = JSON.parse(value);
+        jsonViewer.showJSON(jsonObj);
+        json.style.display = "block";
+      }
+      
     }
     catch (err) {
       notify("Error", err.message);
-        // window.location.href = "/error";
     }
   } else if (method.value == "POST" || method.value == "PATCH") {
     if (entity.value === "createDB") {
-          let response = await fetch(document.URL.split("/Query")[0]+`${paramVersion}/createDB`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: datas.value,
-          });
-          try {
-            const value = await response.text();
-            if (response.status == 401) {
-              window.location.href = "/login";
-            }
-            jsonObj = JSON.parse(value);
-            jsonViewer.showJSON(jsonObj);
-          }
-          catch (err) {
-            fetch(document.URL.split("/Query")[0]+"/error", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: datas.value,
-            });
-          }
+      let response = await fetch(document.URL.split("/Query")[0]+`${paramVersion}/createDB`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: datas.value,
+      });
+      try {
+        const value = await response.text();
+        if (response.status == 401) {
+          window.location.href = "/login";
+        }
+        jsonObj = JSON.parse(value);
+        jsonViewer.showJSON(jsonObj);
+      }
+      catch (err) {
+        fetch(document.URL.split("/Query")[0]+"/error", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: datas.value,
+        });
+      }
     } else {
       let response = await fetch(url, {
         method: method.value,
         headers: {
-            "Content-Type": "application/json",
+          "Content-Type": "application/json",
         },
         body: datas.value,
       });
@@ -158,36 +201,34 @@ go.onclick = async (e) => {
       catch (err) {
         // window.location.href = "/error";
         fetch(document.URL.split("/Query")[0]+"/error", {
-        method: "POST",
-        headers: {
+          method: "POST",
+          headers: {
             "Content-Type": "application/json",
-        },
-        body: datas.value,
-      });
+          },
+          body: datas.value,
+        });
       }
       // alert(err);
     }
   } else if (operation.value === "DELETE" && nb && nb > 0) {
     let response = await fetch(url, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
-
+    
     try {
       var value = await response.text();
       jsonObj = JSON.parse(value);
       jsonViewer.showJSON(jsonObj);
     }
-
+    
     catch (err) {
-        window.location.href = "/error";
+      window.location.href = "/error";
     }
   }
 };
-  
-
 
 preview.addEventListener("click", function () {
   try {
@@ -195,11 +236,10 @@ preview.addEventListener("click", function () {
     jsonObj = JSON.parse(value);
   }
   catch (err) {
-      notify("Error", err.message);
+    notify("Error", err.message);
   }
   jsonViewer.showJSON(jsonObj);
 });
-
 
 logout.onclick = () => {
   window.location.href = "/logout";
@@ -224,109 +264,109 @@ populate.onclick = () => {
     "description": "thing 1",
     "name": "thing name 1",
     "properties": {
-        "reference": "first"
+      "reference": "first"
     },
     "Locations": [
-        {
-            "description": "location 1",
-            "name": "location name 1",
-            "location": {
-                "type": "Point",
-                "coordinates": [
-                    -117.05,
-                    51.05
-                ]
-            },
-            "encodingType": "application/vnd.geo+json"
-        }
+      {
+        "description": "location 1",
+        "name": "location name 1",
+        "location": {
+          "type": "Point",
+          "coordinates": [
+            -117.05,
+            51.05
+          ]
+        },
+        "encodingType": "application/vnd.geo+json"
+      }
     ],
     "Datastreams": [
-        {
-            "unitOfMeasurement": {
-                "name": "Lumen",
-                "symbol": "lm",
-                "definition": "http://www.qudt.org/qudt/owl/1.0.0/unit/Instances.html/Lumen"
-            },
-            "description": "datastream 1",
-            "name": "datastream name 1",
-            "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
-            "ObservedProperty": {
-                "name": "Luminous Flux",
-                "definition": "http://www.qudt.org/qudt/owl/1.0.0/quantity/Instances.html/LuminousFlux",
-                "description": "observedProperty 1"
-            },
-            "Sensor": {
-                "description": "sensor 1",
-                "name": "sensor name 1",
-                "encodingType": "application/pdf",
-                "metadata": "Light flux sensor"
-            },
-            "Observations": [
-                {
-                    "phenomenonTime": "2015-03-03T00:00:00Z",
-                    "result": 3
-                },
-                {
-                    "phenomenonTime": "2015-03-04T00:00:00Z",
-                    "result": 4
-                }
-            ]
+      {
+        "unitOfMeasurement": {
+          "name": "Lumen",
+          "symbol": "lm",
+          "definition": "http://www.qudt.org/qudt/owl/1.0.0/unit/Instances.html/Lumen"
         },
-        {
-            "unitOfMeasurement": {
-                "name": "Centigrade",
-                "symbol": "C",
-                "definition": "http://www.qudt.org/qudt/owl/1.0.0/unit/Instances.html/Lumen"
-            },
-            "description": "datastream 2",
-            "name": "datastream name 2",
-            "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
-            "ObservedProperty": {
-                "name": "Tempretaure",
-                "definition": "http://www.qudt.org/qudt/owl/1.0.0/quantity/Instances.html/Tempreture",
-                "description": "observedProperty 2"
-            },
-            "Sensor": {
-                "description": "sensor 2",
-                "name": "sensor name 2",
-                "encodingType": "application/pdf",
-                "metadata": "Tempreture sensor"
-            },
-            "Observations": [
-                {
-                    "phenomenonTime": "2015-03-05T00:00:00Z",
-                    "result": 5
-                },
-                {
-                    "phenomenonTime": "2015-03-06T00:00:00Z",
-                    "result": 6
-                }
-            ]
-        }
+        "description": "datastream 1",
+        "name": "datastream name 1",
+        "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+        "ObservedProperty": {
+          "name": "Luminous Flux",
+          "definition": "http://www.qudt.org/qudt/owl/1.0.0/quantity/Instances.html/LuminousFlux",
+          "description": "observedProperty 1"
+        },
+        "Sensor": {
+          "description": "sensor 1",
+          "name": "sensor name 1",
+          "encodingType": "application/pdf",
+          "metadata": "Light flux sensor"
+        },
+        "Observations": [
+          {
+            "phenomenonTime": "2015-03-03T00:00:00Z",
+            "result": 3
+          },
+          {
+            "phenomenonTime": "2015-03-04T00:00:00Z",
+            "result": 4
+          }
+        ]
+      },
+      {
+        "unitOfMeasurement": {
+          "name": "Centigrade",
+          "symbol": "C",
+          "definition": "http://www.qudt.org/qudt/owl/1.0.0/unit/Instances.html/Lumen"
+        },
+        "description": "datastream 2",
+        "name": "datastream name 2",
+        "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+        "ObservedProperty": {
+          "name": "Tempretaure",
+          "definition": "http://www.qudt.org/qudt/owl/1.0.0/quantity/Instances.html/Tempreture",
+          "description": "observedProperty 2"
+        },
+        "Sensor": {
+          "description": "sensor 2",
+          "name": "sensor name 2",
+          "encodingType": "application/pdf",
+          "metadata": "Tempreture sensor"
+        },
+        "Observations": [
+          {
+            "phenomenonTime": "2015-03-05T00:00:00Z",
+            "result": 5
+          },
+          {
+            "phenomenonTime": "2015-03-06T00:00:00Z",
+            "result": 6
+          }
+        ]
+      }
     ]
-}`;
+  }`;
 };
 
 nb.addEventListener("change", () => {
-    goOrSubmit();
+  goOrSubmit();
 });
 
 entity.addEventListener("change", () => {
   subentity.options.length = 0;
   if (["CreateObservations", "createDB"].includes(entity.value)) 
-    method.value = "POST";
+  method.value = "POST";
   else
-    populateSelect(subentity, relations[entity.value], relations[tempEntity].includes(paramSubentity) ? paramSubentity : "none", true);
-
+  populateSelect(subentity, relations[entity.value], relations[tempEntity].includes(paramSubentity) ? paramSubentity : "none", true);
+  
 });
 
 fileone.addEventListener( "change", ( e ) => 	{
   var fileName = "";
   try {
     if (this.files && this.files.length > 1 )
-      fileName = ( this.getAttribute( "data-multiple-caption" ) || "" ).replace( "{count}", this.files.length );
+    fileName = ( this.getAttribute( "data-multiple-caption" ) || "" ).replace( "{count}", this.files.length );
     else
-      fileName = e.target.value.split( "\\" ).pop();
+    fileName = e.target.value.split( "\\" ).pop();
     
     if( fileName ) {
       fileonelabel.querySelector( "span" ).innerHTML = fileName;
@@ -339,150 +379,26 @@ fileone.addEventListener( "change", ( e ) => 	{
       fileonelabel.innerHTML = labelVal;
     }
   } catch (err) {
-      notify("Error", err.message);
+    notify("Error", err.message);
   }
   goOrSubmit();
 });
 
 
 
-const SplitterBar = function(container, leftContent, rightContent) {
-    // We want two divs that we're dividing
-    const leftSide = document.createElement("div");
-    const rightSide = document.createElement("div");
-    const splitter = document.createElement("div");
 
-    leftSide.classList.add("leftSide");
-    rightSide.classList.add("rightSide");
-    splitter.classList.add("splitter");
-
-    if (leftContent !== null) {
-        leftSide.appendChild(leftContent);
-    }
-
-    if (rightContent !== null) {
-        rightSide.appendChild(rightContent);
-    }
-
-    
-    container.appendChild(splitter);
-    
-    splitter.style.width = "5px";
-    splitter.style.left = "25%";
-    splitter.style.transform = "translateX(-25%)";
-    leftSide.style.background = "rgba(121, 137, 177, 0.9)";
-    splitter.style.background = "black";
-    
-
-    leftSide.style.left = 0;
-    leftSide.style.top = 0;
-    leftSide.style.width = splitter.offsetLeft - splitter.offsetWidth / 2 + "px";
-  
-
-    rightSide.style.left = (splitter.offsetLeft + splitter.offsetWidth / 2) + "px";
-    rightSide.style.top = 0;
-    rightSide.style.width = container.offsetWidth - splitter.offsetLeft - 5 +  "px";
-    
-    container.appendChild(leftSide);
-    container.appendChild(rightSide);
-    
-    let mouseIsDown = false;
-    let startX = null;
-    let globalXCoordinate = null;
-
-    // Will not touch
-    splitter.addEventListener("mousedown", function(evt) {
-        evt.preventDefault();
-        mouseIsDown = true;
-        startX = evt.offsetX;
-        startY = evt.offsetY;
-    });
-
-    leftSide.addEventListener("mousemove", function(evt) {
-        evt.preventDefault();
-        let left = this.offsetLeft;
-        globalXCoordinate = left + evt.offsetX - startX;
-    });
-
-    rightSide.addEventListener("mousemove", function(evt) {
-        evt.preventDefault();
-        let left = this.offsetLeft;
-        globalXCoordinate = left + evt.offsetX - startX;
-    });
-
-    splitter.addEventListener("mousemove", function(evt) {
-        evt.preventDefault();
-        let left = this.offsetLeft;
-        globalXCoordinate = left + evt.offsetX - startX;
-    });
-
-
-    document.body.addEventListener("mouseup", function() {
-        mouseIsDown = false;
-    });
-
-    document.addEventListener("mouseup", function() {
-        mouseIsDown = false;
-    });
-
-
-    document.addEventListener("mousemove", function(evt) {
-        evt.preventDefault();
-        evt.stopPropagation();
-
-        let containerWidth = container.getBoundingClientRect().width;
-        let hoveringOnDocument = evt.target.nodeName == "HTML" || evt.target.nodeName == "BODY";
-        let docX = evt.offsetX - container.getBoundingClientRect().x - startX;
-        if (mouseIsDown) {
-
-
-            console.log(splitter.offsetWidth);
-            // When dragging what do we need to do to take care of inner splitter areas?
-
-            if (hoveringOnDocument) {
-                if (docX < 0) {
-                    docX = 0;
-                }
-                    
-                if (docX + splitter.offsetWidth > container.offsetWidth) {
-                    docX = containerWidth - splitter.offsetWidth;
-                }
-                
-                splitter.style.left = docX + "px";
-                leftSide.style.width = splitter.offsetLeft - splitter.offsetWidth / 2 + "px";
-                rightSide.style.width = (container.offsetWidth - leftSide.offsetWidth - splitter.offsetWidth) + "px";
-                rightSide.style.left = splitter.offsetLeft + (splitter.offsetWidth / 2) + "px";
-            } else {
-                if (globalXCoordinate + splitter.offsetWidth > containerWidth) {
-                    globalXCoordinate = containerWidth - splitter.offsetWidth;
-                }
-
-                if (globalXCoordinate < 0) {
-                    globalXCoordinate = 0;
-                }
-
-                splitter.style.left = globalXCoordinate + "px";
-                leftSide.style.width = splitter.offsetLeft - splitter.offsetWidth / 2 + "px";
-                rightSide.style.width = (container.offsetWidth - leftSide.offsetWidth - splitter.offsetWidth) + "px";
-                
-                
-                rightSide.style.left = splitter.offsetLeft + splitter.offsetWidth / 2 + "px";
-            }
-        }
-    });
-};
 
 
 var init =  function () {
   new SplitterBar(container, first, two);
-
+  
   wait(false);
   // hide params
   history.replaceState({}, null, "/Query");
-
+  
   source.style.display = "none";
   source.value = "query";
-
+  
   tempEntity = Object.keys(relations).includes(paramEntity) ? paramEntity : "Things";
   
   populateSelect(method, paramUser == "true" ? listOperations : ["GET"] ,paramUser == "true" ?  listOperations.includes(paramMethod.toUpperCase()) ? paramMethod.toUpperCase() : "GET" : "GET");

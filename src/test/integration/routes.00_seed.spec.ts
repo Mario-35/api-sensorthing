@@ -12,7 +12,7 @@ import { server } from "../../server/index";
 const number = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "onze", "douze", "treize", "quatorze", "quinze"];
 
 describe("Add for tests.", () => {
-    it("Create Database", async (done) => {
+    it("Create Database", (done) => {
         chai.request(server)
             .post("/v1.0/createDB")
             .send({

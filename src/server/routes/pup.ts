@@ -45,6 +45,10 @@ const notAuthorized = (ctx: ParameterizedContext) => {
 };
 
 const convertToCsv = (inputDatas: keyValue | keyValue[] | undefined): string => {
+    console.log("==========================");
+    console.log(inputDatas);
+    console.log("==========================");
+
     const opts = { delimiter: ";", includeEmptyRows: true, escapedQuote: "" };
     if (inputDatas)
         try {
@@ -53,9 +57,8 @@ const convertToCsv = (inputDatas: keyValue | keyValue[] | undefined): string => 
             return csv;
         } catch (err) {
             console.error(err);
-            return err.message;
         }
-    return "No datas";
+    return "pipo";
 };
 
 const returnType = (args: requestArgs): string => {
@@ -129,7 +132,7 @@ router.get("/(.*)", async (ctx) => {
                                       "@iot.prevLink": results.prevLink,
                                       value: results["value"]
                                   }
-                                : (ctx.body = results["value"]);
+                                : results["value"];
                         ctx.type = returnType(args);
                         ctx.body = returnBody(args, temp as keyValue);
                     } else {

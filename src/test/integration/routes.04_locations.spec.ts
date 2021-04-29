@@ -222,6 +222,49 @@ describe("routes : Locations", () => {
                     done();
                 });
         });
+
+        it("should return the location with existing Thing and FOI default that was added", (done) => {
+            const infos = {
+                api: `{post} /${entity.name} [${++index}] with Thing and new FOI.`,
+                apiName: `PostLocationThingFoi${entity.name}`,
+                apiDescription: "POST with existing Thing.",
+                apiExample: `/v1.0/Things(2)/${entity.name}`,
+                apiParam: params,
+                apiParamExample: {
+                    name: "UofC CCIT with New FOI",
+                    description: "University of Calgary, CCIT building",
+                    encodingType: "application/vnd.geo+json",
+                    location: {
+                        type: "Point",
+                        coordinates: [-114.133, 51.08]
+                    },
+                    FeatureOfInterest: {
+                        name: "Weather New FOI.",
+                        description: "This is a weather station create by location.",
+                        encodingType: "application/vnd.geo+json",
+                        feature: {
+                            type: "Point",
+                            coordinates: [14.06, 1.05]
+                        }
+                    }
+                }
+            };
+            chai.request(server)
+                .post(infos.apiExample)
+                .send(infos.apiParamExample)
+                .end(async (err: any, res: any) => {
+                    should.not.exist(err);
+                    res.status.should.equal(201);
+                    res.type.should.equal("application/json");
+                    res.body.should.include.keys(entity.testsKeys);
+                    const tempSearch = await db.table("thing_location").select("*").where({ thing_id: 2, location_id: res.body["@iot.id"] });
+                    tempSearch[0].should.include.keys("location_id", "thing_id");
+                    tempSearch[0]["thing_id"].should.eql("2");
+                    tempSearch[0]["location_id"].should.eql(res.body["@iot.id"]);
+                    addToApiDoc({ ...infos, result: res });
+                    done();
+                });
+        });
     });
 
     describe(`{patch} /${entity.name} Patch.`, () => {
