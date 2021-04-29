@@ -17,7 +17,7 @@ import { Pool, PoolClient } from "pg";
 import fs from "fs";
 import copyFrom from "pg-copy-streams";
 
-const columns: string[] = ["station", "sensor", "date", "hour", "cumul", "value", "info", "unit"];
+const columns: string[] = ["date", "hour", "value"];
 
 export const importCsv = async (knex: Knex | Knex.Transaction, tableName: string, filename: string, sql: string): Promise<string[]> => {
     const results: string[] = [];
