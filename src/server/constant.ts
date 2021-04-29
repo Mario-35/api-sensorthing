@@ -22,10 +22,10 @@ export interface connectionDB {
 
 export type promiseArray = () => Promise<unknown>;
 export interface IErrorApi {
-    code?: number;
-    errno?: number;
-    error?: string;
+    code: number;
+    error: string;
     message: string;
+    infos?: string;
     value?: any;
 }
 export interface keyValue {
@@ -53,17 +53,22 @@ export interface requestArgs {
     extras: keyString | undefined;
 }
 
-export const errorCode: { [key: number]: string } = {
-    400: "Bad Request – Something in your request is not correct. It could be the content of the JSON or it could be the server endpoint is not expecting this content.",
-    401: "Unauthorized – Bad API key",
-    404: "Not Found – The resource you are looking for does not exist on the system.",
-    405: "Method not allowed – You requested a method that has not been implemented on the server.",
-    406: "Not Acceptable – You requested a format that isn’t JSON.",
-    409: "Conflict – A resource constraint has been violated.",
-    410: "Gone – The resource requested has been removed.",
-    429: "Too Many Requests – Too much load right now. Try again later.",
-    500: "Internal Server Error – We had a problem with our server. Try again later.",
-    503: "Service Unavailable – We’re temporarily offline for maintenance. Please try again later."
+export const errorCode: { [key: number]: { error: string; message: string } } = {
+    400: {
+        error: "Bad Request",
+        message:
+            "Something in your request is not correct. It could be the content of the JSON or it could be the server endpoint is not expecting this content."
+    },
+    401: { error: "Unauthorized", message: "Bad API key" },
+    402: { error: "Not Exist", message: "That element does not exist." },
+    404: { error: "Not Found", message: "The resource you are looking for does not exist on the system." },
+    405: { error: "Method not allowed", message: "You requested a method that has not been implemented on the server." },
+    406: { error: "Not Acceptable", message: "You requested a format that isn’t JSON." },
+    409: { error: "Conflict", message: "A resource constraint has been violated." },
+    410: { error: "Gone", message: "The resource requested has been removed." },
+    429: { error: "Too Many Requests", message: "Too much load right now. Try again later." },
+    500: { error: "Internal Server Error", message: "We had a problem with our server. Try again later." },
+    503: { error: "Service Unavailable", message: "We’re temporarily offline for maintenance. Please try again later.}" }
 };
 
 export interface apiCode {

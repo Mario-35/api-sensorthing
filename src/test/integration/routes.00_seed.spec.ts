@@ -21,7 +21,8 @@ describe("Add for tests.", () => {
                 password: process.env.PGPASSWORD,
                 database: "test"
             })
-            .end((err: any, res: any) => {
+            .end((err: Error, res: any) => {
+                if (err) console.error(err.message);
                 should.not.exist(err);
                 res.status.should.equal(200);
                 done();

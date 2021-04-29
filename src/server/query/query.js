@@ -9,7 +9,7 @@ listOperations = ["GET", "POST", "PATCH", "DELETE"]
 ,paramId=""
 ,paramMethod=""
 ,paramUser=""
-,paramOptions="$resultFormat=CSV"
+,paramOptions=""
 ,paramVersion="";
 
 

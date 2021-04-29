@@ -46,7 +46,7 @@ export class Common {
     }
     // Set Error Message for exiting
     setError(error: string, value?: unknown): void {
-        Common.errorMessage = { message: error ? error : "Undefined Error", value: value };
+        Common.errorMessage = { code: 777, error: error ? error : "Undefined Error", message: "Common", value: value };
     }
 
     // create a blank ReturnResult
@@ -67,7 +67,7 @@ export class Common {
 
         if (Common.errorMessage) {
             this.logger.error(Common.errorMessage.message);
-            const errorConstruct: IErrorApi = { code: 400, message: Common.errorMessage.message, value: Common.errorMessage.value };
+            const errorConstruct: IErrorApi = { code: 400, error: Common.errorMessage.message, message: "Common", value: Common.errorMessage.value };
             args = { error: errorConstruct };
         }
 

@@ -8,7 +8,7 @@
 
 import Router from "koa-router";
 import { apiAccess } from "../db/dataAccess";
-import { IErrorApi, _ENTITIES, ReturnResult, formatResult, keyValue, requestArgs, keyString } from "../constant";
+import { _ENTITIES, ReturnResult, formatResult, keyValue, requestArgs, keyString, errorCode } from "../constant";
 import { urlRequestToRequestArgs, createDB, upload } from "../utils/";
 import { ParameterizedContext } from "koa";
 import { Parser } from "json2csv";
@@ -18,30 +18,15 @@ import fs from "fs";
 
 const router: Router = new Router();
 
-const _NotExist = "That element does not exist.";
-
-const _STANDARD_PARAMS: IErrorApi = {
-    code: 400,
-    errno: 777,
-    error: "Bad Request",
-    message: "Something went wrong."
-};
-
-const errorCode = (ctx: ParameterizedContext, code: number, errno?: number, message?: string) => {
+const returnError = (ctx: ParameterizedContext, code: number, message?: string) => {
     ctx.type = "application/json";
     ctx.status = code;
     ctx.body = {
-        code: ctx.status,
-        errno: errno ? errno : 777,
-        error: "Bad Request",
-        message: message ? message : "Something went wrong."
+        error: errorCode[code].error,
+        message: errorCode[code].message,
+        code: code,
+        infos: message
     };
-};
-
-const notAuthorized = (ctx: ParameterizedContext) => {
-    ctx.type = "text/plain; charset=utf-8";
-    ctx.status = 401;
-    ctx.body = "/login";
 };
 
 const convertToCsv = (inputDatas: keyValue | keyValue[] | undefined): string => {
@@ -134,7 +119,7 @@ router.get("/(.*)", async (ctx) => {
                         ctx.body = returnBody(args, temp as keyValue);
                     } else {
                         // element does not exist
-                        errorCode(ctx, 404, undefined, _NotExist);
+                        returnError(ctx, 404);
                     }
                 } else if (args.ENTITY_ID && args.ENTITY_ID > 0) {
                     const results: ReturnResult | undefined = await objectAccess.getSingle(
@@ -148,25 +133,25 @@ router.get("/(.*)", async (ctx) => {
                         ctx.body = returnBody(args, results.body);
                     } else {
                         // element does not exist:
-                        errorCode(ctx, 404, undefined, _NotExist);
+                        returnError(ctx, 404);
                     }
                 } else {
-                    errorCode(ctx, 402, undefined, _NotExist);
+                    returnError(ctx, 402);
                 }
             } else {
-                errorCode(ctx, 404);
+                returnError(ctx, 404);
             }
         } else {
-            errorCode(ctx, 404);
+            returnError(ctx, 404);
         }
     } catch (err) {
-        errorCode(ctx, 404);
+        returnError(ctx, 404);
     }
 });
 
 router.post("/(.*)", async (ctx) => {
     if (!helperUsers.ensureAuthenticated(ctx)) {
-        notAuthorized(ctx);
+        returnError(ctx, 401);
     } else if (ctx.request.type.startsWith("application/json") && Object.keys(ctx.request.body).length > 0) {
         const args = urlRequestToRequestArgs(ctx);
         if (args) {
@@ -179,18 +164,19 @@ router.post("/(.*)", async (ctx) => {
                 const result: ReturnResult | undefined | void = await objectAccess.add().catch((error) => console.error(error));
                 if (result) {
                     if (result.error) {
-                        errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
+                        // returnError(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
+                        returnError(ctx, result.error.code ? result.error.code : 400, result.error.message);
                     } else {
                         ctx.type = "application/json";
                         ctx.status = 201;
                         ctx.body = result.result ? result.result : result.value;
                     }
                 } else {
-                    errorCode(ctx, 400);
+                    returnError(ctx, 400);
                 }
             }
         } else {
-            errorCode(ctx, 402);
+            returnError(ctx, 402);
         }
     } else if (ctx.request.type.startsWith("multipart/form-data")) {
         const getDatas = async (): Promise<keyString> => {
@@ -214,7 +200,8 @@ router.post("/(.*)", async (ctx) => {
             if (args.extras) fs.unlinkSync(args.extras.file);
             if (result) {
                 if (result.error) {
-                    errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
+                    // errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
+                    returnError(ctx, result.error.code ? result.error.code : 400, result.error.message);
                 } else {
                     if (data["source"] == "query") {
                         ctx.type = "html";
@@ -229,19 +216,19 @@ router.post("/(.*)", async (ctx) => {
                     }
                 }
             } else {
-                errorCode(ctx, 400);
+                returnError(ctx, 400);
             }
         }
     } else {
         // payload is malformed
-        errorCode(ctx, 400);
+        returnError(ctx, 400);
     }
 });
 
 router.patch("/(.*)", async (ctx) => {
     try {
         if (!helperUsers.ensureAuthenticated(ctx)) {
-            notAuthorized(ctx);
+            returnError(ctx, 401);
         } else if (Object.keys(ctx.request.body).length > 0) {
             const args = await urlRequestToRequestArgs(ctx);
             if (args) {
@@ -250,29 +237,30 @@ router.patch("/(.*)", async (ctx) => {
                     const result: ReturnResult | undefined | void = isNaN(args.ENTITY_ID) ? undefined : await objectAccess.update(BigInt(args.ENTITY_ID));
                     if (result) {
                         if (result.error) {
-                            errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
+                            // errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
+                            returnError(ctx, result.error.code ? result.error.code : 400, result.error.message);
                         } else {
                             ctx.type = "application/json";
                             ctx.status = 200;
                             ctx.body = result.value;
                         }
                     } else {
-                        errorCode(ctx, 404, undefined, _NotExist);
+                        returnError(ctx, 404);
                     }
                 }
             } else {
-                errorCode(ctx, 404);
+                returnError(ctx, 404);
             }
         }
     } catch (err) {
-        errorCode(ctx, 404);
+        returnError(ctx, 404);
     }
 });
 
 router.delete("/(.*)", async (ctx) => {
     try {
         if (!helperUsers.ensureAuthenticated(ctx)) {
-            notAuthorized(ctx);
+            returnError(ctx, 401);
         } else {
             const args = await urlRequestToRequestArgs(ctx);
             if (args) {
@@ -283,16 +271,15 @@ router.delete("/(.*)", async (ctx) => {
                         ctx.type = "application/json";
                         ctx.status = 204;
                     } else {
-                        errorCode(ctx, 404, undefined, _NotExist);
+                        returnError(ctx, 404);
                     }
                 }
             } else {
-                errorCode(ctx, 404);
+                returnError(ctx, 404);
             }
         }
     } catch (err) {
-        ctx.status = 400;
-        ctx.body = _STANDARD_PARAMS;
+        returnError(ctx, 404);
     }
 });
 

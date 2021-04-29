@@ -58,51 +58,47 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
         debug: false
     });
 
+    // await dbAdmin
+    //     .raw("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity  WHERE pg_stat_activity.datname = ? AND pid <> pg_backend_pid()", [
+    //         argsParams.database
+    //     ])
+    //     .then(async () => {
+    //         results["STOP Database"] = "Ok";
     await dbAdmin
-        .raw("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity  WHERE pg_stat_activity.datname = ? AND pid <> pg_backend_pid()", [
-            argsParams.database
-        ])
+        .raw(`DROP Database IF EXISTS ${argsParams.database}`)
         .then(async () => {
-            results["STOP Database"] = "Ok";
+            results["DROP Database"] = "Ok";
             await dbAdmin
-                .raw(`DROP Database IF EXISTS ${argsParams.database}`)
+                .raw(`CREATE Database ${argsParams.database}`)
                 .then(async () => {
-                    results["DROP Database"] = "Ok";
-                    await dbAdmin
-                        .raw(`CREATE Database ${argsParams.database}`)
-                        .then(async () => {
-                            results["Create Database"] = `${argsParams.database} OK`;
-                            await dbAdmin.raw(`select count(*) FROM pg_user WHERE usename = '${argsParams.user}';`).then(async (res) => {
-                                if (res.rowCount < 1) {
-                                    await dbAdmin
-                                        .raw(`CREATE ROLE ${argsParams.user} WITH PASSWORD '${argsParams.password}' SUPERUSER;`)
+                    results["Create Database"] = `${argsParams.database} OK`;
+                    await dbAdmin.raw(`select count(*) FROM pg_user WHERE usename = '${argsParams.user}';`).then(async (res) => {
+                        if (res.rowCount < 1) {
+                            await dbAdmin
+                                .raw(`CREATE ROLE ${argsParams.user} WITH PASSWORD '${argsParams.password}' SUPERUSER;`)
+                                .then(() => {
+                                    results["Create ROLE"] = `${argsParams.user} Ok`;
+                                })
+                                .catch((e) => e);
+                        } else {
+                            await dbAdmin
+                                .raw(`ALTER ROLE ${argsParams.user} WITH PASSWORD '${argsParams.password}' SUPERUSER;`)
+                                .then(() => {
+                                    results["Create/Alter ROLE"] = `${argsParams.user} Ok`;
+                                    dbAdmin
+                                        .destroy()
                                         .then(() => {
-                                            results["Create ROLE"] = `${argsParams.user} Ok`;
-                                        })
-                                        .catch((e) => e);
-                                } else {
-                                    await dbAdmin
-                                        .raw(`ALTER ROLE ${argsParams.user} WITH PASSWORD '${argsParams.password}' SUPERUSER;`)
-                                        .then(() => {
-                                            results["Create/Alter ROLE"] = `${argsParams.user} Ok`;
-                                            dbAdmin
-                                                .destroy()
-                                                .then(() => {
-                                                    results["Admin connection destroy"] = "Ok";
-                                                })
-                                                .catch((e) => {
-                                                    console.error(e);
-                                                });
+                                            results["Admin connection destroy"] = "Ok";
                                         })
                                         .catch((e) => {
                                             console.error(e);
                                         });
-                                }
-                            });
-                        })
-                        .catch((e) => {
-                            console.error(e);
-                        });
+                                })
+                                .catch((e) => {
+                                    console.error(e);
+                                });
+                        }
+                    });
                 })
                 .catch((e) => {
                     console.error(e);
@@ -111,6 +107,10 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
         .catch((e) => {
             console.error(e);
         });
+    // })
+    // .catch((e) => {
+    //     console.error(e);
+    // });
 
     await db
         .raw("CREATE EXTENSION IF NOT EXISTS postgis;")

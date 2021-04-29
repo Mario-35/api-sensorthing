@@ -1,6 +1,8 @@
-# Le modèle de données de l'API SensorThings
+# Le modèle de données de l'API SensorThings applique à Agrhys
 
-Afin de comprendre l'API SensorThings, il est essentiel de comprendre le modèle de données sous-jacent. Ce modèle comprend les classes suivantes:
+Afin de comprendre l'API SensorThings, il est essentiel de comprendre le modèle de données sous-jacent.
+
+Ce modèle comprend les classes suivantes:
 
 ![entites](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/entities.jpg "entites")
 
@@ -36,15 +38,13 @@ Dans le cadre d'Agrhys on pourrai :
 
 ![entitées](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/sensorThingFr.jpg "entitées")
 
-Applique dans le contexte d'un capteur mesurant la hauteur et la temperature sur le cours d'eau de kervidy.
-
-![entitées](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/agrhys_example.jpg "entitées")
-
 Un ajout a êté ajouté par rapport a la norme sensorthing est un feature of interest par defaut dans location, ceci permet d'utiliser ce feature of interest si observation ne l'indique pas.
 
-pour cet example nous allons utiliser un exutoir situé à Kervidy et deux des sensors que sont la hauteur d'eau et la temperature.
+pour cet example nous allons utiliser dans le contexte d'un capteur mesurant la hauteur et la temperature sur le cours d'eau de kervidy.
 
 Appliqué au modèle (pour la hauteur d'eau) ont pourrai :
+
+![entitées](https://raw.githubusercontent.com/Mario-35/api-sensorthing/main/doc/assets/agrhys_example.jpg "entitées")
 
 Le modèle de données de l'API SensorThings.
 
@@ -83,7 +83,7 @@ Une observation (Observation) est un événement effectué par un capteur (Senso
 }
 ```
 
-On releve l'id du sensor créer
+On releve l'id du sensor crée
 
 ### 2. Creation du Thing.
 
@@ -179,15 +179,7 @@ La creation de lu "Thing", de sa "location" et des 2 "datastreams" dans la meme 
 }
 ```
 
-            "Observations": [
-                {
-                    "phenomenonTime": "1993-02-01T00:00:00Z",
-                    "result": 0.155,
-
-                }
-            ]
-
-### 2. Ajout des observations.
+### 3. Ajout des observations.
 
 #### Request
 
@@ -204,7 +196,7 @@ La creation de lu "Thing", de sa "location" et des 2 "datastreams" dans la meme 
 
 ou
 
-[Post http://sensorthings.geosas.fr/v1.0/Datastream(1)/Observations](http://sensorthings.geosas.fr/Query?method=Post&entity=Datastreams&id=1&options=Observations&datas=%7B%0A%20%20%20%20%22phenomenonTime%22%3A%20%221993-02-01T00%3A50%3A00Z%22%2C%0A%20%20%20%20%22resultTime%22%3A%20%221993-02-01T00%3A50%3A00Z%22%2C%0A%20%20%20%20%22result%22%3A%200.152%0A%7D)
+[Post http://sensorthings.geosas.fr/v1.0/Datastream(1)/Observations](http://sensorthings.geosas.fr/Query?method=Post&entity=Datastreams&id=1&subentity=Observations&datas=%7B%0A%20%20%20%20%22phenomenonTime%22%3A%20%221993-02-01T00%3A50%3A00Z%22%2C%0A%20%20%20%20%22resultTime%22%3A%20%221993-02-01T00%3A50%3A00Z%22%2C%0A%20%20%20%20%22result%22%3A%200.152%0A%7D)
 
 ```json
 {

@@ -13,7 +13,7 @@ import chaiHttp from "chai-http";
 import { errorKeys, IApiDoc, generateApiDoc, IApiInput, prepareToApiDoc, createListColumns } from "./constant";
 import { server } from "../../server/index";
 import { db } from "../../server/db";
-import { _ENTITIES, IEntityProperty } from "../../server/constant";
+import { _ENTITIES, IEntityProperty, errorCode } from "../../server/constant";
 
 chai.use(chaiHttp);
 
@@ -89,7 +89,7 @@ describe("routes : Thing [8.2.1]", () => {
                 api: `{get} /${entity.name}(:id) [${++index}] one.`,
                 apiName: `Get${entity.name}`,
                 apiDescription: `Get a specific ${entity.name}.`,
-                apiExample: `/v1.0/${entity.name}(1) -debug-`
+                apiExample: `/v1.0/${entity.name}(1)`
             };
             chai.request(server)
                 .get(infos.apiExample)
@@ -116,7 +116,7 @@ describe("routes : Thing [8.2.1]", () => {
                     res.status.should.equal(404);
                     res.type.should.equal("application/json");
                     res.body.should.include.keys(errorKeys);
-                    res.body.message.should.eql("That element does not exist.");
+                    res.body.error.should.eql(errorCode[404].error);
                     docs[docs.length - 1].apiErrorExample = JSON.stringify(res.body, null, 4);
                     done();
                 });
@@ -438,7 +438,7 @@ describe("routes : Thing [8.2.1]", () => {
                     res.status.should.equal(400);
                     res.type.should.equal("application/json");
                     res.body.should.include.keys(errorKeys);
-                    res.body.message.should.eql("Something went wrong.");
+                    res.body.error.should.eql(errorCode[400].error);
                     docs[docs.length - 1].apiErrorExample = JSON.stringify(res.body, null, 4);
                     done();
                 });
@@ -496,7 +496,7 @@ describe("routes : Thing [8.2.1]", () => {
                     res.status.should.equal(404);
                     res.type.should.equal("application/json");
                     res.body.should.include.keys(errorKeys);
-                    res.body.message.should.eql("That element does not exist.");
+                    res.body.error.should.eql(errorCode[404].error);
                     docs[docs.length - 1].apiErrorExample = JSON.stringify(res.body, null, 4);
                     done();
                 });
@@ -600,7 +600,7 @@ describe("routes : Thing [8.2.1]", () => {
                     res.status.should.equal(404);
                     res.type.should.equal("application/json");
                     res.body.should.include.keys(errorKeys);
-                    res.body.message.should.eql("That element does not exist.");
+                    res.body.error.should.eql(errorCode[404].error);
                     docs[docs.length - 1].apiErrorExample = JSON.stringify(res.body, null, 4);
                     generateApiDoc(docs, `apiDoc${entity.name}.js`);
                     done();

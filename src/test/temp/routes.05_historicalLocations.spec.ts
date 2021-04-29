@@ -105,7 +105,7 @@ describe("routes : HistoricalLocations", () => {
                     res.status.should.equal(404);
                     res.type.should.equal("application/json");
                     res.body.should.include.keys(errorKeys);
-                    res.body.message.should.eql("That element does not exist.");
+                    res.body.error.should.eql(errorCode[404].error);
                     docs[docs.length - 1].apiErrorExample = JSON.stringify(res.body, null, 4);
                     done();
                 });
@@ -154,7 +154,7 @@ describe("routes : HistoricalLocations", () => {
                     res.status.should.equal(404);
                     res.type.should.equal("application/json");
                     res.body.should.include.keys(errorKeys);
-                    res.body.message.should.eql("That element does not exist.");
+                    res.body.error.should.eql(errorCode[404].error);
                     docs[docs.length - 1].apiErrorExample = JSON.stringify(res.body, null, 4);
                     done();
                 });
@@ -197,7 +197,7 @@ describe("routes : HistoricalLocations", () => {
                     res.status.should.equal(404);
                     res.type.should.equal("application/json");
                     res.body.should.include.keys(errorKeys);
-                    res.body.message.should.eql("That element does not exist.");
+                    res.body.error.should.eql(errorCode[404].error);
                     docs[docs.length - 1].apiErrorExample = JSON.stringify(res.body, null, 4);
                     generateApiDoc(docs, `apiDoc${entity.name}.js`);
                     done();
