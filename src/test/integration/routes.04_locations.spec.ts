@@ -9,7 +9,7 @@ process.env.NODE_ENV = "test";
 
 import chai from "chai";
 import chaiHttp from "chai-http";
-import { errorKeys, IApiDoc, generateApiDoc, IApiInput, prepareToApiDoc, createListColumns } from "./constant";
+import { IApiDoc, generateApiDoc, IApiInput, prepareToApiDoc, createListColumns } from "./constant";
 import { server } from "../../server/index";
 import { db } from "../../server/db";
 import { _ENTITIES, IEntityProperty } from "../../server/constant";
@@ -135,7 +135,6 @@ describe("routes : Locations", () => {
                     should.not.exist(err);
                     res.status.should.equal(404);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(errorKeys);
 
                     docs[docs.length - 1].apiErrorExample = JSON.stringify(res.body, null, 4);
                     done();
@@ -182,7 +181,6 @@ describe("routes : Locations", () => {
                     should.not.exist(err);
                     res.status.should.equal(400);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(errorKeys);
 
                     docs[docs.length - 1].apiErrorExample = JSON.stringify(res.body, null, 4);
                     done();
@@ -319,7 +317,6 @@ describe("routes : Locations", () => {
                     should.not.exist(err);
                     res.status.should.equal(404);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(errorKeys);
 
                     docs[docs.length - 1].apiErrorExample = JSON.stringify(res.body, null, 4);
                     done();
@@ -362,7 +359,6 @@ describe("routes : Locations", () => {
                     should.not.exist(err);
                     res.status.should.equal(404);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(errorKeys);
 
                     docs[docs.length - 1].apiErrorExample = JSON.stringify(res.body, null, 4);
                     generateApiDoc(docs, `apiDoc${entity.name}.js`);

@@ -18,6 +18,10 @@ import fs from "fs";
 
 const router: Router = new Router();
 
+const extractMessageError = (input: string): string => {
+    return input.includes("-") ? input.split("-")[1].trim() : input;
+};
+
 const convertToCsv = (inputDatas: keyValue | keyValue[] | undefined): string => {
     const opts = { delimiter: ";", includeEmptyRows: true, escapedQuote: "" };
     if (inputDatas)
@@ -70,7 +74,7 @@ const minimal = (ctx: ParameterizedContext): keyString => {
     };
 };
 
-router.get("/(.*)", async (ctx, res) => {
+router.get("/(.*)", async (ctx) => {
     const host = ctx.request.headers["x-forwarded-host"] ? ctx.request.headers["x-forwarded-host"] : ctx.request.header.host;
     if (ctx.request.url.endsWith(`/${process.env.APIVERSION}/`)) {
         const expectedResponse: Record<string, unknown>[] = [{}];
@@ -149,10 +153,7 @@ router.post("/(.*)", async (ctx) => {
                 const result: ReturnResult | undefined | void = await objectAccess.add().catch((error) => console.error(error));
                 if (result) {
                     if (result.error) {
-                        console.log("==================== post Errror");
-                        console.log(result);
-
-                        ctx.throw(result.error.code ? result.error.code : 400, result.error.message);
+                        ctx.throw(400, { detail: args.debug ? result.error.message : extractMessageError(result.error.message) });
                     } else {
                         ctx.type = "application/json";
                         ctx.status = 201;
@@ -187,8 +188,8 @@ router.post("/(.*)", async (ctx) => {
             if (args.extras) fs.unlinkSync(args.extras.file);
             if (result) {
                 if (result.error) {
-                    // errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
-                    ctx.throw(result.error.code ? result.error.code : 400, result.error.message);
+                    // errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${{ detail : extractMessageError(result.error.message) }}`);
+                    ctx.throw(400, { detail: args.debug ? result.error.message : extractMessageError(result.error.message) });
                 } else {
                     if (data["source"] == "query") {
                         ctx.type = "html";
@@ -223,8 +224,8 @@ router.patch("/(.*)", async (ctx) => {
                 const result: ReturnResult | undefined | void = isNaN(args.ENTITY_ID) ? undefined : await objectAccess.update(BigInt(args.ENTITY_ID));
                 if (result) {
                     if (result.error) {
-                        // errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${result.error.message}`);
-                        ctx.throw(result.error.code ? result.error.code : 400, result.error.message);
+                        // errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${{ detail : extractMessageError(result.error.message) }}`);
+                        ctx.throw(400, { detail: args.debug ? result.error.message : extractMessageError(result.error.message) });
                     } else {
                         ctx.type = "application/json";
                         ctx.status = 200;

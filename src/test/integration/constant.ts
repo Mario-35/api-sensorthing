@@ -1,16 +1,8 @@
-import { IErrorApi } from "../../server/constant";
 import fs from "fs";
 import path from "path";
 import { db } from "../../server/db";
 
 const pjson = require("../../../package.json");
-
-const temp: IErrorApi = {
-    code: 0,
-    message: "null"
-};
-
-export const errorKeys = Object.keys(temp);
 
 export interface IApiInput {
     api: string;

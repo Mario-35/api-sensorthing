@@ -83,7 +83,8 @@ export class Observations extends Common {
                         results.push(this.linkBase + "(" + element + ")");
                     });
                 } catch (error) {
-                    this.setError(error.message.includes(" - ") ? error.message.split("-")[1].trim() : error.message, error.name);
+                    // this.setError(error.message.includes(" - ") ? error.message.split("-")[1].trim() : error.message, error.name);
+                    this.setError(error);
                 }
             }
             if (results) {

@@ -14,7 +14,7 @@ import { logClass, asyncForEach, getEntityName, getId, renameProp } from "../../
 export class Common {
     static dbContext: Knex | Knex.Transaction;
     public level: number | undefined;
-    static errorMessage: { error: Error; message?: string | undefined } | undefined;
+    static error: Error | undefined;
     public logger: logClass;
 
     public linkBase: string;
@@ -27,7 +27,7 @@ export class Common {
         this.level = level ? level : 0;
 
         if (level == 0) {
-            Common.errorMessage = undefined;
+            Common.error = undefined;
         }
         this.level = level + 1;
         this.logger = new logClass(args.debug, this.level);
@@ -45,9 +45,9 @@ export class Common {
                 : `http://${this.args.baseUrl}/${this.args.version}/${this.constructor.name}`;
     }
     // Set Error Message for exiting
-    setError(error: Error, message?: string | undefined): void {
+    setError(error: Error): void {
         if (this.args.debug) console.error(error);
-        Common.errorMessage = { error, message };
+        Common.error = error;
     }
 
     // create a blank ReturnResult
@@ -66,9 +66,9 @@ export class Common {
             total: undefined
         };
 
-        if (Common.errorMessage) {
-            this.logger.error(Common.errorMessage.error.message);
-            args = { error: { error: Common.errorMessage.error, detail: Common.errorMessage.message } };
+        if (Common.error) {
+            this.logger.error(Common.error.message);
+            args = { error: Common.error };
         }
 
         Object.keys(args).forEach((element: string) => {
@@ -391,6 +391,7 @@ export class Common {
                     }
                 }
             } catch (error) {
+                // this.setError(error, error.statusCode, error.message.includes(" - ") ? error.message.split("-")[1].trim() : error.message);
                 this.setError(error);
                 return this.formatReturnResult({});
             }
@@ -424,7 +425,7 @@ export class Common {
                     }
                 }
             } catch (error) {
-                this.setError(error.detail);
+                this.setError(error);
                 return this.formatReturnResult({});
             }
         }
@@ -440,7 +441,8 @@ export class Common {
                 id: BigInt(results)
             });
         } catch (error) {
-            this.setError(error, error.message.includes(" - ") ? error.message.split("-")[1].trim() : error.message);
+            // this.setError(400, error, error.message.includes(" - ") ? error.message.split("-")[1].trim() : error.message);
+            this.setError(error);
         }
     }
 

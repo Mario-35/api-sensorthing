@@ -21,11 +21,6 @@ export interface connectionDB {
 }
 
 export type promiseArray = () => Promise<unknown>;
-export interface IErrorApi {
-    code: number;
-    message: string;
-    detail?: string;
-}
 export interface keyValue {
     [key: string]: string | number | bigint | keyValue | keyValue[] | ReturnResult;
 }
@@ -93,7 +88,7 @@ export interface ReturnResult extends ResultType {
     nextLink: string | undefined;
     prevLink: string | undefined;
     entity: IEntityProperty | undefined;
-    error: IErrorApi | undefined;
+    error: Error | undefined;
     value: keyValue[] | keyValue | undefined;
     body: keyValue[] | keyValue | string | undefined;
     total: bigint | undefined;
