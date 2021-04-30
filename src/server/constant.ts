@@ -23,10 +23,8 @@ export interface connectionDB {
 export type promiseArray = () => Promise<unknown>;
 export interface IErrorApi {
     code: number;
-    error: string;
     message: string;
-    infos?: string;
-    value?: any;
+    detail?: string;
 }
 export interface keyValue {
     [key: string]: string | number | bigint | keyValue | keyValue[] | ReturnResult;
@@ -53,7 +51,7 @@ export interface requestArgs {
     extras: keyString | undefined;
 }
 
-export const errorCode: { [key: number]: { error: string; message: string } } = {
+export const errorCode: { [key: string]: { error: string; message: string } } = {
     400: {
         error: "Bad Request",
         message:
@@ -70,6 +68,18 @@ export const errorCode: { [key: number]: { error: string; message: string } } = 
     500: { error: "Internal Server Error", message: "We had a problem with our server. Try again later." },
     503: { error: "Service Unavailable", message: "We’re temporarily offline for maintenance. Please try again later.}" }
 };
+
+//   INTERNAL_ERROR                  : 500,
+//   NOT_IMPLEMENTED                 : 501,
+//   RESOURCE_NOT_FOUND              : 404,
+//   BAD_REQUEST                     : 400,
+//   VALIDATION_ERROR                : 100,
+//   MALFORMED_URL                   : 101,
+//   INVALID_ASSOCIATION             : 102,
+//   INLINE_CONTENT_NOT_ALLOWED      : 103,
+//   INVALID_QUERY_STRING            : 104,
+//   MANDATORY_ASSOCIATION_MISSING   : 105,
+//   LOCATION_SAME_ENCODING_TYPE     : 106
 
 export interface apiCode {
     code: number | undefined;

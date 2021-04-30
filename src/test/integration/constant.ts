@@ -7,7 +7,6 @@ const pjson = require("../../../package.json");
 
 const temp: IErrorApi = {
     code: 0,
-    error: "null",
     message: "null"
 };
 

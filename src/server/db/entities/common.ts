@@ -7,14 +7,14 @@
  */
 
 import Knex from "knex";
-import { requestArgs, IEntityProperty, _ENTITIES, ReturnResult, relationConfig, keyValue, IErrorApi } from "../../constant";
+import { requestArgs, IEntityProperty, _ENTITIES, ReturnResult, relationConfig, keyValue } from "../../constant";
 import * as entities from "./index";
 import { PGVisitor } from "../../utils/odata/visitor";
 import { logClass, asyncForEach, getEntityName, getId, renameProp } from "../../utils/index";
 export class Common {
     static dbContext: Knex | Knex.Transaction;
     public level: number | undefined;
-    static errorMessage: IErrorApi | undefined;
+    static errorMessage: { error: Error; message?: string | undefined } | undefined;
     public logger: logClass;
 
     public linkBase: string;
@@ -45,8 +45,9 @@ export class Common {
                 : `http://${this.args.baseUrl}/${this.args.version}/${this.constructor.name}`;
     }
     // Set Error Message for exiting
-    setError(error: string, value?: unknown): void {
-        Common.errorMessage = { code: 777, error: error ? error : "Undefined Error", message: "Common", value: value };
+    setError(error: Error, message?: string | undefined): void {
+        if (this.args.debug) console.error(error);
+        Common.errorMessage = { error, message };
     }
 
     // create a blank ReturnResult
@@ -66,9 +67,8 @@ export class Common {
         };
 
         if (Common.errorMessage) {
-            this.logger.error(Common.errorMessage.message);
-            const errorConstruct: IErrorApi = { code: 400, error: Common.errorMessage.message, message: "Common", value: Common.errorMessage.value };
-            args = { error: errorConstruct };
+            this.logger.error(Common.errorMessage.error.message);
+            args = { error: { error: Common.errorMessage.error, detail: Common.errorMessage.message } };
         }
 
         Object.keys(args).forEach((element: string) => {
@@ -155,7 +155,6 @@ export class Common {
 
                                             whereRaw = `id IN (${myId})`;
                                         } catch (error) {
-                                            if (this.args.debug) console.error(error);
                                             this.setError(error.message);
                                             whereRaw = "";
                                         }
@@ -170,7 +169,6 @@ export class Common {
 
                                             whereRaw = `id IN (${myId})`;
                                         } catch (error) {
-                                            if (this.args.debug) console.error(error);
                                             this.setError(error.message);
                                             whereRaw = "";
                                         }
@@ -322,7 +320,6 @@ export class Common {
             const results = await Common.dbContext(this.entityProperty.table).whereRaw(condition);
             return results ? await this.formatResult(results) : undefined;
         } catch (error) {
-            if (this.args.debug) console.error(error);
             this.setError(error.message);
             return undefined;
         }
@@ -382,10 +379,8 @@ export class Common {
             const sql = this.creatAddUpdateQuery(dataInput);
             try {
                 const results = await Common.dbContext.raw(sql);
-
                 if (results.rows) {
                     const result: keyValue | undefined = await this.formatLineResult(results.rows[0]);
-
                     if (result) {
                         return this.formatReturnResult({
                             id: result.id ? BigInt(results.id) : undefined,
@@ -396,8 +391,7 @@ export class Common {
                     }
                 }
             } catch (error) {
-                if (this.args.debug) console.error(error);
-                this.setError(error.detail);
+                this.setError(error);
                 return this.formatReturnResult({});
             }
         }
@@ -430,7 +424,6 @@ export class Common {
                     }
                 }
             } catch (error) {
-                if (this.args.debug) console.error(error);
                 this.setError(error.detail);
                 return this.formatReturnResult({});
             }
@@ -447,8 +440,7 @@ export class Common {
                 id: BigInt(results)
             });
         } catch (error) {
-            if (this.args.debug) console.error(error);
-            this.setError(error.message.includes(" - ") ? error.message.split("-")[1].trim() : error.message, error.name);
+            this.setError(error, error.message.includes(" - ") ? error.message.split("-")[1].trim() : error.message);
         }
     }
 

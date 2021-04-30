@@ -34,10 +34,11 @@ app.use(async (ctx: ParameterizedContext, next) => {
         await next();
     } catch (err) {
         // will only respond with JSON
-        console.error(err);
         ctx.status = err.statusCode || err.status || 500;
         ctx.body = {
-            message: err.message
+            code: err.statusCode,
+            message: err.message,
+            detail: err.detail
         };
     }
 });
