@@ -24,11 +24,12 @@ export class apiAccess implements DataAccessInterface {
 
     constructor(ctx: ParameterizedContext, args: requestArgs) {
         this.ctx = ctx;
+        this.args = args;
         this.logger = new logClass(args.debug, 0);
         this.logger.head(`class ${this.constructor.name}`);
 
         if (args.ENTITY_NAME in entities) {
-            this.myEntity = new entities[args.ENTITY_NAME](args, 0, db);
+            this.myEntity = new entities[(this.ctx, args.ENTITY_NAME)](ctx, args, 0, db);
             if (this.myEntity === undefined) {
                 this.logger.error(`Entity Error : ${args.ENTITY_NAME}`);
             } else {
@@ -37,7 +38,6 @@ export class apiAccess implements DataAccessInterface {
         } else {
             this.logger.error(`Entity Error : ${args.ENTITY_NAME}`);
         }
-        this.args = args;
     }
 
     async addTolog(): Promise<bigint> {
@@ -84,34 +84,24 @@ export class apiAccess implements DataAccessInterface {
         this.logger.head("class DataAccessClass add");
         const logId: bigint = await this.addTolog();
         if (this.myEntity) {
-            try {
-                const results = await this.myEntity.add(this.ctx.request.body);
-                if (results) {
-                    await this.updateLog(logId, { results: results });
-                    return results;
-                }
-            } catch (error) {
-                this.logger.error("Add", error.message);
-                await this.updateLog(logId, { results: error });
+            // try {
+            const results = await this.myEntity.add(this.ctx.request.body);
+            if (results) {
+                await this.updateLog(logId, { results: results });
+                return results;
             }
         }
-        return undefined;
     }
 
     async update(id: bigint): Promise<ReturnResult | undefined> {
         this.logger.head("class DataAccessClass update");
         const logId: bigint = await this.addTolog();
         if (this.myEntity) {
-            try {
-                const results = await this.myEntity.update(id, this.ctx.request.body);
+            const results = await this.myEntity.update(id, this.ctx.request.body);
+            await this.updateLog(logId, { results: results });
+            if (results) {
                 await this.updateLog(logId, { results: results });
-                if (results) {
-                    await this.updateLog(logId, { results: results });
-                    return results;
-                }
-            } catch (error) {
-                this.logger.error("Update", error.message);
-                await this.updateLog(logId, { results: error });
+                return results;
             }
         }
         return undefined;
@@ -121,16 +111,11 @@ export class apiAccess implements DataAccessInterface {
         this.logger.head("class DataAccessClass delete");
         const logId: bigint = await this.addTolog();
         if (this.myEntity) {
-            try {
-                const results = this.myEntity.delete(id);
+            const results = this.myEntity.delete(id);
+            await this.updateLog(logId, { results: results });
+            if (results) {
                 await this.updateLog(logId, { results: results });
-                if (results) {
-                    await this.updateLog(logId, { results: results });
-                    return results;
-                }
-            } catch (error) {
-                this.logger.error("Delete", error.message);
-                await this.updateLog(logId, { results: error });
+                return results;
             }
         }
         return undefined;

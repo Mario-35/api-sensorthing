@@ -78,9 +78,9 @@ describe("routes : Create Observations", () => {
                     ["2017-01-13T10:22:00.000Z", 92, 1]
                 ]
             })
-            .end((err: any, res: any) => {
+            .end((err: Error, res: any) => {
                 should.not.exist(err);
-                res.status.should.equal(400);
+                res.status.should.equal(404);
                 res.type.should.equal("application/json");
                 docs[docs.length - 1].apiErrorExample = JSON.stringify(res.body, null, 4);
                 generateApiDoc(docs, "CreateObservations.js");

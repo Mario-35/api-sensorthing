@@ -46,40 +46,6 @@ export interface requestArgs {
     extras: keyString | undefined;
 }
 
-export const errorCode: { [key: string]: { error: string; message: string } } = {
-    400: {
-        error: "Bad Request",
-        message:
-            "Something in your request is not correct. It could be the content of the JSON or it could be the server endpoint is not expecting this content."
-    },
-    401: { error: "Unauthorized", message: "Bad API key" },
-    402: { error: "Not Exist", message: "That element does not exist." },
-    404: { error: "Not Found", message: "The resource you are looking for does not exist on the system." },
-    405: { error: "Method not allowed", message: "You requested a method that has not been implemented on the server." },
-    406: { error: "Not Acceptable", message: "You requested a format that isn’t JSON." },
-    409: { error: "Conflict", message: "A resource constraint has been violated." },
-    410: { error: "Gone", message: "The resource requested has been removed." },
-    429: { error: "Too Many Requests", message: "Too much load right now. Try again later." },
-    500: { error: "Internal Server Error", message: "We had a problem with our server. Try again later." },
-    503: { error: "Service Unavailable", message: "We’re temporarily offline for maintenance. Please try again later.}" }
-};
-
-//   INTERNAL_ERROR                  : 500,
-//   NOT_IMPLEMENTED                 : 501,
-//   RESOURCE_NOT_FOUND              : 404,
-//   BAD_REQUEST                     : 400,
-//   VALIDATION_ERROR                : 100,
-//   MALFORMED_URL                   : 101,
-//   INVALID_ASSOCIATION             : 102,
-//   INLINE_CONTENT_NOT_ALLOWED      : 103,
-//   INVALID_QUERY_STRING            : 104,
-//   MANDATORY_ASSOCIATION_MISSING   : 105,
-//   LOCATION_SAME_ENCODING_TYPE     : 106
-
-export interface apiCode {
-    code: number | undefined;
-    message: string | undefined;
-}
 export interface ResultType {
     result: string[] | string | number | bigint | keyValue[] | keyValue | undefined;
 }
@@ -88,7 +54,6 @@ export interface ReturnResult extends ResultType {
     nextLink: string | undefined;
     prevLink: string | undefined;
     entity: IEntityProperty | undefined;
-    error: Error | undefined;
     value: keyValue[] | keyValue | undefined;
     body: keyValue[] | keyValue | string | undefined;
     total: bigint | undefined;

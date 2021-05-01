@@ -11,25 +11,21 @@ import { requestArgs, IEntityProperty, _ENTITIES, ReturnResult, relationConfig, 
 import * as entities from "./index";
 import { PGVisitor } from "../../utils/odata/visitor";
 import { logClass, asyncForEach, getEntityName, getId, renameProp } from "../../utils/index";
+import { ParameterizedContext } from "koa";
 export class Common {
     static dbContext: Knex | Knex.Transaction;
     public level: number | undefined;
-    static error: Error | undefined;
     public logger: logClass;
-
     public linkBase: string;
     public nextLinkBase: string;
     public entityProperty: IEntityProperty;
     readonly args: requestArgs;
+    readonly ctx: ParameterizedContext;
 
-    constructor(args: requestArgs, level: number, knexInstance?: Knex | Knex.Transaction) {
+    constructor(ctx: ParameterizedContext, args: requestArgs, level: number, knexInstance?: Knex | Knex.Transaction) {
+        this.ctx = ctx;
         this.args = args;
-        this.level = level ? level : 0;
-
-        if (level == 0) {
-            Common.error = undefined;
-        }
-        this.level = level + 1;
+        this.level = level + 1 ? level : 1;
         this.logger = new logClass(args.debug, this.level);
         this.logger.head(`class common [${this.constructor.name}] (${this.level})`);
 
@@ -44,11 +40,6 @@ export class Common {
                 ? `proxy/${this.args.version}/${this.constructor.name}`
                 : `http://${this.args.baseUrl}/${this.args.version}/${this.constructor.name}`;
     }
-    // Set Error Message for exiting
-    setError(error: Error): void {
-        if (this.args.debug) console.error(error);
-        Common.error = error;
-    }
 
     // create a blank ReturnResult
     formatReturnResult(args: Record<string, unknown>): ReturnResult {
@@ -59,17 +50,11 @@ export class Common {
             entity: this.entityProperty,
             nextLink: args.nextLink ? (args.nextLink as string) : undefined,
             prevLink: args.prevLink ? (args.prevLink as string) : undefined,
-            error: undefined,
             result: undefined,
             value: undefined,
             body: undefined,
             total: undefined
         };
-
-        if (Common.error) {
-            this.logger.error(Common.error.message);
-            args = { error: Common.error };
-        }
 
         Object.keys(args).forEach((element: string) => {
             result[element] = args[element];
@@ -81,6 +66,11 @@ export class Common {
     isObject(test: keyValue): boolean {
         return test && typeof test === "object" && test.length > 0;
     }
+
+    extractMessageError = (input: string): string => {
+        const temp = input.split("-");
+        return input.length === 0 ? input : temp[temp.length - 1].trim();
+    };
 
     async formatLineResult(input: keyValue): Promise<keyValue | undefined> {
         this.logger.head(`class common formatLineResult [${this.constructor.name}]`);
@@ -133,7 +123,7 @@ export class Common {
                                         newArgs.odada.includes[index].navigationProperty =
                                             this.args.odada && this.args.odada && tempTab ? tempTab.slice(1).join("/") : "";
                                     }
-                                    const subEntity = new entities[subEntityName](newArgs, this.level);
+                                    const subEntity = new entities[subEntityName](this.ctx, newArgs, this.level);
                                     const singular: boolean = element == _ENTITIES[subEntityName].singular;
                                     const relation: relationConfig = this.entityProperty.relations[element];
                                     let myId: bigint[] = [];
@@ -155,8 +145,8 @@ export class Common {
 
                                             whereRaw = `id IN (${myId})`;
                                         } catch (error) {
-                                            this.setError(error.message);
                                             whereRaw = "";
+                                            this.ctx.throw(400, { detail: error.message });
                                         }
                                     } else if (relation.tableName != this.entityProperty.table && !getEntityName(relation.tableName)) {
                                         this.logger.debug(`Table Association for ${expandName} : `, element);
@@ -169,8 +159,8 @@ export class Common {
 
                                             whereRaw = `id IN (${myId})`;
                                         } catch (error) {
-                                            this.setError(error.message);
                                             whereRaw = "";
+                                            this.ctx.throw(400, { detail: error.message });
                                         }
                                     }
                                     const results = await subEntity.getWhereFormat(whereRaw);
@@ -260,7 +250,7 @@ export class Common {
             const id: bigint | undefined = getId(this.args.entities[0]);
             if (entity && id) {
                 // const subEntity = new entities[entity.name]({ ...this.args });
-                const subEntity = new entities[entity.name]({ ...this.args }, this.level);
+                const subEntity = new entities[entity.name](this.ctx, { ...this.args }, this.level);
                 const result: ReturnResult | undefined = await subEntity.getSingle(id, "id", true);
                 if (result && result.body && result.id && result.id > 0) {
                     this.logger.debug("Found Id : ", result.id.toString());
@@ -275,8 +265,7 @@ export class Common {
                         this.logger.error("No relation resolving");
                     }
                 } else {
-                    this.logger.error("No id for : ", this.args.entities[0]);
-                    return undefined;
+                    this.ctx.throw(400, { detail: `No id for : ${this.args.entities[0]}` });
                 }
             } else {
                 return undefined;
@@ -320,8 +309,7 @@ export class Common {
             const results = await Common.dbContext(this.entityProperty.table).whereRaw(condition);
             return results ? await this.formatResult(results) : undefined;
         } catch (error) {
-            this.setError(error.message);
-            return undefined;
+            this.ctx.throw(400, { detail: error.message });
         }
     }
 
@@ -360,7 +348,7 @@ export class Common {
                 if (relations) {
                     const column: string | undefined = relationName;
                     if (column && relationName) {
-                        const mySubEntity = new entities[relationName]({ ...this.args }, this.level);
+                        const mySubEntity = new entities[relationName](this.ctx, { ...this.args }, this.level);
                         const column = relationName;
                         const results = await mySubEntity.getWhereFormat(`"${column}"=${resultId.id}`);
                         if (results) {
@@ -391,9 +379,7 @@ export class Common {
                     }
                 }
             } catch (error) {
-                // this.setError(error, error.statusCode, error.message.includes(" - ") ? error.message.split("-")[1].trim() : error.message);
-                this.setError(error);
-                return this.formatReturnResult({});
+                this.ctx.throw(400, { detail: this.extractMessageError(error.message) });
             }
         }
     }
@@ -404,7 +390,7 @@ export class Common {
         const testIfId = await this.verifyIdExist(idInput);
 
         if (testIfId === false) {
-            return undefined;
+            this.ctx.throw(404, { detail: `No id found for : ${idInput}` });
         }
 
         if (dataInput) {
@@ -425,11 +411,11 @@ export class Common {
                     }
                 }
             } catch (error) {
-                this.setError(error);
-                return this.formatReturnResult({});
+                console.log(error);
+
+                this.ctx.throw(400, { detail: error.message });
             }
         }
-        return undefined;
     }
 
     async delete(idInput: bigint): Promise<ReturnResult | undefined> {
@@ -441,8 +427,7 @@ export class Common {
                 id: BigInt(results)
             });
         } catch (error) {
-            // this.setError(400, error, error.message.includes(" - ") ? error.message.split("-")[1].trim() : error.message);
-            this.setError(error);
+            this.ctx.throw(400, { detail: error.message });
         }
     }
 

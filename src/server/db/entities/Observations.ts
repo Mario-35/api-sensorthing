@@ -7,14 +7,15 @@
  */
 
 import Knex from "knex";
-import { requestArgs, keyValue, ReturnResult } from "../../constant";
+import { ParameterizedContext } from "koa";
 import { Common } from "./common";
 import { db } from "../../db";
 import { importCsv, renameProp } from "../../utils/index";
+import { keyValue, requestArgs, ReturnResult } from "../../constant";
 
 export class Observations extends Common {
-    constructor(args: requestArgs, level: number, knexInstance?: Knex | Knex.Transaction) {
-        super(args, level, knexInstance);
+    constructor(ctx: ParameterizedContext, args: requestArgs, level: number, knexInstance?: Knex | Knex.Transaction) {
+        super(ctx, args, level, knexInstance);
     }
 
     async add(dataInput: keyValue[]): Promise<ReturnResult | undefined> {
@@ -33,6 +34,12 @@ export class Observations extends Common {
 
                     const filename = extras["file"];
                     const dataStreamId = BigInt(extras["nb"]);
+
+                    const testIfId = await this.verifyIdExist(dataStreamId);
+
+                    if (testIfId === false) {
+                        this.ctx.throw(404, { detail: `No id found for : ${dataStreamId}` });
+                    }
 
                     const tempTable = `temp${Date.now().toString()}`;
 
@@ -61,6 +68,10 @@ export class Observations extends Common {
 
                 const result = await db.table("datastream").where({ id: dataInput["Datastream"]["@iot.id"] }).first();
 
+                if (!result) {
+                    this.ctx.throw(404, { detail: `No id found for : ${dataInput["Datastream"]["@iot.id"]}` });
+                }
+
                 dataInput["dataArray"].forEach((element: keyValue) => {
                     const temp: keyValue = {
                         datastream_id: Number(result["id"])
@@ -83,8 +94,7 @@ export class Observations extends Common {
                         results.push(this.linkBase + "(" + element + ")");
                     });
                 } catch (error) {
-                    // this.setError(error.message.includes(" - ") ? error.message.split("-")[1].trim() : error.message, error.name);
-                    this.setError(error);
+                    this.ctx.throw(400, { detail: error.message });
                 }
             }
             if (results) {

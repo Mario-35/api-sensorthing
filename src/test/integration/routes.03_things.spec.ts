@@ -489,6 +489,8 @@ describe("routes : Thing [8.2.1]", () => {
                     }
                 })
                 .end((err: any, res: any) => {
+                    console.log(res.body);
+
                     should.not.exist(err);
                     res.status.should.equal(404);
                     res.type.should.equal("application/json");

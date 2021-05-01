@@ -18,9 +18,14 @@ import fs from "fs";
 
 const router: Router = new Router();
 
-const extractMessageError = (input: string): string => {
-    return input.includes("-") ? input.split("-")[1].trim() : input;
-};
+// const extractMessageError = (input: string): string => {
+//     console.log("=======================================");
+
+//     const temp = input.split("-");
+//     console.log(temp);
+
+//     return input.length === 0 ? input : temp[temp.length - 1].trim();
+// };
 
 const convertToCsv = (inputDatas: keyValue | keyValue[] | undefined): string => {
     const opts = { delimiter: ";", includeEmptyRows: true, escapedQuote: "" };
@@ -150,17 +155,11 @@ router.post("/(.*)", async (ctx) => {
                 ctx.body = results;
             } else {
                 const objectAccess = new apiAccess(ctx, args);
-                const result: ReturnResult | undefined | void = await objectAccess.add().catch((error) => console.error(error));
+                const result: ReturnResult | undefined | void = await objectAccess.add();
                 if (result) {
-                    if (result.error) {
-                        ctx.throw(400, { detail: args.debug ? result.error.message : extractMessageError(result.error.message) });
-                    } else {
-                        ctx.type = "application/json";
-                        ctx.status = 201;
-                        ctx.body = result.result ? result.result : result.value;
-                    }
-                } else {
-                    ctx.throw(400);
+                    ctx.type = "application/json";
+                    ctx.status = 201;
+                    ctx.body = result.result ? result.result : result.value;
                 }
             }
         } else {
@@ -184,24 +183,19 @@ router.post("/(.*)", async (ctx) => {
         const args = urlRequestToRequestArgs(ctx, data);
         if (args) {
             const objectAccess = new apiAccess(ctx, args);
-            const result: ReturnResult | undefined | void = await objectAccess.add().catch((error) => console.error(error));
+            const result: ReturnResult | undefined | void = await objectAccess.add();
             if (args.extras) fs.unlinkSync(args.extras.file);
             if (result) {
-                if (result.error) {
-                    // errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${{ detail : extractMessageError(result.error.message) }}`);
-                    ctx.throw(400, { detail: args.debug ? result.error.message : extractMessageError(result.error.message) });
+                if (data["source"] == "query") {
+                    ctx.type = "html";
+                    ctx.body = queryHtml({
+                        ...minimal(ctx),
+                        results: JSON.stringify({ added: result.total, value: result.result })
+                    });
                 } else {
-                    if (data["source"] == "query") {
-                        ctx.type = "html";
-                        ctx.body = queryHtml({
-                            ...minimal(ctx),
-                            results: JSON.stringify({ added: result.total, value: result.result })
-                        });
-                    } else {
-                        ctx.type = "application/json";
-                        ctx.status = 201;
-                        ctx.body = result.result ? result.result : result.value;
-                    }
+                    ctx.type = "application/json";
+                    ctx.status = 201;
+                    ctx.body = result.result ? result.result : result.value;
                 }
             } else {
                 ctx.throw(400);
@@ -223,16 +217,9 @@ router.patch("/(.*)", async (ctx) => {
             if (args.ENTITY_ID) {
                 const result: ReturnResult | undefined | void = isNaN(args.ENTITY_ID) ? undefined : await objectAccess.update(BigInt(args.ENTITY_ID));
                 if (result) {
-                    if (result.error) {
-                        // errorCode(ctx, result.error.code ? result.error.code : 400, result.error.errno, `${{ detail : extractMessageError(result.error.message) }}`);
-                        ctx.throw(400, { detail: args.debug ? result.error.message : extractMessageError(result.error.message) });
-                    } else {
-                        ctx.type = "application/json";
-                        ctx.status = 200;
-                        ctx.body = result.value;
-                    }
-                } else {
-                    ctx.throw(404);
+                    ctx.type = "application/json";
+                    ctx.status = 200;
+                    ctx.body = result.value;
                 }
             } else {
                 ctx.throw(400, { detail: "Id is required" });

@@ -7,11 +7,12 @@
  */
 
 import Knex from "knex";
+import { ParameterizedContext } from "koa";
 import { requestArgs } from "../../constant";
 import { Common } from "./common";
 
 export class Sensors extends Common {
-    constructor(args: requestArgs, level: number, knexInstance?: Knex | Knex.Transaction) {
-        super(args, level, knexInstance);
+    constructor(ctx: ParameterizedContext, args: requestArgs, level: number, knexInstance?: Knex | Knex.Transaction) {
+        super(ctx, args, level, knexInstance);
     }
 }
