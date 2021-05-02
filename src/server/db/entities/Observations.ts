@@ -54,7 +54,7 @@ export class Observations extends Common {
             from "${tempTable}" returning id) select count(*) over () as total, updated.id from updated limit ${
                         process.env.APILIMIT ? Number(process.env.APILIMIT) : 200
                     }`;
-                    const importDatas = await importCsv(Common.dbContext, tempTable, filename, sql);
+                    const importDatas = await importCsv(Common.dbContext, tempTable, filename, sql, this.logger);
 
                     this.logger.info("importCsv OK");
                     total = Number(importDatas.shift());

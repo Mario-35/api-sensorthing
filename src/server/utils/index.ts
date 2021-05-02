@@ -6,9 +6,8 @@
  *
  */
 
-export { urlRequestToRequestArgs } from "./urlRequestToRequestArgs";
+export { urlRequestToArgs } from "./urlRequestToArgs";
 export { logClass } from "./logClass";
-export { createDB } from "./createDB";
 export { asyncForEach } from "./asyncForEach";
 export { getEntityName } from "./getEntityName";
 export { getId } from "./getId";
@@ -17,3 +16,6 @@ export { message } from "./message";
 export { importCsv } from "./importCsv";
 export { upload } from "./upload";
 export { camelCase } from "./camelCase";
+export { host } from "./host";
+export { formatResult } from "./formatResult";
+export { resultBody } from "./resultBody";

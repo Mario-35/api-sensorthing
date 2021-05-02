@@ -9,7 +9,6 @@ require("dotenv").config({ path: process.env.NODE_ENV ? `.env.${process.env.NODE
 process.env.PGDATABASE = process.env.NODE_ENV && process.env.NODE_ENV.trim() == "test" ? "test" : process.env.PGDATABASE || "api";
 
 import Koa, { ParameterizedContext } from "koa";
-import favicon from "koa-favicon";
 import bodyParser from "koa-bodyparser";
 import session from "koa-session";
 import passport from "koa-passport";
@@ -18,16 +17,13 @@ import json from "koa-json";
 import authRoutes from "./routes/auth";
 import allRoutes from "./routes/all";
 import cors from "@koa/cors";
-import { createDB } from "./utils";
+import { createDB } from "./db/createDB";
 import { db } from "./db";
 import { message } from "./utils";
 
 const PORT = process.env.PORT || 8029;
 
 const app = new Koa();
-
-// favicon
-app.use(favicon(__dirname + "/favicon.ico"));
 
 app.use(async (ctx: ParameterizedContext, next) => {
     try {

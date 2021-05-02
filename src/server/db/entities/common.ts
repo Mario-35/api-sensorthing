@@ -113,7 +113,6 @@ export class Common {
                         await asyncForEach(this.args.odada.includes, async (expand: PGVisitor, index: number) => {
                             const tempTab: string[] | undefined = expand.navigationProperty.split("/");
                             const expandName: string | undefined = tempTab ? tempTab[0] : undefined;
-
                             if (expandName && expandName.includes(element)) {
                                 this.logger.debug(`Expand for ${expandName}`, element);
                                 const subEntityName = getEntityName(element);
@@ -130,7 +129,6 @@ export class Common {
                                     let whereRaw = `${relation.columnRelation} = ${BigInt(input["@iot.id"])}`;
                                     if (relation.tableName == this.entityProperty.table) {
                                         myId = [BigInt(input[relation.entityColumn])];
-
                                         whereRaw = `${relation.columnRelation} = ${myId}`;
                                     } else if (
                                         subEntity.entityProperty.relations &&

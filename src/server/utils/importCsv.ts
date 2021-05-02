@@ -8,18 +8,23 @@
 
 import Knex from "knex";
 import { Pool, PoolClient } from "pg";
-
-/**
- *
- * @param inputFile string of filename
- */
-
 import fs from "fs";
 import copyFrom from "pg-copy-streams";
+import { logClass } from "./logClass";
 
 const columns: string[] = ["date", "hour", "value"];
 
-export const importCsv = async (knex: Knex | Knex.Transaction, tableName: string, filename: string, sql: string): Promise<string[]> => {
+/**
+ *
+ * @param knex knex transaction
+ * @param tableName tempTableName
+ * @param filename csv file to import
+ * @param sql SQL request to import
+ * @param logger logger instance
+ * @returns results infos
+ */
+
+export const importCsv = async (knex: Knex | Knex.Transaction, tableName: string, filename: string, sql: string, logger: logClass): Promise<string[]> => {
     const results: string[] = [];
     const pool = new Pool({
         host: process.env.PGHOST,
@@ -32,7 +37,6 @@ export const importCsv = async (knex: Knex | Knex.Transaction, tableName: string
 
     const cleanup = () => {
         pool.end();
-        // process.exit();
     };
 
     await knex.schema.createTable(tableName, (table) => {
@@ -45,27 +49,27 @@ export const importCsv = async (knex: Knex | Knex.Transaction, tableName: string
     await new Promise<any>((resolve, reject) => {
         pool.connect((err: Error, client: PoolClient) => {
             if (err) {
-                console.log("pool.connect error:", err);
+                logger.error("pool.connect error:", err);
                 return;
             }
 
             const stream = client.query(copyFrom.from(copyCommand));
             const fileStream = fs.createReadStream(filename);
 
-            fileStream.on("error", (err) => {
-                console.log("fileStream error", err);
+            fileStream.on("error", (err: Error) => {
+                logger.error("fileStream error", err);
                 cleanup();
                 reject(err);
             });
 
             fileStream.on("error", (err: Error) => {
-                console.log("streamError", err);
+                logger.error("streamError", err);
                 cleanup();
             });
             fileStream.on("end", async () => {
-                process.stdout.write(`COPY TO ${tableName}\r`);
+                logger.info(`COPY TO ${tableName}`);
                 const res = await client.query(sql);
-                process.stdout.write("SQL Executing Ok\r");
+                logger.info("SQL Executing Ok");
                 // ATTENTION the first value is total lines updated
                 results.push(res.rows[0].total);
                 res.rows

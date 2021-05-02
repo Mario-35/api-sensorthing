@@ -8,85 +8,32 @@
 
 import Router from "koa-router";
 import { apiAccess } from "../db/dataAccess";
-import { _ENTITIES, ReturnResult, formatResult, keyValue, requestArgs, keyString } from "../constant";
-import { urlRequestToRequestArgs, createDB, upload } from "../utils/";
+import { _ENTITIES, ReturnResult, formatsResult, keyValue, keyString } from "../constant";
+import { urlRequestToArgs, upload, host, formatResult, resultBody } from "../utils/";
 import { ParameterizedContext } from "koa";
-import { Parser } from "json2csv";
 import { queryHtml } from "../query/";
 import { helperUsers } from "./_helpers";
 import fs from "fs";
+import { createDB } from "../db/createDB";
 
 const router: Router = new Router();
 
-// const extractMessageError = (input: string): string => {
-//     console.log("=======================================");
-
-//     const temp = input.split("-");
-//     console.log(temp);
-
-//     return input.length === 0 ? input : temp[temp.length - 1].trim();
-// };
-
-const convertToCsv = (inputDatas: keyValue | keyValue[] | undefined): string => {
-    const opts = { delimiter: ";", includeEmptyRows: true, escapedQuote: "" };
-    if (inputDatas)
-        try {
-            const parser = new Parser(opts);
-            const csv = parser.parse(inputDatas);
-            return csv;
-        } catch (err) {
-            console.error(err);
-            return err.message;
-        }
-    return "No datas";
-};
-
-const returnType = (args: requestArgs): string => {
-    switch (args.formatResult) {
-        case formatResult.CSV: {
-            return "text/csv";
-        }
-        case formatResult.TXT: {
-            return "text/plain";
-        }
-        default: {
-            return "application/json";
-        }
-    }
-};
-
-const returnBody = (args: requestArgs, input: string | keyValue | keyValue[]): string | keyValue | keyValue[] => {
-    switch (args.formatResult) {
-        case formatResult.CSV: {
-            return convertToCsv(input as keyValue);
-        }
-        case formatResult.TXT: {
-            return input as string;
-        }
-        default: {
-            return input;
-        }
-    }
-};
-
 const minimal = (ctx: ParameterizedContext): keyString => {
-    const host = ctx.request.headers["x-forwarded-host"] ? ctx.request.headers["x-forwarded-host"] : ctx.request.header.host;
     return {
         user: helperUsers.ensureAuthenticated(ctx) ? "true" : "false",
-        host: host,
+        host: host(ctx),
         version: process.env.APIVERSION || "v1.0",
         ...ctx.query
     };
 };
 
 router.get("/(.*)", async (ctx) => {
-    const host = ctx.request.headers["x-forwarded-host"] ? ctx.request.headers["x-forwarded-host"] : ctx.request.header.host;
     if (ctx.request.url.endsWith(`/${process.env.APIVERSION}/`)) {
         const expectedResponse: Record<string, unknown>[] = [{}];
         Object.keys(_ENTITIES).forEach((value: string) => {
             expectedResponse.push({
                 name: _ENTITIES[value].name,
-                url: `http://${host}/${process.env.APIVERSION}/${value}`
+                url: `http://${host(ctx)}/${process.env.APIVERSION}/${value}`
             });
         });
         ctx.type = "application/json";
@@ -96,15 +43,25 @@ router.get("/(.*)", async (ctx) => {
     } else if (ctx.request.url.toLowerCase().includes("/query")) {
         ctx.type = "html";
         ctx.body = queryHtml(minimal(ctx));
+    } else if (ctx.request.url.toLowerCase().endsWith("favicon.ico")) {
+        try {
+            const icon = fs.readFileSync(__dirname + "/favicon.ico");
+            const cacheControl = `public, max-age=${8640}`;
+            ctx.set("Cache-Control", cacheControl);
+            ctx.type = "image/x-icon";
+            ctx.body = icon;
+        } catch (error) {
+            console.error(error);
+        }
     } else if (ctx.request.url.includes(`/${process.env.APIVERSION}/`)) {
-        const args = urlRequestToRequestArgs(ctx);
+        const args = urlRequestToArgs(ctx);
         if (args && args.ENTITY_NAME != "") {
             const objectAccess = new apiAccess(ctx, args);
             if (args.ENTITY_ID === 0) {
                 const results = await objectAccess.getAll();
                 if (results) {
                     const temp =
-                        args.formatResult == formatResult.JSON
+                        args.formatResult == formatsResult.JSON
                             ? {
                                   "@iot.count": results.id?.toString(),
                                   "@iot.nextLink": results.nextLink,
@@ -112,8 +69,8 @@ router.get("/(.*)", async (ctx) => {
                                   value: results["value"]
                               }
                             : (ctx.body = results["value"]);
-                    ctx.type = returnType(args);
-                    ctx.body = returnBody(args, temp as keyValue);
+                    ctx.type = formatResult(args);
+                    ctx.body = resultBody(args, temp as keyValue);
                 } else {
                     // element does not exist
                     ctx.throw(404);
@@ -127,8 +84,8 @@ router.get("/(.*)", async (ctx) => {
                 );
 
                 if (results && results.body) {
-                    ctx.type = returnType(args);
-                    ctx.body = returnBody(args, results.body);
+                    ctx.type = formatResult(args);
+                    ctx.body = resultBody(args, results.body);
                 } else {
                     ctx.throw(404, { detail: `id : ${args.ENTITY_ID} not found` });
                 }
@@ -139,7 +96,7 @@ router.get("/(.*)", async (ctx) => {
             ctx.throw(400, { detail: "No entity found" });
         }
     } else {
-        ctx.throw(404);
+        returnNoRoute();
     }
 });
 
@@ -147,7 +104,7 @@ router.post("/(.*)", async (ctx) => {
     if (!helperUsers.ensureAuthenticated(ctx)) {
         ctx.throw(401);
     } else if (ctx.request.type.startsWith("application/json") && Object.keys(ctx.request.body).length > 0) {
-        const args = urlRequestToRequestArgs(ctx);
+        const args = urlRequestToArgs(ctx);
         if (args) {
             if (args.ENTITY_NAME == "createDB" && ctx) {
                 const results = await createDB(ctx.request.body, ctx);
@@ -180,7 +137,7 @@ router.post("/(.*)", async (ctx) => {
 
         const data = await getDatas();
 
-        const args = urlRequestToRequestArgs(ctx, data);
+        const args = urlRequestToArgs(ctx, data);
         if (args) {
             const objectAccess = new apiAccess(ctx, args);
             const result: ReturnResult | undefined | void = await objectAccess.add();
@@ -211,7 +168,7 @@ router.patch("/(.*)", async (ctx) => {
     if (!helperUsers.ensureAuthenticated(ctx)) {
         ctx.throw(401);
     } else if (Object.keys(ctx.request.body).length > 0) {
-        const args = await urlRequestToRequestArgs(ctx);
+        const args = await urlRequestToArgs(ctx);
         if (args) {
             const objectAccess = new apiAccess(ctx, args);
             if (args.ENTITY_ID) {
@@ -234,7 +191,7 @@ router.delete("/(.*)", async (ctx) => {
     if (!helperUsers.ensureAuthenticated(ctx)) {
         ctx.throw(401);
     } else {
-        const args = await urlRequestToRequestArgs(ctx);
+        const args = await urlRequestToArgs(ctx);
         if (args) {
             const objectAccess = new apiAccess(ctx, args);
             if (args && args.ENTITY_ID) {
@@ -253,5 +210,9 @@ router.delete("/(.*)", async (ctx) => {
         }
     }
 });
+
+function returnNoRoute(): void {
+    throw new Error("Function not implemented.");
+}
 
 export default router.routes();

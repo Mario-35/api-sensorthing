@@ -7,14 +7,12 @@
  */
 
 import knex from "knex";
-import { asyncForEach } from "./index";
-
-import { triggers, databaseDatas } from "./datas";
-
+import { asyncForEach } from "../utils/index";
+import { triggers, databaseDatas } from "../utils/datas";
 import { ParameterizedContext } from "koa";
 import { connectionDB } from "../constant";
-import { IUser } from "../db/interfaces";
-import { userAccess } from "../db/dataAccess/";
+import { IUser } from "./interfaces";
+import { userAccess } from "./dataAccess";
 
 /**
  *

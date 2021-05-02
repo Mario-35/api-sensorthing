@@ -1,12 +1,12 @@
 /**
- * urlRequestToRequestArgs.
+ * urlRequestToArgs.
  *
  * @copyright 2020-present Inrae
  * @author mario.adam@inrae.fr
  *
  */
 
-import { requestArgs, _ENTITIES, IEntityProperty, formatResult, keyString } from "../constant";
+import { requestArgs, _ENTITIES, IEntityProperty, formatsResult, keyString } from "../constant";
 import { createQuery } from "./odata";
 import { ParameterizedContext } from "koa";
 import { logClass } from "./logClass";
@@ -31,7 +31,7 @@ const getEntityNameFromString = (input: string): string | undefined => {
     return undefined;
 };
 
-export const urlRequestToRequestArgs = (ctx: ParameterizedContext, extras?: keyString): requestArgs | undefined => {
+export const urlRequestToArgs = (ctx: ParameterizedContext, extras?: keyString): requestArgs | undefined => {
     // URI Pattern: SERVICE_ROOT_URI/ENTITY_NAME(KEY_OF_THE_ENTITY)/LINK_NAME/$ref
     // URI Pattern: SERVICE_ROOT_URI/ENTITY_NAME(ENTITY_ID)/PROPERTY_NAME/$value
     const debug: boolean = ctx.request.url.includes("-debug-");
@@ -47,11 +47,11 @@ export const urlRequestToRequestArgs = (ctx: ParameterizedContext, extras?: keyS
         }
     };
 
-    const getFormat = (): formatResult => {
-        if (cleanStr.includes("$value")) return formatResult.TXT;
-        if (testFormat == "CSV") return formatResult.CSV;
-        if (testFormat == "TXT") return formatResult.TXT;
-        return formatResult.JSON;
+    const getFormat = (): formatsResult => {
+        if (cleanStr.includes("$value")) return formatsResult.TXT;
+        if (testFormat == "CSV") return formatsResult.CSV;
+        if (testFormat == "TXT") return formatsResult.TXT;
+        return formatsResult.JSON;
     };
 
     const testFormat = getOneArg("resultFormat");

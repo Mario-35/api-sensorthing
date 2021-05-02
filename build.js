@@ -151,7 +151,7 @@ copyFileSync( "./src/server/query/query.html", "build/query/" );
 copyFileSync( "./src/server/query/query.js", "build/query/" );
 copyFileSync( "./.env", "build/" );
 copyFileSync( "./.env", "build/" );
-copyFileSync( "./src/server/favicon.ico", "build/" );
+copyFileSync( "./src/server/routes/favicon.ico", "build/routes/" );
 
 const packageJson = require("./package.json");
 delete packageJson.scripts;

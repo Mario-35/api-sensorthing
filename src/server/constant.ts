@@ -25,7 +25,7 @@ export interface keyValue {
     [key: string]: string | number | bigint | keyValue | keyValue[] | ReturnResult;
 }
 
-export enum formatResult {
+export enum formatsResult {
     JSON,
     CSV,
     TXT
@@ -42,7 +42,7 @@ export interface requestArgs {
     entities: string[];
     odada: PGVisitor;
     debug: boolean;
-    formatResult: formatResult;
+    formatResult: formatsResult;
     extras: keyString | undefined;
 }
 
