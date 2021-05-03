@@ -22,10 +22,10 @@ export class apiAccess implements DataAccessInterface {
     readonly logger: logClass;
     static trxProvider = db.transactionProvider();
 
-    constructor(ctx: ParameterizedContext, args: requestArgs) {
+    constructor(ctx: ParameterizedContext, args: requestArgs, logger: logClass) {
         this.ctx = ctx;
         this.args = args;
-        this.logger = new logClass(args.debug, 0);
+        this.logger = logger;
         this.logger.head(`class ${this.constructor.name}`);
 
         if (args.ENTITY_NAME in entities) {

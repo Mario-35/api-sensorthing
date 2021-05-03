@@ -10,6 +10,8 @@
 import chalk from "chalk";
 
 export class logClass {
+    static line: string;
+    static count = 0;
     silent: boolean;
     level: number;
 
@@ -19,18 +21,29 @@ export class logClass {
     }
 
     head(input: string): void {
-        if (!this.silent) console.log(" ".repeat(this.level * 2) + `${chalk.green("==========")} ${chalk.blue(input)} ${chalk.green("==========")}`);
+        const temp = " ".repeat(this.level * 2) + `${chalk.green("==========")} ${chalk.blue(input)} ${chalk.green("==========")}`;
+        if (!this.silent) {
+            if (temp == logClass.line) {
+                process.stdout.write(`\r${temp} (${logClass.count++})`);
+            } else {
+                process.stdout.write("\n" + temp);
+                logClass.count = 0;
+            }
+            logClass.line = temp;
+        }
     }
 
     info(title: string, value?: any): void {
-        if (!this.silent) console.log(" ".repeat(this.level * 2) + `${chalk.magenta(title)} ${value ? ":" : ""} ${value ? chalk.white(value) : ""}`);
+        if (!this.silent)
+            process.stdout.write(" ".repeat(this.level * 2) + `${chalk.magenta(title)} ${value ? ":" : ""} ${value ? chalk.white(value) : ""}` + "\n");
     }
 
     debug(title: string, value?: any): void {
-        if (!this.silent) console.log(" ".repeat(this.level * 2) + `${chalk.green(title)} ${value ? ":" : ""} ${value ? chalk.yellow(value) : ""}`);
+        if (!this.silent)
+            process.stdout.write(" ".repeat(this.level * 2) + `${chalk.green(title)} ${value ? ":" : ""} ${value ? chalk.yellow(value) : ""}` + "\n");
     }
 
     error(title: string, value?: any): void {
-        if (!this.silent) console.log(" ".repeat(this.level * 2) + `${chalk.red(title)} : ${chalk.yellow(value)}`);
+        if (!this.silent) process.stdout.write(" ".repeat(this.level * 2) + `${chalk.red(title)} : ${chalk.yellow(value)}` + "\n");
     }
 }

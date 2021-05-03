@@ -9,7 +9,7 @@
 import Router from "koa-router";
 import { apiAccess } from "../db/dataAccess";
 import { _ENTITIES, ReturnResult, formatsResult, keyValue, keyString, returnFormat } from "../constant";
-import { urlRequestToArgs, upload, host, resultBody } from "../utils/";
+import { urlRequestToArgs, upload, host, resultBody, logClass } from "../utils/";
 import { ParameterizedContext } from "koa";
 import { queryHtml } from "../query/";
 import { helperUsers } from "./_helpers";
@@ -56,41 +56,45 @@ router.get("/(.*)", async (ctx) => {
     } else if (ctx.request.url.includes(`/${process.env.APIVERSION}/`)) {
         const args = urlRequestToArgs(ctx);
         if (args && args.ENTITY_NAME != "") {
-            const objectAccess = new apiAccess(ctx, args);
-            if (Number(args.ENTITY_ID) === 0) {
-                const results = await objectAccess.getAll();
-                if (results) {
-                    const temp =
-                        args.formatResult == formatsResult.JSON
-                            ? {
-                                  "@iot.count": results.id?.toString(),
-                                  "@iot.nextLink": results.nextLink,
-                                  "@iot.prevLink": results.prevLink,
-                                  value: results["value"]
-                              }
-                            : (ctx.body = results["value"]);
-                    ctx.type = returnFormat[args.formatResult];
-                    ctx.body = resultBody(args, temp as keyValue);
-                } else {
-                    // element does not exist
-                    ctx.throw(404);
-                }
-            } else if (args.ENTITY_ID && args.ENTITY_ID > 0) {
-                const results: ReturnResult | undefined = await objectAccess.getSingle(
-                    BigInt(args.ENTITY_ID),
-                    args.PROPERTY_NAME,
-                    args.RELATION_NAME,
-                    args.value
-                );
+            const logger = new logClass(args.debug, 0);
+            logger.head(`GET ${process.env.APIVERSION}`);
+            const objectAccess = new apiAccess(ctx, args, logger);
+            if (objectAccess) {
+                if (Number(args.ENTITY_ID) === 0) {
+                    const results = await objectAccess.getAll();
+                    if (results) {
+                        const temp =
+                            args.formatResult == formatsResult.JSON
+                                ? {
+                                      "@iot.count": results.id?.toString(),
+                                      "@iot.nextLink": results.nextLink,
+                                      "@iot.prevLink": results.prevLink,
+                                      value: results["value"]
+                                  }
+                                : (ctx.body = results["value"]);
+                        ctx.type = returnFormat[args.formatResult];
+                        ctx.body = resultBody(args, temp as keyValue);
+                    } else {
+                        // element does not exist
+                        ctx.throw(404);
+                    }
+                } else if (args.ENTITY_ID && args.ENTITY_ID > 0) {
+                    const results: ReturnResult | undefined = await objectAccess.getSingle(
+                        BigInt(args.ENTITY_ID),
+                        args.PROPERTY_NAME,
+                        args.RELATION_NAME,
+                        args.value
+                    );
 
-                if (results && results.body) {
-                    ctx.type = returnFormat[args.formatResult];
-                    ctx.body = resultBody(args, results.body);
+                    if (results && results.body) {
+                        ctx.type = returnFormat[args.formatResult];
+                        ctx.body = resultBody(args, results.body);
+                    } else {
+                        ctx.throw(404, { detail: `id : ${args.ENTITY_ID} not found` });
+                    }
                 } else {
-                    ctx.throw(404, { detail: `id : ${args.ENTITY_ID} not found` });
+                    ctx.throw(400);
                 }
-            } else {
-                ctx.throw(400);
             }
         } else {
             ctx.throw(400, { detail: "No entity found" });
@@ -106,12 +110,15 @@ router.post("/(.*)", async (ctx) => {
     } else if (ctx.request.type.startsWith("application/json") && Object.keys(ctx.request.body).length > 0) {
         const args = urlRequestToArgs(ctx);
         if (args) {
+            const logger = new logClass(args.debug, 0);
             if (args.ENTITY_NAME == "createDB" && ctx) {
+                logger.head("POST createDB");
                 const results = await createDB(ctx.request.body, ctx);
                 returnFormat[formatsResult.JSON];
                 ctx.body = results;
             } else {
-                const objectAccess = new apiAccess(ctx, args);
+                logger.head("POST JSON");
+                const objectAccess = new apiAccess(ctx, args, logger);
                 const result: ReturnResult | undefined | void = await objectAccess.add();
                 if (result) {
                     returnFormat[formatsResult.JSON];
@@ -134,12 +141,13 @@ router.post("/(.*)", async (ctx) => {
                     });
             });
         };
-
         const data = await getDatas();
-
         const args = urlRequestToArgs(ctx, data);
+
         if (args) {
-            const objectAccess = new apiAccess(ctx, args);
+            const logger = new logClass(args.debug, 0);
+            logger.head("POST FORM");
+            const objectAccess = new apiAccess(ctx, args, logger);
             const result: ReturnResult | undefined | void = await objectAccess.add();
             if (args.extras) fs.unlinkSync(args.extras.file);
             if (result) {
@@ -170,7 +178,9 @@ router.patch("/(.*)", async (ctx) => {
     } else if (Object.keys(ctx.request.body).length > 0) {
         const args = await urlRequestToArgs(ctx);
         if (args) {
-            const objectAccess = new apiAccess(ctx, args);
+            const logger = new logClass(args.debug, 0);
+            logger.head("PATCH");
+            const objectAccess = new apiAccess(ctx, args, logger);
             if (args.ENTITY_ID) {
                 const result: ReturnResult | undefined | void = isNaN(Number(args.ENTITY_ID)) ? undefined : await objectAccess.update(BigInt(args.ENTITY_ID));
                 if (result) {
@@ -193,7 +203,9 @@ router.delete("/(.*)", async (ctx) => {
     } else {
         const args = await urlRequestToArgs(ctx);
         if (args) {
-            const objectAccess = new apiAccess(ctx, args);
+            const logger = new logClass(args.debug, 0);
+            logger.head("DELETE");
+            const objectAccess = new apiAccess(ctx, args, logger);
             if (args && args.ENTITY_ID) {
                 const result = await objectAccess.delete(BigInt(args.ENTITY_ID));
                 if (result && result.id && result.id > 0) {
