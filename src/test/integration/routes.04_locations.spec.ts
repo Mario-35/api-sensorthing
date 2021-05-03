@@ -106,25 +106,34 @@ describe("routes : Locations", () => {
         });
 
         it("Retrieve Locations of a specific Thing", (done) => {
-            const infos = {
-                api: `{get} /Things(5)/${entity.name}(:id) [${++index}] specific Thing.`,
-                apiName: `GetAllFromThing${entity.name}`,
-                apiDescription: "Retrieve Locations of a specific Thing.",
-                apiExample: `/v1.0/Things(5)/${entity.name}`,
-                apiSuccess: ["{number} id @iot.id", "{relation} selfLink @iot.selfLink", ...success]
-            };
-            chai.request(server)
-                .get(infos.apiExample)
-                .end((err, res) => {
-                    should.not.exist(err);
-                    res.status.should.equal(200);
-                    res.type.should.equal("application/json");
-                    res.body.value.length.should.eql(5);
-                    res.body.should.include.keys("@iot.count", "value");
-                    res.body.value[0].should.include.keys(entity.testsKeys);
-                    res.body.value = [res.body.value[0], res.body.value[1], "..."];
-                    addToApiDoc({ ...infos, result: res });
-                    done();
+            db("thing_location")
+                .count()
+                .where({ thing_id: 5 })
+                .then((res) => {
+                    const nb = Number(res[0].count);
+                    const infos = {
+                        api: `{get} /Things(5)/${entity.name}(:id) [${++index}] specific Thing.`,
+                        apiName: `GetAllFromThing${entity.name}`,
+                        apiDescription: "Retrieve Locations of a specific Thing.",
+                        apiExample: `/v1.0/Things(5)/${entity.name}`,
+                        apiSuccess: ["{number} id @iot.id", "{relation} selfLink @iot.selfLink", ...success]
+                    };
+                    chai.request(server)
+                        .get(infos.apiExample)
+                        .end((err, res) => {
+                            should.not.exist(err);
+                            res.status.should.equal(200);
+                            res.type.should.equal("application/json");
+                            res.body.value.length.should.eql(nb);
+                            res.body.should.include.keys("@iot.count", "value");
+                            res.body.value[0].should.include.keys(entity.testsKeys);
+                            res.body.value = [res.body.value[0], res.body.value[1], "..."];
+                            addToApiDoc({ ...infos, result: res });
+                            done();
+                        });
+                })
+                .catch((err: Error) => {
+                    console.log(err);
                 });
         });
 

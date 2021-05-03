@@ -6,14 +6,12 @@
  *
  */
 
-import { logClass } from "../../utils/";
 import { Common } from "../entities/common";
 import { requestArgs, ReturnResult, keyValue } from "../../constant";
 import { ParameterizedContext } from "koa";
 
 export interface DataAccessInterface {
     readonly myEntity: Common | undefined;
-    readonly logger: logClass;
     readonly args: requestArgs;
     readonly ctx: ParameterizedContext;
 
@@ -23,5 +21,6 @@ export interface DataAccessInterface {
     update(id: bigint, dataInput: keyValue[] | undefined): Promise<ReturnResult | undefined>;
     delete(id: bigint): Promise<ReturnResult | undefined>;
     addTolog(): Promise<BigInt>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
     updateLog(id: BigInt, datas: any): Promise<void>;
 }

@@ -138,35 +138,35 @@ describe("oData [9.3.3.5.]", () => {
         });
     });
 
-    describe("Math", () => {
-        it("Addition (add) TODO", () => {
-            const filter = "'result' add 5 gt 10";
-            const sql = createFilter(filter); // map $filter OData to pgSql statement
-            expect(sql).eql(sql);
-        });
+    // describe("Math", () => {
+    //     it("Addition (add) TODO", () => {
+    //         const filter = "'result' add 5 gt 10";
+    //         const sql = createFilter(filter); // map $filter OData to pgSql statement
+    //         expect(sql).eql(sql);
+    //     });
 
-        it("Subtraction (sub) TODO", () => {
-            const filter = "'result' add 5 gt 10";
-            const sql = createFilter(filter); // map $filter OData to pgSql statement
-            expect(sql).eql(sql);
-        });
+    //     it("Subtraction (sub) TODO", () => {
+    //         const filter = "'result' add 5 gt 10";
+    //         const sql = createFilter(filter); // map $filter OData to pgSql statement
+    //         expect(sql).eql(sql);
+    //     });
 
-        it("Multiplication (mul) TODO", () => {
-            const filter = "'result' add 5 gt 10";
-            const sql = createFilter(filter); // map $filter OData to pgSql statement
-            expect(sql).eql(sql);
-        });
+    //     it("Multiplication (mul) TODO", () => {
+    //         const filter = "'result' add 5 gt 10";
+    //         const sql = createFilter(filter); // map $filter OData to pgSql statement
+    //         expect(sql).eql(sql);
+    //     });
 
-        it("Division (div) TODO", () => {
-            const filter = "'result' add 5 gt 10";
-            const sql = createFilter(filter); // map $filter OData to pgSql statement
-            expect(sql).eql(sql);
-        });
+    //     it("Division (div) TODO", () => {
+    //         const filter = "'result' add 5 gt 10";
+    //         const sql = createFilter(filter); // map $filter OData to pgSql statement
+    //         expect(sql).eql(sql);
+    //     });
 
-        it("Modulo (mod) TODO", () => {
-            const filter = "'result' add 5 gt 10";
-            const sql = createFilter(filter); // map $filter OData to pgSql statement
-            expect(sql).eql(sql);
-        });
-    });
+    //     it("Modulo (mod) TODO", () => {
+    //         const filter = "'result' add 5 gt 10";
+    //         const sql = createFilter(filter); // map $filter OData to pgSql statement
+    //         expect(sql).eql(sql);
+    //     });
+    // });
 });

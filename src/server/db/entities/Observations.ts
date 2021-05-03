@@ -10,7 +10,7 @@ import Knex from "knex";
 import { ParameterizedContext } from "koa";
 import { Common } from "./common";
 import { db } from "../../db";
-import { importCsv, renameProp } from "../../utils/index";
+import { importCsv, message, renameProp } from "../../utils/index";
 import { keyValue, requestArgs, ReturnResult } from "../../constant";
 
 export class Observations extends Common {
@@ -19,7 +19,7 @@ export class Observations extends Common {
     }
 
     async add(dataInput: keyValue[]): Promise<ReturnResult | undefined> {
-        this.logger.head("class Observations add createObservation");
+        message(this.args.debug, "HEAD", "class Observations add createObservation");
 
         const results: string[] = [];
         let total = 0;
@@ -30,7 +30,7 @@ export class Observations extends Common {
             if (this.args.extras) {
                 const extras = this.args.extras;
                 if (extras["entity"] == "Datastreams" && Number(extras["nb"]) > 0) {
-                    this.logger.info("addFromCsv");
+                    message(this.args.debug, "INFO", "addFromCsv");
 
                     const filename = extras["file"];
                     const dataStreamId = BigInt(extras["nb"]);
@@ -54,9 +54,9 @@ export class Observations extends Common {
             from "${tempTable}" returning id) select count(*) over () as total, updated.id from updated limit ${
                         process.env.APILIMIT ? Number(process.env.APILIMIT) : 200
                     }`;
-                    const importDatas = await importCsv(Common.dbContext, tempTable, filename, sql, this.logger);
+                    const importDatas = await importCsv(Common.dbContext, tempTable, filename, sql, this.args.debug);
 
-                    this.logger.info("importCsv OK");
+                    message(this.args.debug, "INFO", "importCsv OK");
                     total = Number(importDatas.shift());
 
                     importDatas.forEach((element: string) => {

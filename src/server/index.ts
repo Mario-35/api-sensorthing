@@ -7,6 +7,7 @@
  */
 require("dotenv").config({ path: process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env" });
 process.env.PGDATABASE = process.env.NODE_ENV && process.env.NODE_ENV.trim() == "test" ? "test" : process.env.PGDATABASE || "api";
+process.env.PORT = process.env.PORT || "8029";
 
 import Koa, { ParameterizedContext } from "koa";
 import bodyParser from "koa-bodyparser";
@@ -21,15 +22,13 @@ import { createDB } from "./db/createDB";
 import { db } from "./db";
 import { message } from "./utils";
 
-const PORT = process.env.PORT || 8029;
-
 const app = new Koa();
 
+// catch error and format result in JSON
 app.use(async (ctx: ParameterizedContext, next) => {
     try {
         await next();
     } catch (err) {
-        // will only respond with JSON
         ctx.status = err.statusCode || err.status || 500;
         ctx.body = {
             code: err.statusCode,
@@ -38,8 +37,6 @@ app.use(async (ctx: ParameterizedContext, next) => {
         };
     }
 });
-
-// Apply Koa-Body To All Routes
 
 // body parser
 app.use(bodyParser());
@@ -67,21 +64,19 @@ require("./auth");
 app.use(authRoutes);
 app.use(allRoutes);
 
-// server
-message("env", process.env.NODE_ENV, true);
-message("Host", process.env.PGHOST);
-message("Database", process.env.PGDATABASE);
-message("Api version", process.env.APIVERSION);
-message("Port", process.env.PGPORT);
-message("User", process.env.PGUSER);
-message("Listen port", process.env.PORT);
-message("Debug", process.env.DEBUGSQL);
+message(true, "HEAD", "env", process.env.NODE_ENV);
+message(true, "ENV", "Host", process.env.PGHOST);
+message(true, "ENV", "Database", process.env.PGDATABASE);
+message(true, "ENV", "Api version", process.env.APIVERSION);
+message(true, "ENV", "Port", process.env.PGPORT);
+message(true, "ENV", "User", process.env.PGUSER);
+message(true, "ENV", "Listen port", process.env.PORT);
+message(true, "ENV", "Debug", process.env.DEBUGSQL);
 
 // Test database if not exist create it except if test (TDD for createDB)
 db.raw("select 1+1 as result").catch(async (err) => {
     if (err.code == "3D000" && process.env.NODE_ENV && process.env.NODE_ENV.trim() != "test") {
-        // if (err.code == "3D000") {
-        message("create DATABASE", process.env.PGDATABASE);
+        message(true, "ENV", "create DATABASE", process.env.PGDATABASE);
         await createDB({
             host: process.env.PGHOST,
             user: process.env.PGUSER,
@@ -91,6 +86,6 @@ db.raw("select 1+1 as result").catch(async (err) => {
     }
 });
 
-export const server = app.listen(PORT, () => {
-    message("Server listening on port", PORT, true);
+export const server = app.listen(process.env.PORT, () => {
+    message(true, "ENV", "Server listening on port", process.env.PORT);
 });

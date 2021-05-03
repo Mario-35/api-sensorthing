@@ -9,7 +9,7 @@
 import Router from "koa-router";
 import { apiAccess } from "../db/dataAccess";
 import { _ENTITIES, ReturnResult, formatsResult, keyValue, keyString, returnFormat } from "../constant";
-import { urlRequestToArgs, upload, host, resultBody, logClass } from "../utils/";
+import { urlRequestToArgs, upload, hostName, resultBody, message } from "../utils/";
 import { ParameterizedContext } from "koa";
 import { queryHtml } from "../query/";
 import { helperUsers } from "./_helpers";
@@ -21,7 +21,7 @@ const router: Router = new Router();
 const minimal = (ctx: ParameterizedContext): keyString => {
     return {
         user: helperUsers.ensureAuthenticated(ctx) ? "true" : "false",
-        host: host(ctx),
+        host: hostName(ctx),
         version: process.env.APIVERSION || "v1.0",
         ...ctx.query
     };
@@ -33,7 +33,7 @@ router.get("/(.*)", async (ctx) => {
         Object.keys(_ENTITIES).forEach((value: string) => {
             expectedResponse.push({
                 name: _ENTITIES[value].name,
-                url: `http://${host(ctx)}/${process.env.APIVERSION}/${value}`
+                url: `http://${hostName(ctx)}/${process.env.APIVERSION}/${value}`
             });
         });
         ctx.type = returnFormat[formatsResult.JSON];
@@ -51,14 +51,13 @@ router.get("/(.*)", async (ctx) => {
             ctx.type = returnFormat[formatsResult.ICON];
             ctx.body = icon;
         } catch (error) {
-            console.error(error);
+            message(true, "ERROR", error.message);
         }
     } else if (ctx.request.url.includes(`/${process.env.APIVERSION}/`)) {
         const args = urlRequestToArgs(ctx);
         if (args && args.ENTITY_NAME != "") {
-            const logger = new logClass(args.debug, 0);
-            logger.head(`GET ${process.env.APIVERSION}`);
-            const objectAccess = new apiAccess(ctx, args, logger);
+            message(args.debug, "HEAD", `GET ${process.env.APIVERSION}`);
+            const objectAccess = new apiAccess(ctx, args);
             if (objectAccess) {
                 if (Number(args.ENTITY_ID) === 0) {
                     const results = await objectAccess.getAll();
@@ -110,15 +109,14 @@ router.post("/(.*)", async (ctx) => {
     } else if (ctx.request.type.startsWith("application/json") && Object.keys(ctx.request.body).length > 0) {
         const args = urlRequestToArgs(ctx);
         if (args) {
-            const logger = new logClass(args.debug, 0);
             if (args.ENTITY_NAME == "createDB" && ctx) {
-                logger.head("POST createDB");
+                message(args.debug, "HEAD", "POST createDB");
                 const results = await createDB(ctx.request.body, ctx);
                 returnFormat[formatsResult.JSON];
                 ctx.body = results;
             } else {
-                logger.head("POST JSON");
-                const objectAccess = new apiAccess(ctx, args, logger);
+                message(args.debug, "HEAD", "POST JSON");
+                const objectAccess = new apiAccess(ctx, args);
                 const result: ReturnResult | undefined | void = await objectAccess.add();
                 if (result) {
                     returnFormat[formatsResult.JSON];
@@ -136,6 +134,7 @@ router.post("/(.*)", async (ctx) => {
                     .then((data) => {
                         resolve(data);
                     })
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
                     .catch((data: any) => {
                         reject(data);
                     });
@@ -145,9 +144,8 @@ router.post("/(.*)", async (ctx) => {
         const args = urlRequestToArgs(ctx, data);
 
         if (args) {
-            const logger = new logClass(args.debug, 0);
-            logger.head("POST FORM");
-            const objectAccess = new apiAccess(ctx, args, logger);
+            message(args.debug, "HEAD", "POST FORM");
+            const objectAccess = new apiAccess(ctx, args);
             const result: ReturnResult | undefined | void = await objectAccess.add();
             if (args.extras) fs.unlinkSync(args.extras.file);
             if (result) {
@@ -178,9 +176,8 @@ router.patch("/(.*)", async (ctx) => {
     } else if (Object.keys(ctx.request.body).length > 0) {
         const args = await urlRequestToArgs(ctx);
         if (args) {
-            const logger = new logClass(args.debug, 0);
-            logger.head("PATCH");
-            const objectAccess = new apiAccess(ctx, args, logger);
+            message(args.debug, "HEAD", "PATCH");
+            const objectAccess = new apiAccess(ctx, args);
             if (args.ENTITY_ID) {
                 const result: ReturnResult | undefined | void = isNaN(Number(args.ENTITY_ID)) ? undefined : await objectAccess.update(BigInt(args.ENTITY_ID));
                 if (result) {
@@ -203,9 +200,8 @@ router.delete("/(.*)", async (ctx) => {
     } else {
         const args = await urlRequestToArgs(ctx);
         if (args) {
-            const logger = new logClass(args.debug, 0);
-            logger.head("DELETE");
-            const objectAccess = new apiAccess(ctx, args, logger);
+            message(args.debug, "HEAD", "DELETE");
+            const objectAccess = new apiAccess(ctx, args);
             if (args && args.ENTITY_ID) {
                 const result = await objectAccess.delete(BigInt(args.ENTITY_ID));
                 if (result && result.id && result.id > 0) {

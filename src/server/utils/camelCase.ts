@@ -1,3 +1,17 @@
+/**
+ * camelCase.
+ *
+ * @copyright 2020-present Inrae
+ * @author mario.adam@inrae.fr
+ *
+ */
+
+/**
+ *
+ * @param input string or string[] to convert
+ * @param pascalCase first char in upperCase useful when => "x" + camelCase("yz") the result will be : xYz
+ */
+
 export const camelCase = (input: string | string[], pascalCase?: boolean): string | string[] => {
     if (!(typeof input === "string" || Array.isArray(input))) {
         throw new TypeError("Expected the input to be `string | string[]`");

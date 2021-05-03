@@ -7,7 +7,7 @@
  */
 
 import knex from "knex";
-import { asyncForEach } from "../utils/index";
+import { asyncForEach, message } from "../utils/index";
 import { triggers, databaseDatas } from "../utils/datas";
 import { ParameterizedContext } from "koa";
 import { connectionDB } from "../constant";
@@ -55,13 +55,6 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
         },
         debug: false
     });
-
-    // await dbAdmin
-    //     .raw("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity  WHERE pg_stat_activity.datname = ? AND pid <> pg_backend_pid()", [
-    //         argsParams.database
-    //     ])
-    //     .then(async () => {
-    //         results["STOP Database"] = "Ok";
     await dbAdmin
         .raw(`DROP Database IF EXISTS ${argsParams.database}`)
         .then(async () => {
@@ -88,35 +81,31 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
                                         .then(() => {
                                             results["Admin connection destroy"] = "Ok";
                                         })
-                                        .catch((e) => {
-                                            console.error(e);
+                                        .catch((err: Error) => {
+                                            message(true, "ERROR", err.message);
                                         });
                                 })
-                                .catch((e) => {
-                                    console.error(e);
+                                .catch((err: Error) => {
+                                    message(true, "ERROR", err.message);
                                 });
                         }
                     });
                 })
-                .catch((e) => {
-                    console.error(e);
+                .catch((err: Error) => {
+                    message(true, "ERROR", err.message);
                 });
         })
-        .catch((e) => {
-            console.error(e);
+        .catch((err: Error) => {
+            message(true, "ERROR", err.message);
         });
-    // })
-    // .catch((e) => {
-    //     console.error(e);
-    // });
 
     await db
         .raw("CREATE EXTENSION IF NOT EXISTS postgis;")
         .then(() => {
             results["Create postgis"] = "Ok";
         })
-        .catch((e) => {
-            console.error(e);
+        .catch((err: Error) => {
+            message(true, "ERROR", err.message);
         });
 
     await asyncForEach(Object.keys(databaseDatas), async (tableName: string) => {
@@ -143,8 +132,8 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
             .then(() => {
                 results[`Create table ${tableName}`] = "Ok";
             })
-            .catch((e) => {
-                console.error(e);
+            .catch((err: Error) => {
+                message(true, "ERROR", err.message);
             });
 
         if (databaseDatas[tableName].hasOwnProperty("indexes")) {
@@ -158,8 +147,8 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
                 .then(() => {
                     results[`Create indexes for ${tableName}`] = "Ok";
                 })
-                .catch((e) => {
-                    console.error(e);
+                .catch((err: Error) => {
+                    message(true, "ERROR", err.message);
                 });
         }
 
@@ -168,8 +157,8 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
             .then(() => {
                 results[`Create comments for ${tableName}`] = "Ok";
             })
-            .catch((e) => {
-                console.error(e);
+            .catch((err: Error) => {
+                message(true, "ERROR", err.message);
             });
 
         if (databaseDatas[tableName].hasOwnProperty("after")) {
@@ -178,8 +167,8 @@ export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedCont
                 .then(() => {
                     results[`Something to do after for ${tableName}`] = "Ok";
                 })
-                .catch((e) => {
-                    console.error(e);
+                .catch((err: Error) => {
+                    message(true, "ERROR", err.message);
                 });
         }
     });

@@ -10,12 +10,11 @@ import Knex from "knex";
 import { requestArgs, IEntityProperty, _ENTITIES, ReturnResult, relationConfig, keyValue } from "../../constant";
 import * as entities from "./index";
 import { PGVisitor } from "../../utils/odata/visitor";
-import { logClass, asyncForEach, getEntityName, getId, renameProp } from "../../utils/index";
+import { asyncForEach, getEntityName, getId, message, renameProp } from "../../utils/index";
 import { ParameterizedContext } from "koa";
 export class Common {
     static dbContext: Knex | Knex.Transaction;
     public level: number | undefined;
-    public logger: logClass;
     public linkBase: string;
     public nextLinkBase: string;
     public entityProperty: IEntityProperty;
@@ -26,8 +25,7 @@ export class Common {
         this.ctx = ctx;
         this.args = args;
         this.level = level + 1 ? level : 1;
-        this.logger = new logClass(args.debug, this.level);
-        this.logger.head(`class common [${this.constructor.name}] (${this.level})`);
+        message(this.args.debug, "HEAD", `class common [${this.constructor.name}] (${this.level})`);
 
         if (knexInstance) Common.dbContext = knexInstance;
 
@@ -48,7 +46,7 @@ export class Common {
 
     // create a blank ReturnResult
     formatReturnResult(args: Record<string, unknown>): ReturnResult {
-        this.logger.head("formatReturnResult");
+        message(this.args.debug, "HEAD", "formatReturnResult");
 
         const result: ReturnResult = {
             id: undefined,
@@ -78,7 +76,7 @@ export class Common {
     };
 
     async formatLineResult(input: keyValue): Promise<keyValue | undefined> {
-        this.logger.head(`class common formatLineResult [${this.constructor.name}]`);
+        message(this.args.debug, "HEAD", `class common formatLineResult [${this.constructor.name}]`);
         const linkBaseId = input["id"] ? `${this.linkBase}(${input["id"].toString()})` : undefined;
 
         input = {
@@ -119,12 +117,10 @@ export class Common {
                             const tempTab: string[] | undefined = expand.navigationProperty.split("/");
                             const expandName: string | undefined = tempTab ? tempTab[0] : undefined;
                             if (expandName && expandName.includes(element)) {
-                                this.logger.debug(`Expand for ${expandName}`, element);
+                                message(this.args.debug, "DEBUG", `Expand for ${expandName}`, element);
                                 const subEntityName = getEntityName(element);
                                 if (subEntityName) {
-                                    console.log("1");
                                     const newArgs = JSON.parse(this.toJson(this.args));
-                                    console.log("2");
                                     if (newArgs && newArgs.odada) {
                                         newArgs.odada.includes[index].navigationProperty =
                                             this.args.odada && this.args.odada && tempTab ? tempTab.slice(1).join("/") : "";
@@ -154,7 +150,7 @@ export class Common {
                                             this.ctx.throw(400, { detail: error.message });
                                         }
                                     } else if (relation.tableName != this.entityProperty.table && !getEntityName(relation.tableName)) {
-                                        this.logger.debug(`Table Association for ${expandName} : `, element);
+                                        message(this.args.debug, "DEBUG", `Table Association for ${expandName} : `, element);
                                         try {
                                             const allIds = await Common.dbContext(relation.tableName)
                                                 .select({ id: relation.columnRelation })
@@ -172,7 +168,7 @@ export class Common {
 
                                     result[element] = singular ? results[0] : results;
                                 } else {
-                                    this.logger.error("No entity for", element);
+                                    message(this.args.debug, "ERROR", "No entity for", element);
                                 }
                             } else {
                                 result[`${element}@iot.navigationLink`] = `${linkBaseId}/${element}`;
@@ -189,7 +185,7 @@ export class Common {
     }
 
     async formatResult(input: keyValue[]): Promise<keyValue[] | undefined> {
-        this.logger.head(`class common formatResult [${this.constructor.name}]`);
+        message(this.args.debug, "HEAD", `class common formatResult [${this.constructor.name}]`);
         if (typeof input === "object") {
             const values: keyValue[] = [];
             const request = async () => {
@@ -207,7 +203,7 @@ export class Common {
     }
 
     async verifyIdExist(idInput: bigint): Promise<boolean> {
-        this.logger.head(`class common verifyIdExist [${this.constructor.name}]`);
+        message(this.args.debug, "HEAD", `class common verifyIdExist [${this.constructor.name}]`);
         const result = await Common.dbContext(this.entityProperty.table).select("id").where({ id: idInput }).first();
         return result ? true : false;
     }
@@ -244,13 +240,11 @@ export class Common {
     }
 
     async getAll(propertyName?: string): Promise<ReturnResult | undefined> {
-        this.logger.head(`class common getAll [${this.constructor.name}]`);
-        // Common.dbContext("get_log").insert({ url: this.args.baseUrl, dateexecuted: Common.dbContext("CURRENT_TIMESTAMP") });
+        message(this.args.debug, "HEAD", `class common getAll [${this.constructor.name}]`);
         const query: Knex.QueryBuilder = Common.dbContext(this.entityProperty.table);
-
         if (this.args.entities.length > 1) {
             const entityName = getEntityName(this.args.entities[0]);
-            this.logger.debug("Found entity : ", entityName);
+            message(this.args.debug, "DEBUG", "Found entity : ", entityName);
             const entity = entityName ? _ENTITIES[entityName] : undefined;
             const id: bigint | undefined = getId(this.args.entities[0]);
             if (entity && id) {
@@ -258,7 +252,7 @@ export class Common {
                 const subEntity = new entities[entity.name](this.ctx, { ...this.args }, this.level);
                 const result: ReturnResult | undefined = await subEntity.getSingle(id, "id", true);
                 if (result && result.body && result.id && result.id > 0) {
-                    this.logger.debug("Found Id : ", result.id.toString());
+                    message(this.args.debug, "DEBUG", "Found Id : ", result.id.toString());
                     if (this.entityProperty.columns.includes(`${entity.table.toLowerCase()}_id`)) {
                         query.where({
                             [`${entity.table.toLowerCase()}_id`]: result.body
@@ -267,7 +261,7 @@ export class Common {
                         const relation: relationConfig = this.entityProperty.relations[entity.name];
                         query.whereRaw(`id in (select ${relation.columnRelation} from ${relation.tableName} where ${relation.entityColumn} = ${result.id})`);
                     } else {
-                        this.logger.error("No relation resolving");
+                        message(this.args.debug, "ERROR", "No relation resolving");
                     }
                 } else {
                     this.ctx.throw(400, { detail: `No id for : ${this.args.entities[0]}` });
@@ -304,12 +298,12 @@ export class Common {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async getWhere(condition: string): Promise<any | undefined> {
-        this.logger.head(`class common getWhere [${this.constructor.name}]`);
+        message(this.args.debug, "HEAD", `class common getWhere [${this.constructor.name}]`);
         return await Common.dbContext(this.entityProperty.table).whereRaw(condition);
     }
 
     async getWhereFormat(condition: string): Promise<keyValue[] | keyValue | undefined> {
-        this.logger.head(`class common getWhereFormat [${this.constructor.name}]`);
+        message(this.args.debug, "HEAD", `class common getWhereFormat [${this.constructor.name}]`);
         try {
             const results = await Common.dbContext(this.entityProperty.table).whereRaw(condition);
             return results ? await this.formatResult(results) : undefined;
@@ -319,7 +313,7 @@ export class Common {
     }
 
     async getSingle(idInput: bigint, propertyName?: string, onlyValue?: boolean): Promise<ReturnResult | undefined> {
-        this.logger.head(`class common getSingle [${this.constructor.name}]`);
+        message(this.args.debug, "HEAD", `class common getSingle [${this.constructor.name}]`);
         const selectColumns: string[] = propertyName ? [propertyName] : this.args.odada.select ? this.convertSelectOdataToKnex(this.args.odada.select) : ["*"];
 
         const results = await Common.dbContext(this.entityProperty.table).select(selectColumns).where({ id: idInput }).first();
@@ -338,8 +332,8 @@ export class Common {
     }
 
     async getRelation(idInput: BigInt | undefined, relationName?: string): Promise<ReturnResult | undefined> {
-        this.logger.head(`class common getRelation [${this.constructor.name}]`);
-        this.logger.debug("RelationName ", relationName);
+        message(this.args.debug, "HEAD", `class common getRelation [${this.constructor.name}]`);
+        message(this.args.debug, "DEBUG", "RelationName ", relationName);
 
         // get the relation id TODO with another than ID
         const resultId = await Common.dbContext(this.entityProperty.table)
@@ -367,7 +361,7 @@ export class Common {
     }
 
     async add(dataInput: keyValue[] | undefined): Promise<ReturnResult | undefined> {
-        this.logger.head(`class Common add [${this.constructor.name}]`);
+        message(this.args.debug, "HEAD", `class Common add [${this.constructor.name}]`);
         if (dataInput) {
             const sql = this.creatAddUpdateQuery(dataInput);
             try {
@@ -390,7 +384,7 @@ export class Common {
     }
 
     async update(idInput: bigint, dataInput: keyValue[] | undefined): Promise<ReturnResult | undefined> {
-        this.logger.head(`class Observations update [${this.constructor.name}]`);
+        message(this.args.debug, "HEAD", `class Observations update [${this.constructor.name}]`);
 
         const testIfId = await this.verifyIdExist(idInput);
 
@@ -416,15 +410,14 @@ export class Common {
                     }
                 }
             } catch (error) {
-                console.log(error);
-
+                message(true, "ERROR", error.message);
                 this.ctx.throw(400, { detail: error.message });
             }
         }
     }
 
     async delete(idInput: bigint): Promise<ReturnResult | undefined> {
-        this.logger.head(`class common delete [${this.constructor.name}]`);
+        message(this.args.debug, "HEAD", `class common delete [${this.constructor.name}]`);
 
         try {
             const results = await Common.dbContext(this.entityProperty.table).del().where({ id: idInput });
@@ -533,7 +526,7 @@ export class Common {
          * @returns result
          */
         const start = (datas: keyValue | keyValue[], entity?: IEntityProperty, parentEntity?: IEntityProperty): keyValue[] | keyValue | undefined => {
-            this.logger.head(`start level ${level++}`);
+            message(this.args.debug, "HEAD", `start level ${level++}`);
 
             const result = {};
             entity = entity ? entity : this.entityProperty;
@@ -608,7 +601,7 @@ export class Common {
              * @param subParentEntity {IEntityProperty} entity parent
              */
             const addAssociation = (subEntity: IEntityProperty, subParentEntity: IEntityProperty) => {
-                this.logger.debug(`addAssociation in ${subEntity.name} for parent`, subParentEntity.name);
+                message(this.args.debug, "DEBUG", `addAssociation in ${subEntity.name} for parent`, subParentEntity.name);
 
                 const relationName = getRelationNameFromEntity(subEntity, subParentEntity);
                 const parentRelationName = getRelationNameFromEntity(subParentEntity, subEntity);
@@ -616,10 +609,10 @@ export class Common {
                 if (parentRelationName && relationName) {
                     const relation = subEntity.relations[relationName];
                     const parentRelation = subParentEntity.relations[parentRelationName];
-                    this.logger.debug(`Found a parent relation in ${subEntity.name}`, subParentEntity.name);
+                    message(this.args.debug, "DEBUG", `Found a parent relation in ${subEntity.name}`, subParentEntity.name);
 
                     if (relation.tableName == parentRelation.tableName && relation.tableName == subEntity.table) {
-                        this.logger.info("Found a relation to do in sub query", subParentEntity.name);
+                        message(this.args.debug, "INFO", "Found a relation to do in sub query", subParentEntity.name);
                         const tableName = names[subEntity.table];
                         const parentTableName = names[subParentEntity.table];
 
@@ -635,7 +628,7 @@ export class Common {
                         if (relation.tableName == subParentEntity.table) {
                             const tableName = names[subEntity.table];
                             const parentTableName = names[subParentEntity.table];
-                            this.logger.info(`Add parent relation ${tableName} in`, parentTableName);
+                            message(this.args.debug, "INFO", `Add parent relation ${tableName} in`, parentTableName);
 
                             addToQueryMaker(
                                 OperationType.Relation,
@@ -648,7 +641,7 @@ export class Common {
                         } else if (relation.tableName != subParentEntity.table && relation.tableName != subEntity.table) {
                             const tableName = names[subEntity.table];
                             const parentTableName = names[subParentEntity.table];
-                            this.logger.info(`Add Table association ${tableName} in`, parentTableName);
+                            message(this.args.debug, "INFO", `Add Table association ${tableName} in`, parentTableName);
                             addToQueryMaker(
                                 OperationType.Association,
                                 relation.tableName,
@@ -665,7 +658,7 @@ export class Common {
                     } else {
                         const tableName = names[subEntity.table];
                         const parentTableName = names[subParentEntity.table];
-                        this.logger.info(`Add Relation ${tableName} in`, parentTableName);
+                        message(this.args.debug, "INFO", `Add Relation ${tableName} in`, parentTableName);
                         addToQueryMaker(
                             OperationType.Table,
                             parentTableName,
@@ -711,16 +704,16 @@ export class Common {
                         // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         Object.entries(datas[key]).forEach(([_key, value]) => {
                             if (entity && parentEntity && Object.keys(entity.relations).includes(key)) {
-                                this.logger.info(`Found a relation for ${entity.name}`, key);
+                                message(this.args.debug, "INFO", `Found a relation for ${entity.name}`, key);
                                 subBlock(key, value as keyValue);
                             } else {
-                                this.logger.info(`data ${key}`, datas[key]);
+                                message(this.args.debug, "INFO", `data ${key}`, datas[key]);
                                 result[key] = datas[key];
                             }
                         });
                     } else if (typeof datas[key] === "object") {
                         if (Object.keys(entity.relations).includes(key)) {
-                            this.logger.debug(`Found a object relation for ${entity.name}`, key);
+                            message(this.args.debug, "DEBUG", `Found a object relation for ${entity.name}`, key);
                             subBlock(key, datas[key]);
                         }
                     } else {
@@ -735,7 +728,7 @@ export class Common {
         // convert entities to property
         if (this.args.entities.length > 1) {
             const entityName = getEntityName(this.args.entities[0]);
-            this.logger.debug("Found entity : ", entityName);
+            message(this.args.debug, "DEBUG", "Found entity : ", entityName);
             const callEntity = entityName ? _ENTITIES[entityName] : undefined;
             const id: bigint | undefined = getId(this.args.entities[0]);
             if (entityName && callEntity && id) {

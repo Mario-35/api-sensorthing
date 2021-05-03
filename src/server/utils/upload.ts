@@ -4,6 +4,7 @@ import util from "util";
 import fs from "fs";
 import { ParameterizedContext } from "koa";
 import { keyString } from "../constant";
+import { message } from ".";
 
 export const upload = (ctx: ParameterizedContext): Promise<keyString> => {
     const data: keyString = {};
@@ -33,7 +34,7 @@ export const upload = (ctx: ParameterizedContext): Promise<keyString> => {
                     data.state = `GET ${chunk.length} bytes`;
                 });
                 file.on("error", (error: Error) => {
-                    console.error(error);
+                    message(true, "ERROR", error.message);
                 });
                 file.on("end", () => {
                     data.state = "UPLOAD FINISHED";
@@ -45,7 +46,7 @@ export const upload = (ctx: ParameterizedContext): Promise<keyString> => {
             data[fieldname] = value;
         });
         busboy.on("error", (error: Error) => {
-            console.error(error);
+            message(true, "ERROR", error.message);
             data.state = "ERROR";
             reject(error);
         });

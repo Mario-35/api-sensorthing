@@ -1,4 +1,5 @@
 import { Parser } from "json2csv";
+import { message } from ".";
 import { formatsResult, keyValue, requestArgs } from "../constant";
 
 const convertToCsv = (inputDatas: keyValue | keyValue[] | undefined): string => {
@@ -8,9 +9,9 @@ const convertToCsv = (inputDatas: keyValue | keyValue[] | undefined): string => 
             const parser = new Parser(opts);
             const csv = parser.parse(inputDatas);
             return csv;
-        } catch (err) {
-            console.error(err);
-            return err.message;
+        } catch (error) {
+            message(true, "ERROR", error.message);
+            return error.message;
         }
     return "No datas";
 };

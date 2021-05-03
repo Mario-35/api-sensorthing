@@ -9,7 +9,6 @@
 import { requestArgs, _ENTITIES, IEntityProperty, formatsResult, keyString } from "../constant";
 import { createQuery } from "./odata";
 import { ParameterizedContext } from "koa";
-import { logClass } from "./logClass";
 import { message } from "./message";
 
 const excludeColumn: string[] = ["id"];
@@ -35,7 +34,6 @@ export const urlRequestToArgs = (ctx: ParameterizedContext, extras?: keyString):
     // URI Pattern: SERVICE_ROOT_URI/ENTITY_NAME(KEY_OF_THE_ENTITY)/LINK_NAME/$ref
     // URI Pattern: SERVICE_ROOT_URI/ENTITY_NAME(ENTITY_ID)/PROPERTY_NAME/$value
     const debug: boolean = ctx.request.url.includes("-debug-");
-    const logger = new logClass(debug, 1);
     // remove parasites char
     let cleanStr = unescape(ctx.request.url.replace("-debug-", "")).replace("/Query", "");
     const getOneArg = (input: string): string | undefined => {
@@ -119,7 +117,7 @@ export const urlRequestToArgs = (ctx: ParameterizedContext, extras?: keyString):
                 result.entities = entities;
                 result.value = ctx.request.url.includes("/$value");
             } else {
-                logger.error("Error");
+                message(true, "ERROR", "Error");
             }
         } else {
             if (splitStr[splitStr.length - 1] == "createDB") {
@@ -127,11 +125,11 @@ export const urlRequestToArgs = (ctx: ParameterizedContext, extras?: keyString):
             }
         }
         if (debug) {
-            Object.keys(result).forEach((elem: string) => message(elem, result[elem]));
+            Object.keys(result).forEach((elem: string) => message(debug, "ENV", elem, result[elem]));
         }
         return result;
     } catch (error) {
-        logger.error(error);
+        message(true, "ERROR", error.message);
         return undefined;
     }
 };

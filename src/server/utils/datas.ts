@@ -36,7 +36,7 @@ CREATE TRIGGER trigger_after_insert_thing_location
   EXECUTE PROCEDURE func_trigger_after_insert_or_update_thing_location();
 `;
 
-// export const databaseDatas: { [key: string]: IEntityPropertyCreate } = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
 export const databaseDatas: any = {
     users: {
         columns: {
