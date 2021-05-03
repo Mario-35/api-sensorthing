@@ -66,7 +66,7 @@ export const urlRequestToArgs = (ctx: ParameterizedContext, extras?: keyString):
     try {
         const result: requestArgs = {
             ENTITY_NAME: "",
-            ENTITY_ID: NaN,
+            ENTITY_ID: undefined,
             PROPERTY_NAME: undefined,
             RELATION_NAME: undefined,
             value: false,
@@ -111,7 +111,7 @@ export const urlRequestToArgs = (ctx: ParameterizedContext, extras?: keyString):
                 : false;
             if (entitiesRequest[index] !== undefined) {
                 result.ENTITY_NAME = entitiesRequest[index].name;
-                result.ENTITY_ID = ENTITY_ID !== null ? Number(ENTITY_ID.join("")) : splitStr[splitStr.length - 1].indexOf("(") === -1 ? 0 : NaN;
+                result.ENTITY_ID = ENTITY_ID !== null ? BigInt(ENTITY_ID.join("")) : splitStr[splitStr.length - 1].indexOf("(") === -1 ? BigInt(0) : undefined;
                 result.PROPERTY_NAME = propertyOrRelationTest ? undefined : propertyOrRelation;
                 result.RELATION_NAME = propertyOrRelationTest ? propertyOrRelation : undefined;
                 result.baseUrl = ctx.request.headers["x-forwarded-host"] ? ctx.request.headers["x-forwarded-host"] : splitStr[0];

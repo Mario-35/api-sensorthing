@@ -41,6 +41,11 @@ export class Common {
                 : `http://${this.args.baseUrl}/${this.args.version}/${this.constructor.name}`;
     }
 
+    // stringify can't serialize bigInt
+    toJson(data: requestArgs): string {
+        return JSON.stringify(data, (_, v) => (typeof v === "bigint" ? `${v}#bigint` : v)).replace(/"(-?\d+)#bigint"/g, (_, a) => a);
+    }
+
     // create a blank ReturnResult
     formatReturnResult(args: Record<string, unknown>): ReturnResult {
         this.logger.head("formatReturnResult");
@@ -117,7 +122,9 @@ export class Common {
                                 this.logger.debug(`Expand for ${expandName}`, element);
                                 const subEntityName = getEntityName(element);
                                 if (subEntityName) {
-                                    const newArgs = JSON.parse(JSON.stringify(this.args));
+                                    console.log("1");
+                                    const newArgs = JSON.parse(this.toJson(this.args));
+                                    console.log("2");
                                     if (newArgs && newArgs.odada) {
                                         newArgs.odada.includes[index].navigationProperty =
                                             this.args.odada && this.args.odada && tempTab ? tempTab.slice(1).join("/") : "";

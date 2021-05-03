@@ -8,8 +8,8 @@
 
 import Router from "koa-router";
 import { apiAccess } from "../db/dataAccess";
-import { _ENTITIES, ReturnResult, formatsResult, keyValue, keyString } from "../constant";
-import { urlRequestToArgs, upload, host, formatResult, resultBody } from "../utils/";
+import { _ENTITIES, ReturnResult, formatsResult, keyValue, keyString, returnFormat } from "../constant";
+import { urlRequestToArgs, upload, host, resultBody } from "../utils/";
 import { ParameterizedContext } from "koa";
 import { queryHtml } from "../query/";
 import { helperUsers } from "./_helpers";
@@ -36,19 +36,19 @@ router.get("/(.*)", async (ctx) => {
                 url: `http://${host(ctx)}/${process.env.APIVERSION}/${value}`
             });
         });
-        ctx.type = "application/json";
+        ctx.type = returnFormat[formatsResult.JSON];
         ctx.body = {
             value: expectedResponse.filter((elem) => Object.keys(elem).length)
         };
     } else if (ctx.request.url.toLowerCase().includes("/query")) {
-        ctx.type = "html";
+        ctx.type = returnFormat[formatsResult.HTML];
         ctx.body = queryHtml(minimal(ctx));
     } else if (ctx.request.url.toLowerCase().endsWith("favicon.ico")) {
         try {
             const icon = fs.readFileSync(__dirname + "/favicon.ico");
             const cacheControl = `public, max-age=${8640}`;
             ctx.set("Cache-Control", cacheControl);
-            ctx.type = "image/x-icon";
+            ctx.type = returnFormat[formatsResult.ICON];
             ctx.body = icon;
         } catch (error) {
             console.error(error);
@@ -57,7 +57,7 @@ router.get("/(.*)", async (ctx) => {
         const args = urlRequestToArgs(ctx);
         if (args && args.ENTITY_NAME != "") {
             const objectAccess = new apiAccess(ctx, args);
-            if (args.ENTITY_ID === 0) {
+            if (Number(args.ENTITY_ID) === 0) {
                 const results = await objectAccess.getAll();
                 if (results) {
                     const temp =
@@ -69,7 +69,7 @@ router.get("/(.*)", async (ctx) => {
                                   value: results["value"]
                               }
                             : (ctx.body = results["value"]);
-                    ctx.type = formatResult(args);
+                    ctx.type = returnFormat[args.formatResult];
                     ctx.body = resultBody(args, temp as keyValue);
                 } else {
                     // element does not exist
@@ -84,7 +84,7 @@ router.get("/(.*)", async (ctx) => {
                 );
 
                 if (results && results.body) {
-                    ctx.type = formatResult(args);
+                    ctx.type = returnFormat[args.formatResult];
                     ctx.body = resultBody(args, results.body);
                 } else {
                     ctx.throw(404, { detail: `id : ${args.ENTITY_ID} not found` });
@@ -108,13 +108,13 @@ router.post("/(.*)", async (ctx) => {
         if (args) {
             if (args.ENTITY_NAME == "createDB" && ctx) {
                 const results = await createDB(ctx.request.body, ctx);
-                ctx.type = "application/json";
+                returnFormat[formatsResult.JSON];
                 ctx.body = results;
             } else {
                 const objectAccess = new apiAccess(ctx, args);
                 const result: ReturnResult | undefined | void = await objectAccess.add();
                 if (result) {
-                    ctx.type = "application/json";
+                    returnFormat[formatsResult.JSON];
                     ctx.status = 201;
                     ctx.body = result.result ? result.result : result.value;
                 }
@@ -150,7 +150,7 @@ router.post("/(.*)", async (ctx) => {
                         results: JSON.stringify({ added: result.total, value: result.result })
                     });
                 } else {
-                    ctx.type = "application/json";
+                    returnFormat[formatsResult.JSON];
                     ctx.status = 201;
                     ctx.body = result.result ? result.result : result.value;
                 }
@@ -172,9 +172,9 @@ router.patch("/(.*)", async (ctx) => {
         if (args) {
             const objectAccess = new apiAccess(ctx, args);
             if (args.ENTITY_ID) {
-                const result: ReturnResult | undefined | void = isNaN(args.ENTITY_ID) ? undefined : await objectAccess.update(BigInt(args.ENTITY_ID));
+                const result: ReturnResult | undefined | void = isNaN(Number(args.ENTITY_ID)) ? undefined : await objectAccess.update(BigInt(args.ENTITY_ID));
                 if (result) {
-                    ctx.type = "application/json";
+                    returnFormat[formatsResult.JSON];
                     ctx.status = 200;
                     ctx.body = result.value;
                 }
@@ -197,7 +197,7 @@ router.delete("/(.*)", async (ctx) => {
             if (args && args.ENTITY_ID) {
                 const result = await objectAccess.delete(BigInt(args.ENTITY_ID));
                 if (result && result.id && result.id > 0) {
-                    ctx.type = "application/json";
+                    returnFormat[formatsResult.JSON];
                     ctx.status = 204;
                 } else {
                     ctx.throw(404);

@@ -28,21 +28,31 @@ export interface keyValue {
 export enum formatsResult {
     JSON,
     CSV,
-    TXT
+    TXT,
+    HTML,
+    ICON
 }
 
+export const returnFormat: { [key in formatsResult]: string } = {
+    [formatsResult.JSON]: "application/json",
+    [formatsResult.CSV]: "text/csv",
+    [formatsResult.TXT]: "text/plain",
+    [formatsResult.HTML]: "html",
+    [formatsResult.ICON]: "image/x-icon"
+};
 export interface requestArgs {
-    ENTITY_NAME: string;
-    ENTITY_ID?: number;
-    PROPERTY_NAME?: string | undefined;
-    RELATION_NAME?: string | undefined;
-    value?: boolean;
+    // elements of request
+    ENTITY_NAME: string; // entity name
+    ENTITY_ID?: bigint; // id
+    PROPERTY_NAME?: string | undefined; // property name
+    RELATION_NAME?: string | undefined; // relation name
+    value?: boolean; // return only value
     baseUrl: string;
-    version: string;
-    entities: string[];
-    odada: PGVisitor;
-    debug: boolean;
-    formatResult: formatsResult;
+    version: string; // version API
+    entities: string[]; // list of entities
+    odada: PGVisitor; // odata serialize
+    debug: boolean; // mode debug ?
+    formatResult: formatsResult; // format result
     extras: keyString | undefined;
 }
 

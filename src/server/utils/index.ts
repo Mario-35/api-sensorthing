@@ -17,5 +17,4 @@ export { importCsv } from "./importCsv";
 export { upload } from "./upload";
 export { camelCase } from "./camelCase";
 export { host } from "./host";
-export { formatResult } from "./formatResult";
 export { resultBody } from "./resultBody";
