@@ -9,6 +9,9 @@ body {
 :before {
     box-sizing: border-box;
 }
+.nothing {
+    display: none;
+}
 .clearfix:after,
 .clearfix:before {
     content: "";
@@ -84,7 +87,7 @@ a {
 .login-form .group .label,
 .login-form .group .input,
 .login-form .group .button {
-    width: 100%;
+    width: 95%;
     color: #fff;
     display: block;
 }
@@ -228,4 +231,109 @@ a {
 .inner {
     display: inline-block;
     width: 35%;
+}
+
+/* Tooltips helpers */
+.tooltip {
+    float: right;
+    top: 2px;
+    left: 7px;
+    position: relative;
+    z-index: 2;
+}
+.tooltip:hover {
+    z-index: 3;
+}
+.tooltip > span {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
+    cursor: help;
+    background-color: #00aeef;
+    position: relative;
+    border-radius: 10px;
+}
+.tooltip .content {
+    opacity: 0;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    font-size: 0.7em;
+    position: absolute;
+    top: 0;
+    left: 20px;
+    padding: 8px;
+    border-radius: 6px;
+    pointer-events: none;
+    transition: 0.2s cubic-bezier(0.1, 0.1, 0.25, 2);
+    -webkit-transition: 0.3s cubic-bezier(0.1, 0.2, 0.5, 2.2);
+    -moz-transition: 0.3s cubic-bezier(0.1, 0.2, 0.5, 2.2);
+}
+.tooltip p {
+    padding: 0;
+}
+.tooltip.down .content {
+    left: auto;
+    right: 0;
+    top: 30px;
+}
+.tooltip:hover .content {
+    opacity: 1;
+    left: 36px;
+}
+.tooltip .content b {
+    height: 0;
+    width: 0;
+    border-color: #333 #333 transparent transparent;
+    border-style: solid;
+    border-width: 9px 7px;
+    position: absolute;
+    left: -14px;
+    top: 8px;
+}
+.tooltip.down .content b {
+    left: auto;
+    right: 6px;
+    top: -10px;
+    border-width: 5px;
+    border-color: transparent #333 #333 transparent;
+}
+
+/* alerts (when validation fails) */
+.alert {
+    float: right;
+    margin: -25px 0 0 375px;
+    padding: 3px 10px;
+    color: #fff;
+    font-size: 0.7em;
+    border-radius: 3px 4px 4px 3px;
+    background-color: #ce5454;
+    max-width: 370px;
+    white-space: pre;
+    position: absolute;
+    left: -15px;
+    opacity: 0;
+    z-index: 1;
+    transition: 0.15s ease-out;
+}
+.alert::after {
+    content: "";
+    display: block;
+    height: 0;
+    width: 0;
+    border-color: transparent #ce5454 transparent transparent;
+    border-style: solid;
+    border-width: 11px 7px;
+    position: absolute;
+    left: -13px;
+    top: 1px;
+}
+.alert {
+    left: 0;
+    opacity: 1;
 }

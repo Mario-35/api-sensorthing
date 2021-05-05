@@ -43,19 +43,52 @@
             <div class="sign-up-htm">
               <div class="group">
                 <label for="user" class="label">Username</label>
-                <input id="regusername" type="text" name="username" class="input">
+                <div class='tooltip help'>
+                  <span>?</span>
+                  <div class='content'>
+                    <b></b>
+                    <p>Name must be at least 2 words</p>
+                  </div>
+                </div>
+                <input id="regusername" type="text" name="username" class="input" value="@value_username@">
+              <b class="@username_alert@"></b>
               </div>
               <div class="group">
                 <label for="pass" class="label">Password</label>
-                <input id="regpass" type="password" name="password" class="input" data-type="password">
+                <div class='tooltip help'>
+                  <span>?</span>
+                  <div class='content'>
+                    <b></b>
+                    <p>At least one number, one lowercase and one uppercase letter, at least six characters that are letters, numbers or the
+                    underscore</p>
+                  </div>
+                </div>
+                <input id="regpass" type="password" name="password" class="input" data-type="password" value="@value_password@">
+                <b class="@password_alert@"></b>
               </div>
               <div class="group">
                 <label for="pass" class="label">Repeat Password</label>
-                <input id="regrepeat" type="password" name="repeat" class="input" data-type="password">
+                <div class='tooltip help'>
+                  <span>?</span>
+                  <div class='content'>
+                    <b></b>
+                    <p>Same as password</p>
+                  </div>
+                </div>
+                <input id="regrepeat" type="password" name="repeat" class="input" data-type="password" value="@value_repeat@">
+                <b class="@repeat_alert@"></b>
               </div>
               <div class="group">
                 <label for="pass" class="label">Email Address</label>
-                <input id="regmail" type="text" name="email" class="input">
+                <div class='tooltip help'>
+                  <span>?</span>
+                  <div class='content'>
+                    <b></b>
+                    <p>A valid email address</p>
+                  </div>
+                </div>
+                <input id="regmail" type="text" name="email" class="input" value="@value_email@">
+                <b class="@email_alert@"></b>
               </div>
 
               <div class="group">

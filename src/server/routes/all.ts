@@ -28,6 +28,9 @@ const minimal = (ctx: ParameterizedContext): keyString => {
 };
 
 router.get("/(.*)", async (ctx) => {
+    /*
+    =============== base (/v1.0) ===============
+    */
     if (ctx.request.url.endsWith(`/${process.env.APIVERSION}/`)) {
         const expectedResponse: Record<string, unknown>[] = [{}];
         Object.keys(_ENTITIES).forEach((value: string) => {
@@ -40,9 +43,15 @@ router.get("/(.*)", async (ctx) => {
         ctx.body = {
             value: expectedResponse.filter((elem) => Object.keys(elem).length)
         };
+        /*
+        =============== Query ===============
+        */
     } else if (ctx.request.url.toLowerCase().includes("/query")) {
         ctx.type = returnFormat[formatsResult.HTML];
         ctx.body = queryHtml(minimal(ctx));
+        /*
+        =============== favicon ===============
+        */
     } else if (ctx.request.url.toLowerCase().endsWith("favicon.ico")) {
         try {
             const icon = fs.readFileSync(__dirname + "/favicon.ico");
@@ -53,6 +62,9 @@ router.get("/(.*)", async (ctx) => {
         } catch (error) {
             message(true, "ERROR", error.message);
         }
+        /*
+        =============== v1.0 ===============
+        */
     } else if (ctx.request.url.includes(`/${process.env.APIVERSION}/`)) {
         const args = urlRequestToArgs(ctx);
         if (args && args.ENTITY_NAME != "") {
@@ -99,13 +111,16 @@ router.get("/(.*)", async (ctx) => {
             ctx.throw(400, { detail: "No entity found" });
         }
     } else {
-        returnNoRoute();
+        ctx.throw(501);
     }
 });
 
 router.post("/(.*)", async (ctx) => {
     if (!helperUsers.ensureAuthenticated(ctx)) {
         ctx.throw(401);
+        /*
+            =============== JSON ===============
+        */
     } else if (ctx.request.type.startsWith("application/json") && Object.keys(ctx.request.body).length > 0) {
         const args = urlRequestToArgs(ctx);
         if (args) {
@@ -127,6 +142,9 @@ router.post("/(.*)", async (ctx) => {
         } else {
             ctx.throw(400);
         }
+        /*
+            =============== FORM (query) ===============
+        */
     } else if (ctx.request.type.startsWith("multipart/form-data")) {
         const getDatas = async (): Promise<keyString> => {
             return new Promise(async (resolve, reject) => {
@@ -218,9 +236,5 @@ router.delete("/(.*)", async (ctx) => {
         }
     }
 });
-
-function returnNoRoute(): void {
-    throw new Error("Function not implemented.");
-}
 
 export default router.routes();
