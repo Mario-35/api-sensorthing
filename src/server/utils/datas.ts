@@ -6,8 +6,6 @@
  *
  */
 
-// import { IEntityPropertyCreate } from "../constant";
-
 /* eslint-disable quotes */
 
 export const triggers = `CREATE OR REPLACE FUNCTION func_trigger_after_insert_or_update_thing_location()

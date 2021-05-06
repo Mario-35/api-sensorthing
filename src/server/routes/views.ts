@@ -1,13 +1,6 @@
 import { keyString } from "../constant";
-
-interface link {
-    href: string;
-    class: string;
-    name: string;
-}
-
 export class CreateHtml {
-    public head = (title: string): string => {
+    private head = (title: string): string => {
         return `
       <head>
       <meta charset="utf-8">
@@ -16,7 +9,13 @@ export class CreateHtml {
       </head>`;
     };
 
-    public foot = (links: link[]): string => {
+    private foot = (
+        links: {
+            href: string;
+            class: string;
+            name: string;
+        }[]
+    ): string => {
         return `  <div class="hr"></div>
             <div id="outer">
               <div class="inner">

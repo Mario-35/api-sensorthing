@@ -13,12 +13,6 @@ export interface keyString {
 }
 
 import { PGVisitor } from "./utils/odata/visitor";
-export interface connectionDB {
-    host: string | undefined;
-    user: string | undefined;
-    password: string | undefined;
-    database: string | undefined;
-}
 
 export type promiseArray = () => Promise<unknown>;
 export interface keyValue {
@@ -56,7 +50,7 @@ export interface requestArgs {
     extras: keyString | undefined;
 }
 
-export interface ResultType {
+interface ResultType {
     result: string[] | string | number | bigint | keyValue[] | keyValue | undefined;
 }
 export interface ReturnResult extends ResultType {
@@ -85,13 +79,6 @@ export interface IEntityProperty {
     relations: { [key: string]: relationConfig };
     constraints?: string[];
     testsKeys: string[];
-}
-
-export interface IEntityPropertyCreate {
-    columns: { [key: string]: { create: string; comment: string } };
-    constraints?: { [key: string]: string };
-    indexes?: { [key: string]: string };
-    after?: string;
 }
 
 export interface IEntityProperties {

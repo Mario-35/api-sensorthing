@@ -10,7 +10,6 @@ import knex from "knex";
 import { asyncForEach, message } from "../utils/index";
 import { triggers, databaseDatas } from "../utils/datas";
 import { ParameterizedContext } from "koa";
-import { connectionDB } from "../constant";
 import { IUser } from "./interfaces";
 import { userAccess } from "./dataAccess";
 
@@ -21,7 +20,15 @@ import { userAccess } from "./dataAccess";
  * @returns log results
  */
 
-export const createDB = async (argsParams: connectionDB, ctx?: ParameterizedContext): Promise<{ [key: string]: string }> => {
+export const createDB = async (
+    argsParams: {
+        host: string | undefined;
+        user: string | undefined;
+        password: string | undefined;
+        database: string | undefined;
+    },
+    ctx?: ParameterizedContext
+): Promise<{ [key: string]: string }> => {
     if (!argsParams || !argsParams.database || !argsParams.host || !argsParams.password || !argsParams.user) {
         return {};
     }
