@@ -9,22 +9,14 @@
 import Router from "koa-router";
 import passport from "koa-passport";
 
-import fs from "fs";
-
 import { userAccess } from "../db/dataAccess/";
 import { helperUsers } from "./_helpers";
 
 import { DefaultState, Context } from "koa";
 import { formatsResult, keyString, returnFormat } from "../constant";
 import { db } from "../db";
+import { CreateHtml } from "./views";
 const router = new Router<DefaultState, Context>();
-const css = fs.readFileSync(__dirname + "/views/auth.css", "utf-8");
-const formField = ["username", "email", "password", "repeat"];
-
-const mergeFileCss = (file: string): string => {
-    const html = fs.readFileSync(file, "utf-8");
-    return html.replace("<style></style>", "<style>" + css + "</style>");
-};
 
 const emailIsValid = (email: string): boolean => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -37,9 +29,9 @@ const checkPassword = (str: string): boolean => {
 };
 
 router.get(["/register", "/api/register"], async (ctx: Context) => {
-    const temp = mergeFileCss(__dirname + "/views/login.html");
+    const createHtml = new CreateHtml();
     ctx.type = returnFormat[formatsResult.HTML];
-    ctx.body = temp.replace("@register@", "checked").replace("@login@", "");
+    ctx.body = createHtml.login({ login: false });
 });
 
 router.post(["/register", "/api/register"], async (ctx: Context, next) => {
@@ -74,9 +66,11 @@ router.post(["/register", "/api/register"], async (ctx: Context, next) => {
     }
 
     if (Object.keys(why).length === 0) {
-        await userAccess.add(ctx.request.body);
-        return await passport.authenticate("local", (err, user, info, status) => {
+        // const newUser = await userAccess.add(ctx.request.body);
+
+        return await passport.authenticate("local", async (err, user, info, status) => {
             if (user) {
+                ctx.status = 200;
                 ctx.login(user);
                 ctx.redirect("/status");
             } else {
@@ -85,26 +79,19 @@ router.post(["/register", "/api/register"], async (ctx: Context, next) => {
             }
         })(ctx, next);
     } else {
-        let temp = mergeFileCss(__dirname + "/views/login.html");
-        formField.forEach((element: string) => {
-            temp = temp.replace(`<b class="@${element}_alert@"></b>`, why[element] ? `<div class='alert'>${why[element]}</div>` : "");
-            temp = temp.replace(`@value_${element}@`, ctx.request.body[element] ? ctx.request.body[element] : "");
-        });
+        const createHtml = new CreateHtml();
         ctx.type = returnFormat[formatsResult.HTML];
-        ctx.body = temp.replace("@register@", "checked").replace("@login@", "");
+        ctx.body = createHtml.login({ login: false, body: ctx.request.body, why: why });
     }
 });
 
 router.get(["/login", "/api/login"], async (ctx) => {
-    if (!helperUsers.ensureAuthenticated(ctx)) {
-        let temp = mergeFileCss(__dirname + "/views/login.html");
-        formField.forEach((element: string) => {
-            temp = temp.replace(`@value_${element}@`, "");
-        });
-        ctx.type = returnFormat[formatsResult.HTML];
-        ctx.body = temp.replace("@register@", "").replace("@login@", "checked");
-    } else {
+    if (helperUsers.ensureAuthenticated(ctx)) {
         ctx.redirect("/status");
+    } else {
+        const createHtml = new CreateHtml();
+        ctx.type = returnFormat[formatsResult.HTML];
+        ctx.body = ctx.body = createHtml.login({ login: true });
     }
 });
 
@@ -133,31 +120,24 @@ router.get(["/logout", "/api/logout"], async (ctx: Context) => {
 
 router.get(["/status", "/api/status"], async (ctx: Context) => {
     if (helperUsers.ensureAuthenticated(ctx)) {
-        const temp = mergeFileCss(__dirname + "/views/status.html");
-        const user = await userAccess.getSingle(ctx.state.user.id);
+        const user = userAccess.getSingle(ctx.state.user.id);
+        const createHtml = new CreateHtml();
         ctx.type = returnFormat[formatsResult.HTML];
-        ctx.body = temp
-            .replace("@username@", user[0].username)
-            .replace("@host@", process.env.PGHOST || "")
-            .replace("@database@", process.env.PGDATABASE || "")
-            .replace("@admin@", user[0].admin == true ? "admin" : "user");
-    } else {
-        ctx.redirect("/login");
-    }
-});
-
-router.get(["/admin", "/api/admin"], async (ctx: Context) => {
-    if (await helperUsers.ensureAdmin(ctx)) {
-        ctx.type = returnFormat[formatsResult.HTML];
-        ctx.body = fs.createReadStream(__dirname + "/views/admin.html");
+        ctx.body = createHtml.status({
+            username: user["username"],
+            host: process.env.PGHOST || "",
+            database: process.env.PGDATABASE || "",
+            admin: user["admin"] == true ? "admin" : "user"
+        });
     } else {
         ctx.redirect("/login");
     }
 });
 
 router.get(["/error", "/api/error"], async (ctx: Context) => {
+    const createHtml = new CreateHtml();
     ctx.type = returnFormat[formatsResult.HTML];
-    ctx.body = mergeFileCss(__dirname + "/views/error.html");
+    ctx.body = createHtml.error("what ?");
 });
 
 export default router.routes();

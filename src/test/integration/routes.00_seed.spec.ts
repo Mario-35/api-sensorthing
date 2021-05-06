@@ -22,7 +22,7 @@ describe("Add for tests.", () => {
                 database: "test"
             })
             .end((err: Error, res: any) => {
-                if (err) console.error(err.message);
+                if (err) console.error(err);
                 should.not.exist(err);
                 res.status.should.equal(200);
                 done();

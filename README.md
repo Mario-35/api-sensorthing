@@ -30,20 +30,22 @@ For views a little :
  ┃ ┃ ┣ db
  ┃ ┃ ┃ ┣ dataAccess "Access datas"
  ┃ ┃ ┃ ┣ entities "Sensorthings entities class"
- ┃ ┃ ┃ ┗ interfaces "Interfaces"
+ ┃ ┃ ┃ ┣ interfaces "Interfaces"
+ ┃ ┃ ┃ ┗ createDB.ts "Create a blank DataBase"
  ┃ ┃ ┣ query "Query Tool"
  ┃ ┃ ┣ routes "Router routes"
  ┃ ┃ ┃ ┣ views "logins html views"
+ ┃ ┃ ┃ ┗ favicon.ico
  ┃ ┃ ┣ utils "Utils for app"
  ┃ ┃ ┃ ┣ odata "Odata Enhanced parser"
+ ┃ ┃ ┣ auth.ts "Author identification"
  ┃ ┃ ┣ constant.ts "All datas"
  ┃ ┃ ┣ db.ts "DB connection"
  ┃ ┃ ┗ index.ts "Server start"
  ┃ ┣ template "Apidoc Home template"
  ┃ ┗ test  "TDD tests"
  ┣ doc "MD documentation"
- ┣ .env "Environment variables"
- ┗ favicon.ico
+ ┗ .env "Environment variables"
 ```
 
 ## Environment variables
@@ -87,7 +89,6 @@ For views a little :
 -   [koa-session](https://github.com/koajs/session)
 -   [koa-passport](https://github.com/rkusa/koa-passport)
 -   [passport-local](https://github.com/jaredhanson/passport-local)
--   [koa-favicon](https://github.com/rkusa/koa-favicon)
 
 ---
 
