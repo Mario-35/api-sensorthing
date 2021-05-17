@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * renameProp.
+ * Message.
  *
  * @copyright 2020-present Inrae
  * @author mario.adam@inrae.fr

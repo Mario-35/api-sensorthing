@@ -16,15 +16,8 @@ export class CreateHtml {
             name: string;
         }[]
     ): string => {
-        return `  <div class="hr"></div>
-            <div id="outer">
-              <div class="inner">
-                <a href="${links[0].href}" class="${links[0].class}" >${links[0].name}</a>
-              </div>
-            <div class="inner">
-              <a href="${links[1].href}" class="${links[1].class}" >${links[1].name}</a>
-            </div>
-      `;
+        return `<div class="hr"></div> <div id="outer"> <div class="inner"> <a href="${links[0].href}" class="${links[0].class}" >${links[0].name}</a> </div> <div class="inner"> <a href="${links[1].href}" class="${links[1].class}" >${links[1].name}</a> </div>  
+        `;
     };
     public login = (datas: { login: boolean; body?: any; why?: keyString }): string => {
         const alert = (name: string): string => {

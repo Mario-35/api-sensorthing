@@ -253,7 +253,7 @@ export class Common {
                 const result: ReturnResult | undefined = await subEntity.getSingle(id, "id", true);
                 if (result && result.body && result.id && result.id > 0) {
                     message(this.args.debug, "DEBUG", "Found Id : ", result.id.toString());
-                    if (this.entityProperty.columns.includes(`${entity.table.toLowerCase()}_id`)) {
+                    if (Object.keys(this.entityProperty.columns).includes(`${entity.table.toLowerCase()}_id`)) {
                         query.where({
                             [`${entity.table.toLowerCase()}_id`]: result.body
                         });
