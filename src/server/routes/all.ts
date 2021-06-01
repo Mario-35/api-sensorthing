@@ -34,10 +34,11 @@ router.get("/(.*)", async (ctx) => {
     if (ctx.request.url.endsWith(`/${process.env.APIVERSION}/`)) {
         const expectedResponse: Record<string, unknown>[] = [{}];
         Object.keys(_ENTITIES).forEach((value: string) => {
-            expectedResponse.push({
-                name: _ENTITIES[value].name,
-                url: `http://${hostName(ctx)}/${process.env.APIVERSION}/${value}`
-            });
+            if (_ENTITIES[value].entity == true)
+                expectedResponse.push({
+                    name: _ENTITIES[value].name,
+                    url: `http://${hostName(ctx)}/${process.env.APIVERSION}/${value}`
+                });
         });
         ctx.type = returnFormat[formatsResult.JSON];
         ctx.body = {

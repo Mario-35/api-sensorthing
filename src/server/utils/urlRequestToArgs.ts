@@ -80,7 +80,12 @@ export const urlRequestToArgs = (ctx: ParameterizedContext, extras?: keyString):
             extras: extras
         };
 
-        splitStr = splitStr[0].replace("//", "/").split("/");
+        splitStr = splitStr[0]
+            .replace("//", "/")
+            .split("/")
+            .map((item) => {
+                return item.trim();
+            });
         // get SERVICE_ROOT_URI
         splitStr[0] = splitStr[0] === "" ? ctx.request.header.host : "error";
 

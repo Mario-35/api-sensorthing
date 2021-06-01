@@ -32,6 +32,8 @@ export const createDB = async (
     if (!argsParams || !argsParams.database || !argsParams.host || !argsParams.password || !argsParams.user) {
         return {};
     }
+    console.log("Create Database");
+
     const results: { [key: string]: string } = { "Create Database": argsParams.database };
 
     const dbAdmin = knex({
@@ -87,6 +89,7 @@ export const createDB = async (
                                         .destroy()
                                         .then(() => {
                                             results["Admin connection destroy"] = "Ok";
+                                            console.log("ici");
                                         })
                                         .catch((err: Error) => {
                                             message(true, "ERROR", err.message);
