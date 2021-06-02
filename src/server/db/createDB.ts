@@ -8,10 +8,12 @@
 
 import knex from "knex";
 import { asyncForEach, message } from "../utils/index";
-import { triggers, databaseDatas } from "../utils/datas";
+import { triggers } from "./triggers";
 import { ParameterizedContext } from "koa";
 import { IUser } from "./interfaces";
 import { userAccess } from "./dataAccess";
+import { _DBDATAS, connectionParams } from "../constant";
+import Knex from "knex";
 
 /**
  *
@@ -20,23 +22,8 @@ import { userAccess } from "./dataAccess";
  * @returns log results
  */
 
-export const createDB = async (
-    argsParams: {
-        host: string | undefined;
-        user: string | undefined;
-        password: string | undefined;
-        database: string | undefined;
-    },
-    ctx?: ParameterizedContext
-): Promise<{ [key: string]: string }> => {
-    if (!argsParams || !argsParams.database || !argsParams.host || !argsParams.password || !argsParams.user) {
-        return {};
-    }
-    console.log("Create Database");
-
-    const results: { [key: string]: string } = { "Create Database": argsParams.database };
-
-    const dbAdmin = knex({
+const admin = (): Knex => {
+    return knex({
         client: "pg",
 
         connection: {
@@ -52,6 +39,32 @@ export const createDB = async (
         },
         debug: false
     });
+};
+
+export const destroyDB = async (argsParams: connectionParams): Promise<void> => {
+    if (!argsParams || !argsParams.database || !argsParams.host || !argsParams.password || !argsParams.user) {
+        return;
+    }
+
+    const dbAdmin = admin();
+
+    await dbAdmin
+        .raw("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity  WHERE pg_stat_activity.datname = ? AND pid <> pg_backend_pid()", [
+            argsParams.database
+        ])
+        .then(async () => {
+            await dbAdmin.raw(`DROP Database IF EXISTS ${argsParams.database}`).catch((err: Error) => {
+                message(true, "ERROR", err.message);
+            });
+        });
+};
+
+export const createDB = async (argsParams: connectionParams, ctx?: ParameterizedContext): Promise<{ [key: string]: string }> => {
+    if (!argsParams || !argsParams.database || !argsParams.host || !argsParams.password || !argsParams.user) {
+        return {};
+    }
+    const results: { [key: string]: string } = { "Create Database": argsParams.database };
+    const dbAdmin = admin();
 
     const db = knex({
         client: "pg",
@@ -64,46 +77,38 @@ export const createDB = async (
         },
         debug: false
     });
+
     await dbAdmin
-        .raw(`DROP Database IF EXISTS ${argsParams.database}`)
+        .raw(`CREATE Database ${argsParams.database}`)
         .then(async () => {
-            results["DROP Database"] = "Ok";
-            await dbAdmin
-                .raw(`CREATE Database ${argsParams.database}`)
-                .then(async () => {
-                    results["Create Database"] = `${argsParams.database} OK`;
-                    await dbAdmin.raw(`select count(*) FROM pg_user WHERE usename = '${argsParams.user}';`).then(async (res) => {
-                        if (res.rowCount < 1) {
-                            await dbAdmin
-                                .raw(`CREATE ROLE ${argsParams.user} WITH PASSWORD '${argsParams.password}' SUPERUSER;`)
+            results["Create Database"] = `${argsParams.database} OK`;
+            await dbAdmin.raw(`select count(*) FROM pg_user WHERE usename = '${argsParams.user}';`).then(async (res) => {
+                if (res.rowCount < 1) {
+                    await dbAdmin
+                        .raw(`CREATE ROLE ${argsParams.user} WITH PASSWORD '${argsParams.password}' SUPERUSER;`)
+                        .then(() => {
+                            results["Create ROLE"] = `${argsParams.user} Ok`;
+                        })
+                        .catch((e) => e);
+                } else {
+                    await dbAdmin
+                        .raw(`ALTER ROLE ${argsParams.user} WITH PASSWORD '${argsParams.password}' SUPERUSER;`)
+                        .then(() => {
+                            results["Create/Alter ROLE"] = `${argsParams.user} Ok`;
+                            dbAdmin
+                                .destroy()
                                 .then(() => {
-                                    results["Create ROLE"] = `${argsParams.user} Ok`;
-                                })
-                                .catch((e) => e);
-                        } else {
-                            await dbAdmin
-                                .raw(`ALTER ROLE ${argsParams.user} WITH PASSWORD '${argsParams.password}' SUPERUSER;`)
-                                .then(() => {
-                                    results["Create/Alter ROLE"] = `${argsParams.user} Ok`;
-                                    dbAdmin
-                                        .destroy()
-                                        .then(() => {
-                                            results["Admin connection destroy"] = "Ok";
-                                            console.log("ici");
-                                        })
-                                        .catch((err: Error) => {
-                                            message(true, "ERROR", err.message);
-                                        });
+                                    results["Admin connection destroy"] = "Ok";
                                 })
                                 .catch((err: Error) => {
                                     message(true, "ERROR", err.message);
                                 });
-                        }
-                    });
-                })
-                .catch((err: Error) => {
-                    message(true, "ERROR", err.message);
-                });
+                        })
+                        .catch((err: Error) => {
+                            message(true, "ERROR", err.message);
+                        });
+                }
+            });
         })
         .catch((err: Error) => {
             message(true, "ERROR", err.message);
@@ -118,64 +123,67 @@ export const createDB = async (
             message(true, "ERROR", err.message);
         });
 
-    await asyncForEach(Object.keys(databaseDatas), async (tableName: string) => {
+    await asyncForEach(Object.keys(_DBDATAS), async (keyName: string) => {
         const tabInsertion: string[] = [];
         const tabComment: string[] = [];
         let insertion = "";
-        Object.keys(databaseDatas[tableName].columns).forEach((element) => {
-            tabInsertion.push(`"${element}" ${databaseDatas[tableName].columns[element].create}`);
-            tabComment.push(`comment on column "${tableName}"."${element}" is '${databaseDatas[tableName].columns[element].comment}';`);
+        Object.keys(_DBDATAS[keyName].columns).forEach((column) => {
+            tabInsertion.push(`"${column}" ${_DBDATAS[keyName].columns[column].create}`);
+            tabComment.push(`comment on column "${_DBDATAS[keyName].table}"."${column}" is '${_DBDATAS[keyName].columns[column].comment}';`);
         });
+        const constraints = _DBDATAS[keyName].constraints;
 
-        if (databaseDatas[tableName].hasOwnProperty("constraints") && databaseDatas[tableName].constraints) {
+        if (constraints) {
             const tabTemp: string[] = [];
-            Object.keys(databaseDatas[tableName].constraints).forEach((constraint) => {
-                tabTemp.push(`CONSTRAINT "${constraint}" ${databaseDatas[tableName].constraints[constraint]}`);
+            Object.keys(constraints).forEach((constraint) => {
+                tabTemp.push(`CONSTRAINT "${constraint}" ${constraints[constraint]}`);
             });
             insertion = `${tabInsertion.join(", ")}, ${tabTemp.join(", ")}`;
         } else {
             insertion = `${tabInsertion.join(", ")}`;
         }
-
         await db
-            .raw(`CREATE TABLE public.${tableName} (${insertion});`)
+            .raw(`CREATE TABLE public.${_DBDATAS[keyName].table} (${insertion});`)
             .then(() => {
-                results[`Create table ${tableName}`] = "Ok";
+                results[`Create table ${_DBDATAS[keyName].table}`] = "Ok";
             })
             .catch((err: Error) => {
+                results[`Create table ${_DBDATAS[keyName].table}`] = err.message;
                 message(true, "ERROR", err.message);
             });
 
-        if (databaseDatas[tableName].hasOwnProperty("indexes")) {
-            const tabTemp: string[] = [];
-            Object.keys(databaseDatas[tableName].indexes).forEach((index) => {
-                tabTemp.push(`CREATE INDEX "${index}" ${databaseDatas[tableName].indexes[index]}`);
+        const indexes = _DBDATAS[keyName].indexes;
+        const tabTemp: string[] = [];
+        if (indexes)
+            Object.keys(indexes).forEach((index) => {
+                tabTemp.push(`CREATE INDEX "${index}" ${indexes[index]}`);
             });
 
-            await db
-                .raw(tabTemp.join(";"))
-                .then(() => {
-                    results[`Create indexes for ${tableName}`] = "Ok";
-                })
-                .catch((err: Error) => {
-                    message(true, "ERROR", err.message);
-                });
-        }
+        await db
+            .raw(tabTemp.join(";"))
+            .then(() => {
+                results[`Create indexes for ${keyName}`] = "Ok";
+            })
+            .catch((err: Error) => {
+                results[`Create indexes for ${keyName}`] = "Error";
+                message(true, "ERROR", err.message);
+            });
 
         await db
             .raw(tabComment.join(" "))
             .then(() => {
-                results[`Create comments for ${tableName}`] = "Ok";
+                results[`Create comments for ${_DBDATAS[keyName].table}`] = "Ok";
             })
             .catch((err: Error) => {
                 message(true, "ERROR", err.message);
             });
 
-        if (databaseDatas[tableName].hasOwnProperty("after")) {
+        const after = _DBDATAS[keyName].after;
+        if (after) {
             await db
-                .raw(databaseDatas[tableName].after)
+                .raw(after)
                 .then(() => {
-                    results[`Something to do after for ${tableName}`] = "Ok";
+                    results[`Something to do after for ${_DBDATAS[keyName].table}`] = "Ok";
                 })
                 .catch((err: Error) => {
                     message(true, "ERROR", err.message);

@@ -12,14 +12,14 @@ import chaiHttp from "chai-http";
 import { IApiDoc, generateApiDoc, IApiInput, prepareToApiDoc, createListColumns } from "./constant";
 import { server } from "../../server/index";
 import { db } from "../../server/db";
-import { _ENTITIES, IEntityProperty } from "../../server/constant";
+import { _DBDATAS, IEntityProperty } from "../../server/constant";
 
 chai.use(chaiHttp);
 
 const should = chai.should();
 
 const docs: IApiDoc[] = [];
-const entity: IEntityProperty = _ENTITIES.Observations;
+const entity: IEntityProperty = _DBDATAS.Observations;
 let index = 10;
 
 const addToApiDoc = (input: IApiInput) => {
@@ -154,9 +154,9 @@ describe("routes : Observations", () => {
                 should.not.exist(err);
                 res.status.should.equal(200);
                 res.type.should.equal("application/json");
-                res.body.should.include.keys(_ENTITIES.Observations.testsKeys.filter((elem) => elem !== "Datastream@iot.navigationLink"));
+                res.body.should.include.keys(_DBDATAS.Observations.testsKeys.filter((elem) => elem !== "Datastream@iot.navigationLink"));
                 res.body.should.include.keys("Datastream");
-                res.body.Datastream.should.include.keys(_ENTITIES.Datastreams.testsKeys);
+                res.body.Datastream.should.include.keys(_DBDATAS.Datastreams.testsKeys);
                 res.body["@iot.id"].should.eql("1");
                 addToApiDoc({ ...infos, result: res });
                 done();

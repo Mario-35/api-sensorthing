@@ -41,7 +41,7 @@ router.post(["/register", "/api/register"], async (ctx: Context, next) => {
     if (body.username.trim() === "") {
         why["username"] = "Empty username";
     } else {
-        const user = await db("users").select("username").where({ username: ctx.request.body.username }).first();
+        const user = await db("user").select("username").where({ username: ctx.request.body.username }).first();
         if (user) why["username"] = "Already present";
     }
     // Email

@@ -8,7 +8,7 @@
 
 import Router from "koa-router";
 import { apiAccess } from "../db/dataAccess";
-import { _ENTITIES, ReturnResult, formatsResult, keyValue, keyString, returnFormat } from "../constant";
+import { _DBDATAS, ReturnResult, formatsResult, keyValue, keyString, returnFormat, _ENTITIES } from "../constant";
 import { urlRequestToArgs, upload, hostName, resultBody, message } from "../utils/";
 import { ParameterizedContext } from "koa";
 import { queryHtml } from "../query/";
@@ -33,10 +33,10 @@ router.get("/(.*)", async (ctx) => {
     */
     if (ctx.request.url.endsWith(`/${process.env.APIVERSION}/`)) {
         const expectedResponse: Record<string, unknown>[] = [{}];
-        Object.keys(_ENTITIES).forEach((value: string) => {
-            if (_ENTITIES[value].entity == true)
+        _ENTITIES.forEach((value: string) => {
+            if (_DBDATAS[value].entity == true)
                 expectedResponse.push({
-                    name: _ENTITIES[value].name,
+                    name: _DBDATAS[value].name,
                     url: `http://${hostName(ctx)}/${process.env.APIVERSION}/${value}`
                 });
         });

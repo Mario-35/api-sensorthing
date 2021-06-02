@@ -13,14 +13,14 @@ import chaiHttp from "chai-http";
 import { IApiDoc, generateApiDoc, IApiInput, prepareToApiDoc, createListColumns } from "./constant";
 import { server } from "../../server/index";
 import { db } from "../../server/db";
-import { _ENTITIES, IEntityProperty } from "../../server/constant";
+import { _DBDATAS, IEntityProperty } from "../../server/constant";
 
 chai.use(chaiHttp);
 
 const should = chai.should();
 
 const docs: IApiDoc[] = [];
-const entity: IEntityProperty = _ENTITIES.Things;
+const entity: IEntityProperty = _DBDATAS.Things;
 let index = 10;
 
 const addToApiDoc = (input: IApiInput) => {

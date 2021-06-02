@@ -7,7 +7,7 @@
  */
 
 import Knex from "knex";
-import { requestArgs, IEntityProperty, _ENTITIES, ReturnResult, relationConfig, keyValue } from "../../constant";
+import { requestArgs, IEntityProperty, _DBDATAS, ReturnResult, relationConfig, keyValue } from "../../constant";
 import * as entities from "./index";
 import { PGVisitor } from "../../utils/odata/visitor";
 import { asyncForEach, getEntityName, getId, message, renameProp } from "../../utils/index";
@@ -29,7 +29,7 @@ export class Common {
 
         if (knexInstance) Common.dbContext = knexInstance;
 
-        this.entityProperty = _ENTITIES[this.constructor.name];
+        this.entityProperty = _DBDATAS[this.constructor.name];
 
         this.nextLinkBase = `http://${this.args.baseUrl}/${this.args.version}/${this.args.entities.join("/")}`;
 
@@ -126,7 +126,7 @@ export class Common {
                                             this.args.odada && this.args.odada && tempTab ? tempTab.slice(1).join("/") : "";
                                     }
                                     const subEntity = new entities[subEntityName](this.ctx, newArgs, this.level);
-                                    const singular: boolean = element == _ENTITIES[subEntityName].singular;
+                                    const singular: boolean = element == _DBDATAS[subEntityName].singular;
                                     const relation: relationConfig = this.entityProperty.relations[element];
                                     let myId: bigint[] = [];
                                     let whereRaw = `${relation.columnRelation} = ${BigInt(input["@iot.id"])}`;
@@ -245,7 +245,7 @@ export class Common {
         if (this.args.entities.length > 1) {
             const entityName = getEntityName(this.args.entities[0]);
             message(this.args.debug, "DEBUG", "Found entity : ", entityName);
-            const entity = entityName ? _ENTITIES[entityName] : undefined;
+            const entity = entityName ? _DBDATAS[entityName] : undefined;
             const id: bigint | undefined = getId(this.args.entities[0]);
             if (entity && id) {
                 // const subEntity = new entities[entity.name]({ ...this.args });
@@ -343,7 +343,7 @@ export class Common {
         // if found
         if (resultId)
             if (relationName && this.entityProperty.relations) {
-                const relations: IEntityProperty = _ENTITIES[relationName];
+                const relations: IEntityProperty = _DBDATAS[relationName];
                 if (relations) {
                     const column: string | undefined = relationName;
                     if (column && relationName) {
@@ -683,7 +683,7 @@ export class Common {
             const subBlock = (key: string, value: keyValue[] | keyValue) => {
                 const entityNameSearch = getEntityName(key);
                 if (entityNameSearch) {
-                    const newEntity = _ENTITIES[entityNameSearch];
+                    const newEntity = _DBDATAS[entityNameSearch];
                     const name = createName(newEntity.table);
                     names[newEntity.table] = name;
                     const test = start(value, newEntity, entity);
@@ -729,7 +729,7 @@ export class Common {
         if (this.args.entities.length > 1) {
             const entityName = getEntityName(this.args.entities[0]);
             message(this.args.debug, "DEBUG", "Found entity : ", entityName);
-            const callEntity = entityName ? _ENTITIES[entityName] : undefined;
+            const callEntity = entityName ? _DBDATAS[entityName] : undefined;
             const id: bigint | undefined = getId(this.args.entities[0]);
             if (entityName && callEntity && id) {
                 const relationName = getRelationNameFromEntity(this.entityProperty, callEntity);

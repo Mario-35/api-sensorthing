@@ -52,6 +52,13 @@ export interface requestArgs {
 interface ResultType {
     result: string[] | string | number | bigint | keyValue[] | keyValue | undefined;
 }
+
+export interface connectionParams {
+    host: string | undefined;
+    user: string | undefined;
+    password: string | undefined;
+    database: string | undefined;
+}
 export interface ReturnResult extends ResultType {
     id: bigint | undefined;
     nextLink: string | undefined;
@@ -91,7 +98,20 @@ export interface IEntityProperties {
     [key: string]: IEntityProperty;
 }
 
-export const _ENTITIES: IEntityProperties = {
+export const _ENTITIES: string[] = [
+    "Datastreams",
+    "Multidatastreams",
+    "MultiDatastreamObservedproperties",
+    "FeaturesOfInterest",
+    "HistoricalLocations",
+    "Locations",
+    "Observations",
+    "ObservedProperties",
+    "Sensors",
+    "Things"
+];
+
+export const _DBDATAS: IEntityProperties = {
     Users: {
         name: "Users",
         singular: "User",
@@ -127,7 +147,7 @@ export const _ENTITIES: IEntityProperties = {
     Logs: {
         name: "Logs",
         singular: "Log",
-        table: "Log",
+        table: "log",
         entity: false,
         columns: {
             id: {
@@ -190,6 +210,371 @@ export const _ENTITIES: IEntityProperties = {
         excludeColumn: [],
         relations: {},
         testsKeys: []
+    },
+
+    Things: {
+        name: "Things",
+        singular: "Thing",
+        table: "thing",
+        entity: true,
+        columns: {
+            id: {
+                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
+                comment: "A unique bigSerial."
+            },
+            name: {
+                create: "text NOT NULL DEFAULT 'no name'::text",
+                comment: "This is a short description of the corresponding Thing entity."
+            },
+            description: {
+                create: "text NOT NULL",
+                comment: "A property provides a label for Thing entity, commonly a descriptive name."
+            },
+            properties: {
+                create: "jsonb NULL",
+                comment: "A JSON Object containing user-annotated properties as key-value pairs."
+            }
+        },
+        constraints: {
+            thing_pkey: 'PRIMARY KEY ("id")'
+        },
+        excludeColumn: ["id"],
+        relations: {
+            Locations: {
+                entityName: "Locations",
+                tableName: "thing_location",
+                columnRelation: "location_id",
+                entityColumn: "thing_id",
+                tableKey: "thing_id"
+            },
+            HistoricalLocation: {
+                entityName: "HistoricalLocation",
+                tableName: "historicalLocation",
+                columnRelation: "thing_id",
+                entityColumn: "id",
+                tableKey: "id"
+            },
+            Datastreams: {
+                entityName: "Datastreams",
+                tableName: "datastream",
+                columnRelation: "thing_id",
+                entityColumn: "id",
+                tableKey: "id"
+            }
+        },
+        testsKeys: [
+            "@iot.id",
+            "@iot.selfLink",
+            "Datastreams@iot.navigationLink",
+            "HistoricalLocation@iot.navigationLink",
+            "Locations@iot.navigationLink",
+            "description",
+            "name",
+            "properties"
+        ]
+    },
+
+    FeaturesOfInterest: {
+        name: "FeaturesOfInterest",
+        singular: "FeatureOfInterest",
+        table: "featureofinterest",
+        entity: true,
+        columns: {
+            id: {
+                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
+                comment: "A unique bigSerial."
+            },
+            name: {
+                create: "text NOT NULL DEFAULT 'no name'::text",
+                comment: "A property provides a label for FeatureOfInterest entity, commonly a descriptive name."
+            },
+            description: {
+                create: "text NULL",
+                comment: "The description about the FeatureOfInterest."
+            },
+            encodingType: {
+                create: "text NULL",
+                comment: "The encoding type of the feature property."
+            },
+            feature: {
+                create: "jsonb NULL",
+                comment: "The detailed description of the feature. The data type is defined by encodingType."
+            }
+        },
+        excludeColumn: ["id"],
+        relations: {
+            Observations: {
+                entityName: "Observations",
+                tableName: "observation",
+                columnRelation: "featureofinterest_id",
+                entityColumn: "id",
+                tableKey: "id"
+            },
+            Locations: {
+                entityName: "Locations",
+                tableName: "location",
+                // hide all relations start with "_"
+                columnRelation: "_default_foi",
+                entityColumn: "id",
+                tableKey: "id"
+            }
+        },
+        constraints: {
+            featureofinterest_pkey: 'PRIMARY KEY ("id")'
+        },
+        after: `INSERT INTO featureofinterest ("name", description, "encodingType", feature) VALUES ('Default Feature of Interest', NULL, NULL, NULL);`,
+
+        testsKeys: ["@iot.id", "@iot.selfLink", "Observations@iot.navigationLink", "name", "description", "encodingType", "feature"]
+    },
+
+    Locations: {
+        name: "Locations",
+        singular: "Location",
+        table: "location",
+        entity: true,
+        columns: {
+            id: {
+                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
+                comment: "A unique bigSerial."
+            },
+            name: {
+                create: "text NOT NULL DEFAULT 'no name'::text",
+                comment: "A property provides a label for Location entity, commonly a descriptive name."
+            },
+            description: {
+                create: "text NOT NULL",
+                comment: "The description about the location."
+            },
+            location: {
+                create: "jsonb NULL",
+                comment: "The location type is defined by encodingType."
+            },
+            encodingType: {
+                create: "text NULL",
+                comment: "The encoding type of the location."
+            },
+            _default_foi: {
+                create: "BIGINT",
+                comment: "Default feature of interest."
+            },
+            geom: {
+                // Not in Sensor 1.1
+                create: "geometry NULL",
+                comment: "Geom."
+            },
+            properties: {
+                // Not in Sensor 1.1
+                create: "jsonb NULL",
+                comment: "Properties of the location."
+            }
+        },
+        constraints: {
+            location_pkey: 'PRIMARY KEY ("id")'
+        },
+        excludeColumn: ["id"],
+        relations: {
+            Things: {
+                entityName: "Things",
+                tableName: "thing_location",
+                columnRelation: "location_id",
+                entityColumn: "thing_id",
+                tableKey: "thing_id"
+            },
+            HistoricalLocation: {
+                entityName: "HistoricalLocation",
+                tableName: "location_historicalLocation",
+                columnRelation: "location_id",
+                entityColumn: "id",
+                tableKey: "id"
+            },
+            FeatureOfInterest: {
+                entityName: "FeaturesOfInterest",
+                tableName: "featureofinterest",
+                // hide all relations start with "_"
+                columnRelation: "_default_foi",
+                entityColumn: "id",
+                tableKey: "id"
+            }
+        },
+        testsKeys: [
+            "@iot.selfLink",
+            "@iot.id",
+            "Things@iot.navigationLink",
+            "HistoricalLocation@iot.navigationLink",
+            "name",
+            "description",
+            "encodingType",
+            "location"
+        ]
+    },
+
+    HistoricalLocations: {
+        name: "HistoricalLocations",
+        singular: "HistoricalLocation",
+        table: "historical_location",
+        entity: true,
+        columns: {
+            id: {
+                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
+                comment: "A unique bigSerial."
+            },
+            time: {
+                create: "timestamptz NULL",
+                comment: "The time when the Thing is known at the Location."
+            },
+            thing_id: {
+                create: "BIGINT NOT NULL",
+                comment: "A unique bigSerial for thing."
+            }
+        },
+        constraints: {
+            historical_location_pkey: 'PRIMARY KEY ("id")',
+            historical_location_thing_id_fkey: 'FOREIGN KEY ("thing_id") REFERENCES "thing"("id") ON UPDATE CASCADE ON DELETE CASCADE'
+        },
+        indexes: {
+            historical_location_thing_id: 'ON public."historical_location" USING btree ("thing_id")'
+        },
+        excludeColumn: ["id"],
+        relations: {
+            // TODO NOT GOOD
+            Thing: {
+                entityName: "Things",
+                tableName: "thing",
+                columnRelation: "thing_id",
+                entityColumn: "id",
+                tableKey: "id"
+            },
+            Locations: {
+                entityName: "Locations",
+                tableName: "location_historical_location",
+                columnRelation: "location_id",
+                entityColumn: "historical_location_id",
+                tableKey: "id"
+            }
+        },
+        testsKeys: ["@iot.selfLink", "@iot.id", "Thing@iot.navigationLink", "Locations@iot.navigationLink", "time"]
+    },
+
+    locationsHistoricalLocations: {
+        name: "locationsHistoricalLocations",
+        singular: "locationHistoricalLocation",
+        table: "location_historical_location",
+        entity: false,
+        columns: {
+            location_id: {
+                create: "BIGINT NOT NULL",
+                comment: "A unique bigSerial for location."
+            },
+            historical_location_id: {
+                create: "BIGINT NOT NULL",
+                comment: "A unique bigSerial for historical location."
+            }
+        },
+        constraints: {
+            location_historical_location_pkey: 'PRIMARY KEY ("location_id", "historical_location_id")',
+            location_historical_location_historical_location_id_fkey:
+                'FOREIGN KEY ("historical_location_id") REFERENCES "historical_location"("id") ON UPDATE CASCADE ON DELETE CASCADE',
+            location_historical_location_location_id_fkey: 'FOREIGN KEY ("location_id") REFERENCES "location"("id") ON UPDATE CASCADE ON DELETE CASCADE'
+        },
+        indexes: {
+            location_historical_location_historical_location_id: 'ON public."location_historical_location" USING btree ("historical_location_id")',
+            location_historical_location_location_id: 'ON public."location_historical_location" USING btree ("location_id")'
+        },
+        excludeColumn: [],
+        relations: {},
+        testsKeys: []
+    },
+
+    ObservedProperties: {
+        name: "ObservedProperties",
+        singular: "ObservedProperty",
+        table: "observedproperty",
+        entity: true,
+        columns: {
+            id: {
+                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
+                comment: "A unique bigSerial."
+            },
+            name: {
+                create: "text NOT NULL DEFAULT 'no name'::text",
+                comment: "A property provides a label for ObservedProperty entity, commonly a descriptive name."
+            },
+            definition: {
+                create: "text NULL",
+                comment: "The URI of the ObservedProperty. Dereferencing this URI SHOULD result in a representation of the definition of the ObservedProperty."
+            },
+            description: {
+                create: "text NULL",
+                comment: "A description about the ObservedProperty."
+            },
+            properties: {
+                // Not in Sensor 1.1
+                create: "jsonb NULL",
+                comment: "The detailed properties of the observed property."
+            }
+        },
+        constraints: {
+            observedproperty_pkey: 'PRIMARY KEY ("id")'
+        },
+        excludeColumn: ["id"],
+        relations: {
+            Datastreams: {
+                entityName: "Datastreams",
+                tableName: "datastream",
+                columnRelation: "observedproperty_id",
+                entityColumn: "id",
+                tableKey: "id"
+            }
+        },
+        testsKeys: ["@iot.id", "@iot.selfLink", "Datastreams@iot.navigationLink", "name", "description", "definition"]
+    },
+
+    Sensors: {
+        name: "Sensors",
+        singular: "Sensor",
+        table: "sensor",
+        entity: true,
+        columns: {
+            id: {
+                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
+                comment: "A unique bigSerial."
+            },
+            name: {
+                create: "text NOT NULL DEFAULT 'no name'::text",
+                comment: "A property provides a label for FeatureOfInterest entity, commonly a descriptive name."
+            },
+            description: {
+                create: "text NULL",
+                comment: "The definition of the observed property."
+            },
+            encodingType: {
+                create: "text NULL",
+                comment: "The encoding type of the feature property."
+            },
+            metadata: {
+                create: "text NULL",
+                comment: "The encoding type of the feature property."
+            },
+            properties: {
+                // Not in Sensor 1.1
+                create: "jsonb NULL",
+                comment: "The detailed description of the feature. The data type is defined by encodingType."
+            }
+        },
+        constraints: {
+            sensor_pkey: 'PRIMARY KEY ("id")'
+        },
+        excludeColumn: ["id"],
+        relations: {
+            Datastreams: {
+                entityName: "Datastreams",
+                tableName: "datastream",
+                columnRelation: "sensor_id",
+                entityColumn: "id",
+                tableKey: "id"
+            }
+        },
+        testsKeys: ["@iot.id", "@iot.selfLink", "Datastreams@iot.navigationLink", "name", "description"]
     },
 
     Datastreams: {
@@ -456,187 +841,6 @@ export const _ENTITIES: IEntityProperties = {
         testsKeys: ["@iot.id", "@iot.selfLink", "Datastreams@iot.navigationLink", "name", "description", "definition"]
     },
 
-    FeaturesOfInterest: {
-        name: "FeaturesOfInterest",
-        singular: "FeatureOfInterest",
-        table: "featureofinterest",
-        entity: true,
-        columns: {
-            id: {
-                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
-                comment: "A unique bigSerial."
-            },
-            name: {
-                create: "text NOT NULL DEFAULT 'no name'::text",
-                comment: "A property provides a label for FeatureOfInterest entity, commonly a descriptive name."
-            },
-            description: {
-                create: "text NULL",
-                comment: "The description about the FeatureOfInterest."
-            },
-            encodingType: {
-                create: "text NULL",
-                comment: "The encoding type of the feature property."
-            },
-            feature: {
-                create: "jsonb NULL",
-                comment: "The detailed description of the feature. The data type is defined by encodingType."
-            }
-        },
-        excludeColumn: ["id"],
-        relations: {
-            Observations: {
-                entityName: "Observations",
-                tableName: "observation",
-                columnRelation: "featureofinterest_id",
-                entityColumn: "id",
-                tableKey: "id"
-            },
-            Locations: {
-                entityName: "Locations",
-                tableName: "location",
-                // hide all relations start with "_"
-                columnRelation: "_default_foi",
-                entityColumn: "id",
-                tableKey: "id"
-            }
-        },
-        constraints: {
-            featureofinterest_pkey: 'PRIMARY KEY ("id")'
-        },
-        after: `INSERT INTO featureofinterest ("name", description, "encodingType", feature) VALUES ('Default Feature of Interest', NULL, NULL, NULL);`,
-
-        testsKeys: ["@iot.id", "@iot.selfLink", "Observations@iot.navigationLink", "name", "description", "encodingType", "feature"]
-    },
-
-    HistoricalLocations: {
-        name: "HistoricalLocations",
-        singular: "HistoricalLocation",
-        table: "historical_location",
-        entity: true,
-        columns: {
-            id: {
-                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
-                comment: "A unique bigSerial."
-            },
-            time: {
-                create: "timestamptz NULL",
-                comment: "The time when the Thing is known at the Location."
-            },
-            thing_id: {
-                create: "BIGINT NOT NULL",
-                comment: "A unique bigSerial for thing."
-            }
-        },
-        constraints: {
-            historical_location_pkey: 'PRIMARY KEY ("id")',
-            historical_location_thing_id_fkey: 'FOREIGN KEY ("thing_id") REFERENCES "thing"("id") ON UPDATE CASCADE ON DELETE CASCADE'
-        },
-        indexes: {
-            historical_location_thing_id: 'ON public."historical_location" USING btree ("thing_id")'
-        },
-        excludeColumn: ["id"],
-        relations: {
-            // TODO NOT GOOD
-            Thing: {
-                entityName: "Things",
-                tableName: "thing",
-                columnRelation: "thing_id",
-                entityColumn: "id",
-                tableKey: "id"
-            },
-            Locations: {
-                entityName: "Locations",
-                tableName: "location_historical_location",
-                columnRelation: "location_id",
-                entityColumn: "historical_location_id",
-                tableKey: "id"
-            }
-        },
-        testsKeys: ["@iot.selfLink", "@iot.id", "Thing@iot.navigationLink", "Locations@iot.navigationLink", "time"]
-    },
-
-    Locations: {
-        name: "Locations",
-        singular: "Location",
-        table: "location",
-        entity: true,
-        columns: {
-            id: {
-                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
-                comment: "A unique bigSerial."
-            },
-            name: {
-                create: "text NOT NULL DEFAULT 'no name'::text",
-                comment: "A property provides a label for Location entity, commonly a descriptive name."
-            },
-            description: {
-                create: "text NOT NULL",
-                comment: "The description about the location."
-            },
-            location: {
-                create: "jsonb NULL",
-                comment: "The location type is defined by encodingType."
-            },
-            encodingType: {
-                create: "text NULL",
-                comment: "The encoding type of the location."
-            },
-            _default_foi: {
-                create: "BIGINT",
-                comment: "Default feature of interest."
-            },
-            geom: {
-                // Not in Sensor 1.1
-                create: "geometry NULL",
-                comment: "Geom."
-            },
-            properties: {
-                // Not in Sensor 1.1
-                create: "jsonb NULL",
-                comment: "Properties of the location."
-            }
-        },
-        constraints: {
-            location_pkey: 'PRIMARY KEY ("id")'
-        },
-        excludeColumn: ["id"],
-        relations: {
-            Things: {
-                entityName: "Things",
-                tableName: "thing_location",
-                columnRelation: "location_id",
-                entityColumn: "thing_id",
-                tableKey: "thing_id"
-            },
-            HistoricalLocation: {
-                entityName: "HistoricalLocation",
-                tableName: "location_historicalLocation",
-                columnRelation: "location_id",
-                entityColumn: "id",
-                tableKey: "id"
-            },
-            FeatureOfInterest: {
-                entityName: "FeaturesOfInterest",
-                tableName: "featureofinterest",
-                // hide all relations start with "_"
-                columnRelation: "_default_foi",
-                entityColumn: "id",
-                tableKey: "id"
-            }
-        },
-        testsKeys: [
-            "@iot.selfLink",
-            "@iot.id",
-            "Things@iot.navigationLink",
-            "HistoricalLocation@iot.navigationLink",
-            "name",
-            "description",
-            "encodingType",
-            "location"
-        ]
-    },
-
     Observations: {
         name: "Observations",
         singular: "Observation",
@@ -718,157 +922,32 @@ export const _ENTITIES: IEntityProperties = {
         ]
     },
 
-    ObservedProperties: {
-        name: "ObservedProperties",
-        singular: "ObservedProperty",
-        table: "observedproperty",
-        entity: true,
+    ThingsLocations: {
+        name: "ThingsLocations",
+        singular: "ThingLocation",
+        table: "thing_location",
+        entity: false,
         columns: {
-            id: {
-                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
-                comment: "A unique bigSerial."
+            thing_id: {
+                create: "BIGINT NOT NULL",
+                comment: "A unique bigSerial for thing."
             },
-            name: {
-                create: "text NOT NULL DEFAULT 'no name'::text",
-                comment: "A property provides a label for ObservedProperty entity, commonly a descriptive name."
-            },
-            definition: {
-                create: "text NULL",
-                comment: "The URI of the ObservedProperty. Dereferencing this URI SHOULD result in a representation of the definition of the ObservedProperty."
-            },
-            description: {
-                create: "text NULL",
-                comment: "A description about the ObservedProperty."
-            },
-            properties: {
-                // Not in Sensor 1.1
-                create: "jsonb NULL",
-                comment: "The detailed properties of the observed property."
+            location_id: {
+                create: "BIGINT NOT NULL",
+                comment: "A unique bigSerial for location."
             }
         },
+        excludeColumn: [],
+        relations: {},
+        testsKeys: [],
         constraints: {
-            observedproperty_pkey: 'PRIMARY KEY ("id")'
+            thing_location_pkey: 'PRIMARY KEY ("thing_id", "location_id")',
+            thing_location_location_id_fkey: 'FOREIGN KEY ("location_id") REFERENCES "location"("id") ON UPDATE CASCADE ON DELETE CASCADE',
+            thing_location_thing_id_fkey: 'FOREIGN KEY ("thing_id") REFERENCES "thing"("id") ON UPDATE CASCADE ON DELETE CASCADE'
         },
-        excludeColumn: ["id"],
-        relations: {
-            Datastreams: {
-                entityName: "Datastreams",
-                tableName: "datastream",
-                columnRelation: "observedproperty_id",
-                entityColumn: "id",
-                tableKey: "id"
-            }
-        },
-        testsKeys: ["@iot.id", "@iot.selfLink", "Datastreams@iot.navigationLink", "name", "description", "definition"]
-    },
-
-    Sensors: {
-        name: "Sensors",
-        singular: "Sensor",
-        table: "sensor",
-        entity: true,
-        columns: {
-            id: {
-                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
-                comment: "A unique bigSerial."
-            },
-            name: {
-                create: "text NOT NULL DEFAULT 'no name'::text",
-                comment: "A property provides a label for FeatureOfInterest entity, commonly a descriptive name."
-            },
-            description: {
-                create: "text NULL",
-                comment: "The definition of the observed property."
-            },
-            encodingType: {
-                create: "text NULL",
-                comment: "The encoding type of the feature property."
-            },
-            metadata: {
-                create: "text NULL",
-                comment: "The encoding type of the feature property."
-            },
-            properties: {
-                // Not in Sensor 1.1
-                create: "jsonb NULL",
-                comment: "The detailed description of the feature. The data type is defined by encodingType."
-            }
-        },
-        constraints: {
-            sensor_pkey: 'PRIMARY KEY ("id")'
-        },
-        excludeColumn: ["id"],
-        relations: {
-            Datastreams: {
-                entityName: "Datastreams",
-                tableName: "datastream",
-                columnRelation: "sensor_id",
-                entityColumn: "id",
-                tableKey: "id"
-            }
-        },
-        testsKeys: ["@iot.id", "@iot.selfLink", "Datastreams@iot.navigationLink", "name", "description"]
-    },
-
-    Things: {
-        name: "Things",
-        singular: "Thing",
-        table: "thing",
-        entity: true,
-        columns: {
-            id: {
-                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
-                comment: "A unique bigSerial."
-            },
-            name: {
-                create: "text NOT NULL DEFAULT 'no name'::text",
-                comment: "This is a short description of the corresponding Thing entity."
-            },
-            description: {
-                create: "text NOT NULL",
-                comment: "A property provides a label for Thing entity, commonly a descriptive name."
-            },
-            properties: {
-                create: "jsonb NULL",
-                comment: "A JSON Object containing user-annotated properties as key-value pairs."
-            }
-        },
-        constraints: {
-            thing_pkey: 'PRIMARY KEY ("id")'
-        },
-        excludeColumn: ["id"],
-        relations: {
-            Locations: {
-                entityName: "Locations",
-                tableName: "thing_location",
-                columnRelation: "location_id",
-                entityColumn: "thing_id",
-                tableKey: "thing_id"
-            },
-            HistoricalLocation: {
-                entityName: "HistoricalLocation",
-                tableName: "historicalLocation",
-                columnRelation: "thing_id",
-                entityColumn: "id",
-                tableKey: "id"
-            },
-            Datastreams: {
-                entityName: "Datastreams",
-                tableName: "datastream",
-                columnRelation: "thing_id",
-                entityColumn: "id",
-                tableKey: "id"
-            }
-        },
-        testsKeys: [
-            "@iot.id",
-            "@iot.selfLink",
-            "Datastreams@iot.navigationLink",
-            "HistoricalLocation@iot.navigationLink",
-            "Locations@iot.navigationLink",
-            "description",
-            "name",
-            "properties"
-        ]
+        indexes: {
+            thing_location_location_id: 'ON public."thing_location" USING btree ("location_id")',
+            thing_location_thing_id: 'ON public."thing_location" USING btree ("thing_id")'
+        }
     }
 };

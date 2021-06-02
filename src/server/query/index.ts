@@ -9,15 +9,15 @@
 /* eslint-disable quotes */
 
 import fs from "fs";
-import { _ENTITIES } from "../constant";
+import { _DBDATAS } from "../constant";
 import { camelCase } from "../utils";
 
 export const queryHtml = (params: { [key: string]: string }): string => {
     const action = `http://${params.host}/v1.0/CreateObservations`;
     const relations: { [key: string]: string[] } = {};
 
-    Object.keys(_ENTITIES).forEach((key: string) => {
-        relations[key] = Object.keys(_ENTITIES[key].relations);
+    Object.keys(_DBDATAS).forEach((key: string) => {
+        relations[key] = Object.keys(_DBDATAS[key].relations);
     });
 
     if (params.user == "true") {

@@ -6,7 +6,7 @@
  *
  */
 
-import { requestArgs, _ENTITIES, IEntityProperty, formatsResult, keyString } from "../constant";
+import { requestArgs, _DBDATAS, IEntityProperty, formatsResult, keyString } from "../constant";
 import { createQuery } from "./odata";
 import { ParameterizedContext } from "koa";
 import { message } from "./message";
@@ -21,10 +21,10 @@ const getEntityNameFromString = (input: string): string | undefined => {
         .trim();
 
     if (test) {
-        return _ENTITIES.hasOwnProperty(test)
+        return _DBDATAS.hasOwnProperty(test)
             ? test
-            : Object.keys(_ENTITIES).filter(
-                  (elem: string) => _ENTITIES[elem].name.toUpperCase() == test.toUpperCase() || _ENTITIES[elem].singular.toUpperCase() == test.toUpperCase()
+            : Object.keys(_DBDATAS).filter(
+                  (elem: string) => _DBDATAS[elem].name.toUpperCase() == test.toUpperCase() || _DBDATAS[elem].singular.toUpperCase() == test.toUpperCase()
               )[0];
     }
     return undefined;
@@ -93,7 +93,7 @@ export const urlRequestToArgs = (ctx: ParameterizedContext, extras?: keyString):
             // get entities
             const input: string | undefined = getEntityNameFromString(splitStr[index]);
             if (input) {
-                entitiesRequest.push(_ENTITIES[input]);
+                entitiesRequest.push(_DBDATAS[input]);
                 last_index = index;
                 entities.push(value.trim());
             }

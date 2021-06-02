@@ -24,7 +24,7 @@ passport.serializeUser((user: any, done: any) => {
 
 passport.deserializeUser((id, done) => {
     return (
-        db("users")
+        db("user")
             .where({ id })
             .first()
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,7 +39,7 @@ passport.deserializeUser((id, done) => {
 
 passport.use(
     new LocalStrategy(options, (username: string, password: string, done: any) => {
-        db("users")
+        db("user")
             .where({ username })
             .first()
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -12,14 +12,14 @@ import chaiHttp from "chai-http";
 import { IApiDoc, generateApiDoc, IApiInput, prepareToApiDoc, createListColumns } from "./constant";
 import { server } from "../../server/index";
 import { db } from "../../server/db";
-import { _ENTITIES, IEntityProperty } from "../../server/constant";
+import { _DBDATAS, IEntityProperty } from "../../server/constant";
 
 chai.use(chaiHttp);
 
 const should = chai.should();
 
 const docs: IApiDoc[] = [];
-const entity: IEntityProperty = _ENTITIES.HistoricalLocations;
+const entity: IEntityProperty = _DBDATAS.HistoricalLocations;
 let index = 0;
 
 const addToApiDoc = (input: IApiInput) => {
@@ -116,10 +116,10 @@ describe("routes : HistoricalLocations", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(_ENTITIES.HistoricalLocations.testsKeys.filter((elem) => elem !== "Locations@iot.navigationLink"));
+                    res.body.should.include.keys(_DBDATAS.HistoricalLocations.testsKeys.filter((elem) => elem !== "Locations@iot.navigationLink"));
                     res.body.should.include.keys("Locations");
                     res.body.Locations.length.should.eql(1);
-                    res.body.Locations[0].should.include.keys(_ENTITIES.Locations.testsKeys);
+                    res.body.Locations[0].should.include.keys(_DBDATAS.Locations.testsKeys);
                     res.body["@iot.id"].should.eql("6");
                     addToApiDoc({ ...infos, result: res });
                     done();
