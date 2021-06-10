@@ -85,7 +85,6 @@ export interface IEntityProperty {
     name: string;
     singular: string;
     table: string;
-    entity: boolean;
     columns: column;
     excludeColumn: string[];
     relations: { [key: string]: relationConfig };
@@ -116,7 +115,6 @@ export const _DBDATAS: IEntityProperties = {
         name: "Users",
         singular: "User",
         table: "user",
-        entity: false,
         columns: {
             id: {
                 create: "int8 GENERATED ALWAYS AS IDENTITY",
@@ -148,7 +146,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "Logs",
         singular: "Log",
         table: "log",
-        entity: false,
+
         columns: {
             id: {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
@@ -176,7 +174,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "Logs_request",
         singular: "Log_request",
         table: "log_request",
-        entity: false,
+
         columns: {
             id: {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
@@ -216,7 +214,6 @@ export const _DBDATAS: IEntityProperties = {
         name: "Things",
         singular: "Thing",
         table: "thing",
-        entity: true,
         columns: {
             id: {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
@@ -278,7 +275,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "FeaturesOfInterest",
         singular: "FeatureOfInterest",
         table: "featureofinterest",
-        entity: true,
+
         columns: {
             id: {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
@@ -331,7 +328,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "Locations",
         singular: "Location",
         table: "location",
-        entity: true,
+
         columns: {
             id: {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
@@ -412,7 +409,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "HistoricalLocations",
         singular: "HistoricalLocation",
         table: "historical_location",
-        entity: true,
+
         columns: {
             id: {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
@@ -459,7 +456,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "locationsHistoricalLocations",
         singular: "locationHistoricalLocation",
         table: "location_historical_location",
-        entity: false,
+
         columns: {
             location_id: {
                 create: "BIGINT NOT NULL",
@@ -489,7 +486,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "ObservedProperties",
         singular: "ObservedProperty",
         table: "observedproperty",
-        entity: true,
+
         columns: {
             id: {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
@@ -533,7 +530,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "Sensors",
         singular: "Sensor",
         table: "sensor",
-        entity: true,
+
         columns: {
             id: {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
@@ -581,7 +578,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "Datastreams",
         singular: "Datastream",
         table: "datastream",
-        entity: true,
+
         columns: {
             id: {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
@@ -694,7 +691,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "Multidatastreams",
         singular: "Multidatastream",
         table: "multi_datastream",
-        entity: true,
+
         columns: {
             id: {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
@@ -807,7 +804,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "multidatastreamobservedproperty",
         singular: "MultiDatastreamObservedproperty",
         table: "multi_datastream_observedproperty",
-        entity: true,
+
         columns: {
             multi_datastream_id: {
                 create: "BIGINT NOT NULL",
@@ -845,7 +842,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "Observations",
         singular: "Observation",
         table: "observation",
-        entity: true,
+
         columns: {
             id: {
                 create: "BIGINT GENERATED ALWAYS AS IDENTITY",
@@ -926,7 +923,7 @@ export const _DBDATAS: IEntityProperties = {
         name: "ThingsLocations",
         singular: "ThingLocation",
         table: "thing_location",
-        entity: false,
+
         columns: {
             thing_id: {
                 create: "BIGINT NOT NULL",

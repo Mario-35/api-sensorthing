@@ -17,9 +17,7 @@ import Knex from "knex";
 
 /**
  *
- * @param argsParams pg connection params
- * @param ctx context with user connection (ctx.state.user) for reconnect user
- * @returns log results
+ * @returns Admin connection
  */
 
 const admin = (): Knex => {
@@ -41,6 +39,12 @@ const admin = (): Knex => {
     });
 };
 
+/**
+ *
+ * @param argsParams connection params
+ * @returns nothing
+ */
+
 export const destroyDB = async (argsParams: connectionParams): Promise<void> => {
     if (!argsParams || !argsParams.database || !argsParams.host || !argsParams.password || !argsParams.user) {
         return;
@@ -58,6 +62,13 @@ export const destroyDB = async (argsParams: connectionParams): Promise<void> => 
             });
         });
 };
+
+/**
+ *
+ * @param argsParams pg connection params
+ * @param ctx context with user connection (ctx.state.user) for reconnect user
+ * @returns log results
+ */
 
 export const createDB = async (argsParams: connectionParams, ctx?: ParameterizedContext): Promise<{ [key: string]: string }> => {
     if (!argsParams || !argsParams.database || !argsParams.host || !argsParams.password || !argsParams.user) {

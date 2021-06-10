@@ -16,6 +16,7 @@ import { DefaultState, Context } from "koa";
 import { formatsResult, keyString, returnFormat } from "../constant";
 import { db } from "../db";
 import { CreateHtml } from "./views";
+
 const router = new Router<DefaultState, Context>();
 
 const emailIsValid = (email: string): boolean => {
