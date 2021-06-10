@@ -64,27 +64,31 @@ require("./auth");
 app.use(authRoutes);
 app.use(allRoutes);
 
-message(true, "HEAD", "env", process.env.NODE_ENV);
-message(true, "ENV", "Host", process.env.PGHOST);
-message(true, "ENV", "Database", process.env.PGDATABASE);
-message(true, "ENV", "Api version", process.env.APIVERSION);
-message(true, "ENV", "Port", process.env.PGPORT);
-message(true, "ENV", "User", process.env.PGUSER);
-message(true, "ENV", "Listen port", process.env.PORT);
-message(true, "ENV", "Debug", process.env.DEBUGSQL);
-
 // Test database if not exist create it except if test (TDD for createDB)
-db.raw("select 1+1 as result").catch(async (err) => {
-    if (err.code == "3D000" && process.env.NODE_ENV && process.env.NODE_ENV.trim() != "test") {
-        message(true, "ENV", "create DATABASE", process.env.PGDATABASE);
-        await createDB({
-            host: process.env.PGHOST,
-            user: process.env.PGUSER,
-            password: process.env.PGPASSWORD,
-            database: process.env.PGDATABASE
-        });
-    }
-});
+db.raw("select 1+1 as result")
+    .then(() => {
+        message(true, "HEAD", "env", process.env.NODE_ENV);
+        message(true, "ENV", "Host", process.env.PGHOST);
+        message(true, "ENV", "Database", process.env.PGDATABASE);
+        message(true, "ENV", "Api version", process.env.APIVERSION);
+        message(true, "ENV", "Port", process.env.PGPORT);
+        message(true, "ENV", "User", process.env.PGUSER);
+        message(true, "ENV", "Listen port", process.env.PORT);
+        message(true, "ENV", "Debug", process.env.DEBUGSQL);
+    })
+    .catch(async (err) => {
+        if (err.code == "3D000" && process.env.NODE_ENV && process.env.NODE_ENV.trim() != "test") {
+            message(true, "ENV", "create DATABASE", process.env.PGDATABASE);
+            await createDB({
+                host: process.env.PGHOST,
+                user: process.env.PGUSER,
+                password: process.env.PGPASSWORD,
+                database: process.env.PGDATABASE
+            });
+        } else {
+            message(true, "ERROR", "NO postgres connection", "");
+        }
+    });
 
 export const server = app.listen(process.env.PORT, () => {
     message(true, "ENV", "Server listening on port", process.env.PORT);
