@@ -121,7 +121,7 @@ export const _DBDATAS: IEntityProperties = {
                 comment: "A unique bigSerial."
             },
             username: {
-                create: "text NOT NULL",
+                create: "text NOT NULL UNIQUE",
                 comment: "Name of the user."
             },
             email: {

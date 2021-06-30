@@ -37,6 +37,8 @@ export class Observations extends Common {
 
                     const testIfId = await this.verifyIdExist(dataStreamId);
 
+                    console.log(testIfId);
+
                     if (testIfId === false) {
                         this.ctx.throw(404, { detail: `No id found for : ${dataStreamId}` });
                     }

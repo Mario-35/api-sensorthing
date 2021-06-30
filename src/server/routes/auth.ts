@@ -65,20 +65,23 @@ router.post(["/register", "/api/register"], async (ctx: Context, next) => {
             if (checkPassword(body.password) === false) why["password"] = "Invalid password";
         }
     }
-
+    console.log(why);
     if (Object.keys(why).length === 0) {
-        // const newUser = await userAccess.add(ctx.request.body);
-
-        return await passport.authenticate("local", async (err, user, info, status) => {
-            if (user) {
-                ctx.status = 200;
-                ctx.login(user);
-                ctx.redirect("/status");
-            } else {
-                ctx.status = 400;
-                ctx.redirect("/register");
-            }
-        })(ctx, next);
+        try {
+            await userAccess.add(ctx.request.body);
+            return await passport.authenticate("local", async (err, user, info, status) => {
+                if (user) {
+                    ctx.status = 200;
+                    ctx.login(user);
+                    ctx.redirect("/status");
+                } else {
+                    ctx.status = 400;
+                    ctx.redirect("/register");
+                }
+            })(ctx, next);
+        } catch (error) {
+            ctx.redirect("/error");
+        }
     } else {
         const createHtml = new CreateHtml();
         ctx.type = returnFormat[formatsResult.HTML];
@@ -121,14 +124,14 @@ router.get(["/logout", "/api/logout"], async (ctx: Context) => {
 
 router.get(["/status", "/api/status"], async (ctx: Context) => {
     if (helperUsers.ensureAuthenticated(ctx)) {
-        const user = userAccess.getSingle(ctx.state.user.id);
+        const user = await userAccess.getSingle(ctx.state.user.id);
         const createHtml = new CreateHtml();
         ctx.type = returnFormat[formatsResult.HTML];
         ctx.body = createHtml.status({
-            username: user["username"],
+            username: user[0]["username"],
             host: process.env.PGHOST || "",
             database: process.env.PGDATABASE || "",
-            admin: user["admin"] == true ? "admin" : "user"
+            admin: user[0]["admin"] == true ? "admin" : "user"
         });
     } else {
         ctx.redirect("/login");
