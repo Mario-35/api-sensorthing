@@ -129,9 +129,9 @@ export class Common {
                                     const singular: boolean = element == _DBDATAS[subEntityName].singular;
                                     const relation: relationConfig = this.entityProperty.relations[element];
                                     let myId: bigint[] = [];
-                                    let whereRaw = `${relation.columnRelation} = ${BigInt(input["@iot.id"])}`;
+                                    let whereRaw = `${relation.columnRelation} = ${BigInt(input["@iot.id"] as string)}`;
                                     if (relation.tableName == this.entityProperty.table) {
-                                        myId = [BigInt(input[relation.entityColumn])];
+                                        myId = [BigInt(input[relation.entityColumn] as string)];
                                         whereRaw = `${relation.columnRelation} = ${myId}`;
                                     } else if (
                                         subEntity.entityProperty.relations &&
@@ -721,7 +721,6 @@ export class Common {
                     }
                 }
             }
-
             return result;
         };
 

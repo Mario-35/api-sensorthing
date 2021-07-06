@@ -14,7 +14,7 @@
 
 export const getId = (input: string | number): bigint | undefined => {
     try {
-        return typeof input == "string" ? BigInt(input.match(/[0-9]/g)?.join("")) : BigInt(input);
+        return typeof input == "string" ? BigInt(input.match(/[0-9]/g)?.join("") as string) : BigInt(input);
     } catch (error) {
         return undefined;
     }

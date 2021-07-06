@@ -12,11 +12,11 @@ export interface keyString {
     [key: string]: string;
 }
 
+// For odata parser
 import { PGVisitor } from "./utils/odata/visitor";
-
-export type promiseArray = () => Promise<unknown>;
 export interface keyValue {
-    [key: string]: string | number | bigint | keyValue | keyValue[] | ReturnResult;
+    // [key: string]: string | number | bigint | keyValue | keyValue[] | ReturnResult;
+    [key: string]: string | number | bigint | keyValue | keyValue[];
 }
 
 export enum formatsResult {
@@ -49,17 +49,14 @@ export interface requestArgs {
     formatResult: formatsResult; // format result
     extras: keyString | undefined;
 }
-interface ResultType {
-    result: string[] | string | number | bigint | keyValue[] | keyValue | undefined;
-}
-
 export interface connectionParams {
     host: string | undefined;
     user: string | undefined;
     password: string | undefined;
     database: string | undefined;
 }
-export interface ReturnResult extends ResultType {
+export interface ReturnResult {
+    result: string[] | string | number | bigint | keyValue[] | keyValue | undefined;
     id: bigint | undefined;
     nextLink: string | undefined;
     prevLink: string | undefined;
@@ -93,9 +90,6 @@ export interface IEntityProperty {
     after?: string;
     testsKeys: string[];
 }
-export interface IEntityProperties {
-    [key: string]: IEntityProperty;
-}
 
 export const _ENTITIES: string[] = [
     "Datastreams",
@@ -110,7 +104,7 @@ export const _ENTITIES: string[] = [
     "Things"
 ];
 
-export const _DBDATAS: IEntityProperties = {
+export const _DBDATAS: { [key: string]: IEntityProperty } = {
     Users: {
         name: "Users",
         singular: "User",

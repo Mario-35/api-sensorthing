@@ -12,7 +12,6 @@ import { ParameterizedContext } from "koa";
 export const helperUsers = {
     ensureAuthenticated: (context: ParameterizedContext): boolean => {
         return process.env.NODE_ENV?.startsWith("test") ? "true" : context.isAuthenticated();
-        // return context.isAuthenticated();
     },
 
     ensureAdmin: (context: ParameterizedContext): Promise<boolean> => {

@@ -43,7 +43,7 @@ export class apiAccess implements DataAccessInterface {
             .table("log_request")
             .insert({ user_id: process.env.USERID, method: this.ctx.request.method, url: this.ctx.request.url, datas: this.ctx.request.body })
             .returning("id");
-        return result ? BigInt(result[0]) : BigInt(0);
+        return result ? BigInt(result[0] as string) : BigInt(0);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
@@ -56,7 +56,7 @@ export class apiAccess implements DataAccessInterface {
         const logId: bigint = await this.addTolog();
         if (this.myEntity) {
             try {
-                return this.args.RELATION_NAME ? await this.myEntity.getRelation(BigInt(this.args.ENTITY_ID)) : await this.myEntity.getAll();
+                return this.args.RELATION_NAME ? await this.myEntity.getRelation(this.args.ENTITY_ID) : await this.myEntity.getAll();
             } catch (error) {
                 message(this.args.debug, "ERROR", "Get All", error.message);
                 await this.updateLog(logId, { results: error });
