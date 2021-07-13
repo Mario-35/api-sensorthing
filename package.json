@@ -23,7 +23,7 @@
     "serve": "node build/index.js",
     "------TEST-------": "",
     "test-all": "mocha -r ts-node/register src/**/*.spec.ts",
-    "test": "set NODE_ENV=test && rimraf ./src/test/apidoc && rimraf ./src/test/apiDocs && mocha -r ts-node/register src/test/integration/**/*.spec.ts",
+    "test": "set NODE_ENV=test && rimraf ./src/test/apidoc && rimraf ./src/test/apiDocs && node node_modules/mocha/bin/mocha -r ts-node/register src/test/integration/**/*.spec.ts",
     "------API Doc-------": "",
     "doc": "node bin/apidoc -v -i src/ -o apidoc/",
     "------Docker-------": "",

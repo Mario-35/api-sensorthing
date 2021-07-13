@@ -37,35 +37,36 @@ router.get(["/register", "/api/register"], async (ctx: Context) => {
 
 router.post(["/register", "/api/register"], async (ctx: Context, next) => {
     const body = ctx.request.body;
+    const isObject = typeof body != "string";
     const why: keyString = {};
     // Username
-    if (body.username.trim() === "") {
+    if (isObject && body["username"].trim() === "") {
         why["username"] = "Empty username";
     } else {
-        const user = await db("user").select("username").where({ username: ctx.request.body.username }).first();
+        const user = await db("user").select("username").where({ username: ctx.request.body["username"] }).first();
         if (user) why["username"] = "Already present";
     }
     // Email
-    if (body.email.trim() === "") {
+    if (isObject && body["email"].trim() === "") {
         why["email"] = "Empty email";
     } else {
-        if (emailIsValid(body.email) === false) why["email"] = "Invalid email";
+        if (emailIsValid(body["email"]) === false) why["email"] = "Invalid email";
     }
     // Password
-    if (body.password.trim() === "") {
+    if (isObject && body["password"].trim() === "") {
         why["password"] = "Empty password";
     }
     // Repeat password
-    if (body.repeat.trim() === "") {
+    if (isObject && (body["repeat"] as string).trim() === "") {
         why["repeat"] = "Empty repeat password";
     } else {
-        if (body.password != body.repeat) {
+        if (body["password"] != body.repeat) {
             why["repeat"] = "Password are different";
         } else {
-            if (checkPassword(body.password) === false) why["password"] = "Invalid password";
+            if (checkPassword(body["password"]) === false) why["password"] = "Invalid password";
         }
     }
-    console.log(why);
+    
     if (Object.keys(why).length === 0) {
         try {
             await userAccess.add(ctx.request.body);

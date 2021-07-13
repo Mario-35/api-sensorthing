@@ -11,7 +11,7 @@ import { DataAccessInterface } from "../interfaces";
 
 import * as entities from "../entities/index";
 import { Common } from "../entities/common";
-import { message } from "../../utils/";
+import { message, recordToKeValue } from "../../utils/";
 import { db } from "../../db";
 import { ParameterizedContext } from "koa";
 
@@ -84,7 +84,7 @@ export class apiAccess implements DataAccessInterface {
         const logId: bigint = await this.addTolog();
         if (this.myEntity) {
             // try {
-            const results = await this.myEntity.add(this.ctx.request.body);
+            const results = await this.myEntity.add(recordToKeValue(this.ctx.request.body));
             if (results) {
                 await this.updateLog(logId, { results: results });
                 return results;
@@ -96,7 +96,7 @@ export class apiAccess implements DataAccessInterface {
         message(this.args.debug, "HEAD", "class DataAccessClass update");
         const logId: bigint = await this.addTolog();
         if (this.myEntity) {
-            const results = await this.myEntity.update(id, this.ctx.request.body);
+            const results = await this.myEntity.update(id, recordToKeValue(this.ctx.request.body));
             await this.updateLog(logId, { results: results });
             if (results) {
                 await this.updateLog(logId, { results: results });

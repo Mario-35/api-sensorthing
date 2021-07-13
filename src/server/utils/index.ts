@@ -17,3 +17,4 @@ export { upload } from "./upload";
 export { camelCase } from "./camelCase";
 export { hostName } from "./hostName";
 export { resultBody } from "./resultBody";
+export { recordToKeValue } from "./recordToKeValue";

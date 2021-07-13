@@ -86,6 +86,9 @@ db.raw("select 1+1 as result")
                 database: process.env.PGDATABASE
             });
         } else {
+            if (!process.env.PGUSER) {
+                message(true, "ERROR", "NO environment file found", `.env.${process.env.NODE_ENV}`);
+            }
             message(true, "ERROR", "NO postgres connection", "");
         }
     });

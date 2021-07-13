@@ -87,7 +87,7 @@ export const urlRequestToArgs = (ctx: ParameterizedContext, extras?: keyString):
                 return item.trim();
             });
         // get SERVICE_ROOT_URI
-        splitStr[0] = splitStr[0] === "" ? ctx.request.header.host : "error";
+        splitStr[0] = ctx.request.header.host && splitStr[0] === "" ? ctx.request.header.host : "error";
 
         splitStr.forEach((value: string, index: number) => {
             // get entities
@@ -117,7 +117,7 @@ export const urlRequestToArgs = (ctx: ParameterizedContext, extras?: keyString):
                 result.ENTITY_ID = ENTITY_ID !== null ? BigInt(ENTITY_ID.join("")) : splitStr[splitStr.length - 1].indexOf("(") === -1 ? BigInt(0) : undefined;
                 result.PROPERTY_NAME = propertyOrRelationTest ? undefined : propertyOrRelation;
                 result.RELATION_NAME = propertyOrRelationTest ? propertyOrRelation : undefined;
-                result.baseUrl = ctx.request.headers["x-forwarded-host"] ? ctx.request.headers["x-forwarded-host"] : splitStr[0];
+                result.baseUrl = ctx.request.headers["x-forwarded-host"] ? ctx.request.headers["x-forwarded-host"][0] : splitStr[0];
                 result.version = splitStr[version_index];
                 result.entities = entities;
                 result.value = ctx.request.url.includes("/$value");

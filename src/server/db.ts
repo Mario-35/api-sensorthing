@@ -20,6 +20,6 @@ export const db = knex({
         min: 0,
         // min: process.env.NODE_ENV === "prod" ? 1 : 0,
         max: 1
-    }
+    },
     // debug: true
 });

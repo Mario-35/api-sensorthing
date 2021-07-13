@@ -8,7 +8,7 @@
 
 import Router from "koa-router";
 import { apiAccess } from "../db/dataAccess";
-import { _DBDATAS, ReturnResult, formatsResult, keyValue, keyString, returnFormat, _ENTITIES } from "../constant";
+import { _DBDATAS, ReturnResult, formatsResult, keyValue, keyString, returnFormat, _ENTITIES, connectionParams } from "../constant";
 import { urlRequestToArgs, upload, hostName, resultBody, message } from "../utils/";
 import { ParameterizedContext } from "koa";
 import { queryHtml } from "../query/";
@@ -126,7 +126,13 @@ router.post("/(.*)", async (ctx) => {
         if (args) {
             if (args.ENTITY_NAME == "createDB" && ctx) {
                 message(args.debug, "HEAD", "POST createDB");
-                const results = await createDB(ctx.request.body, ctx);
+                const conParams: connectionParams = {
+                    host: ctx.request.body["host"],
+                    user: ctx.request.body["user"],
+                    password: ctx.request.body["password"],
+                    database: ctx.request.body["database"],
+                }
+                const results = await createDB(conParams, ctx);
                 returnFormat[formatsResult.JSON];
                 ctx.body = results;
             } else {

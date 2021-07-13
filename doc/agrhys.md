@@ -1,4 +1,4 @@
-# Le modèle de données de l'API SensorThings applique à Agrhys
+# Le modèle de données de l'API SensorThings appliqué à Agrhys
 
 Afin de comprendre l'API SensorThings, il est essentiel de comprendre le modèle de données sous-jacent.
 
@@ -223,4 +223,4 @@ ou
 
 ## CSV Insert.
 
-you can add csv file.
+l'importation csv est tout a fait possible MAIS il faut qu'il y ai au mois un observation enregistré pour le datastrean en question.
