@@ -77,7 +77,9 @@ db.raw("select 1+1 as result")
         message(true, "ENV", "Debug", process.env.DEBUGSQL);
     })
     .catch(async (err) => {
-        if (err.code == "3D000" && process.env.NODE_ENV && process.env.NODE_ENV.trim() != "test") {
+        if (process.env.NODE_ENV && process.env.NODE_ENV.trim() == "test") {
+            message(true, "INFO", "Postgres connection for", process.env.NODE_ENV.trim());
+        } else if (err.code == "3D000" && process.env.NODE_ENV && process.env.NODE_ENV.trim() != "test") {
             message(true, "ENV", "create DATABASE", process.env.PGDATABASE);
             await createDB({
                 host: process.env.PGHOST,
