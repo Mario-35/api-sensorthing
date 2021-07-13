@@ -13,6 +13,9 @@ import { IApiDoc, generateApiDoc, IApiInput, prepareToApiDoc, createListColumns 
 import { server } from "../../server/index";
 import { db } from "../../server/db";
 import { _DBDATAS, IEntityProperty } from "../../server/constant";
+import { testsKeys as locations_testsKeys } from "./routes.04_locations.spec";
+
+const testsKeys = ["@iot.selfLink", "@iot.id", "Thing@iot.navigationLink", "Locations@iot.navigationLink", "time"];
 
 chai.use(chaiHttp);
 
@@ -73,7 +76,7 @@ describe("routes : HistoricalLocations", () => {
                             res.type.should.equal("application/json");
                             res.body.value.length.should.eql(nb);
                             res.body.should.include.keys("@iot.count", "value");
-                            res.body.value[0].should.include.keys(entity.testsKeys);
+                            res.body.value[0].should.include.keys(testsKeys);
                             res.body.value = [res.body.value[0], res.body.value[1], "..."];
                             addToApiDoc({ ...infos, result: res });
                             done();
@@ -94,7 +97,7 @@ describe("routes : HistoricalLocations", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     res.body["@iot.selfLink"].should.contain("/HistoricalLocations(1)");
                     res.body["@iot.id"].should.eql("1");
                     res.body["Thing@iot.navigationLink"].should.contain("/HistoricalLocations(1)/Thing");
@@ -116,10 +119,10 @@ describe("routes : HistoricalLocations", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(_DBDATAS.HistoricalLocations.testsKeys.filter((elem) => elem !== "Locations@iot.navigationLink"));
+                    res.body.should.include.keys(testsKeys.filter((elem) => elem !== "Locations@iot.navigationLink"));
                     res.body.should.include.keys("Locations");
                     res.body.Locations.length.should.eql(1);
-                    res.body.Locations[0].should.include.keys(_DBDATAS.Locations.testsKeys);
+                    res.body.Locations[0].should.include.keys(locations_testsKeys);
                     res.body["@iot.id"].should.eql("6");
                     addToApiDoc({ ...infos, result: res });
                     done();
@@ -181,7 +184,7 @@ describe("routes : HistoricalLocations", () => {
                             should.not.exist(err);
                             res.status.should.equal(200);
                             res.type.should.equal("application/json");
-                            res.body.should.include.keys(entity.testsKeys);
+                            res.body.should.include.keys(testsKeys);
                             const newLocationObject = res.body;
                             newLocationObject.should.not.eql(locationObject.time);
                             addToApiDoc({ ...infos, result: res });

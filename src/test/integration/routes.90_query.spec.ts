@@ -13,7 +13,10 @@ import chaiHttp from "chai-http";
 import { IApiDoc, generateApiDoc, IApiInput, prepareToApiDoc } from "./constant";
 import { server } from "../../server/index";
 import { db } from "../../server/db";
-import { _DBDATAS } from "../../server/constant";
+import { testsKeys as things_testsKeys } from "./routes.03_things.spec";
+import { testsKeys as datastreams_testsKeys } from "./routes.06_datastreams.spec";
+import { testsKeys as sensors_testsKeys } from "./routes.07_sensors.spec";
+import { testsKeys as observedProperties_testsKeys } from "./routes.08_observedProperties.spec";
 
 chai.use(chaiHttp);
 
@@ -53,10 +56,10 @@ describe("Query", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(_DBDATAS.Things.testsKeys.filter((elem) => elem !== "Datastreams@iot.navigationLink"));
+                    res.body.should.include.keys(things_testsKeys.filter((elem) => elem !== "Datastreams@iot.navigationLink"));
                     res.body.should.include.keys("Datastreams");
                     res.body.Datastreams.length.should.eql(3);
-                    res.body.Datastreams[0].should.include.keys(_DBDATAS.Datastreams.testsKeys);
+                    res.body.Datastreams[0].should.include.keys(datastreams_testsKeys);
                     res.body["@iot.id"].should.eql("6");
                     addToApiDoc({ ...infos, result: res });
                     done();
@@ -76,16 +79,16 @@ describe("Query", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(_DBDATAS.Things.testsKeys.filter((elem) => elem !== "Datastreams@iot.navigationLink"));
+                    res.body.should.include.keys(things_testsKeys.filter((elem) => elem !== "Datastreams@iot.navigationLink"));
                     res.body["@iot.id"].should.eql("6");
                     res.body.should.include.keys("Datastreams");
                     res.body.Datastreams.length.should.eql(3);
                     // res.body.Datastreams[0].should.include.keys(_DBDATAS.Datastreams.testsKeys);
                     res.body.Datastreams[0].should.include.keys("Sensor");
-                    res.body.Datastreams[0].Sensor.should.include.keys(_DBDATAS.Sensors.testsKeys);
+                    res.body.Datastreams[0].Sensor.should.include.keys(sensors_testsKeys);
 
                     res.body.Datastreams[1].should.include.keys("Sensor");
-                    res.body.Datastreams[1].Sensor.should.include.keys(_DBDATAS.Sensors.testsKeys);
+                    res.body.Datastreams[1].Sensor.should.include.keys(sensors_testsKeys);
 
                     addToApiDoc({ ...infos, result: res });
                     done();
@@ -106,15 +109,15 @@ describe("Query", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(_DBDATAS.Things.testsKeys.filter((elem) => elem !== "Datastreams@iot.navigationLink"));
+                    res.body.should.include.keys(things_testsKeys.filter((elem) => elem !== "Datastreams@iot.navigationLink"));
                     res.body["@iot.id"].should.eql("6");
                     res.body.should.include.keys("Datastreams");
                     res.body.Datastreams.length.should.eql(3);
                     // res.body.Datastreams[0].should.include.keys(_DBDATAS.Datastreams.testsKeys);
                     res.body.Datastreams[0].should.include.keys("Sensor");
                     res.body.Datastreams[0].should.include.keys("ObservedProperty");
-                    res.body.Datastreams[0].Sensor.should.include.keys(_DBDATAS.Sensors.testsKeys);
-                    res.body.Datastreams[0].ObservedProperty.should.include.keys(_DBDATAS.ObservedProperties.testsKeys);
+                    res.body.Datastreams[0].Sensor.should.include.keys(sensors_testsKeys);
+                    res.body.Datastreams[0].ObservedProperty.should.include.keys(observedProperties_testsKeys);
                     addToApiDoc({ ...infos, result: res });
                     done();
                 });

@@ -13,6 +13,8 @@ import { IApiDoc, generateApiDoc, IApiInput, prepareToApiDoc, createListColumns 
 import { server } from "../../server/index";
 import { db } from "../../server/db";
 import { _DBDATAS, IEntityProperty } from "../../server/constant";
+import { testsKeys as datastreams_testsKeys } from "./routes.06_datastreams.spec";
+export const testsKeys = ["@iot.id", "@iot.selfLink", "Datastreams@iot.navigationLink", "name", "description"];
 
 chai.use(chaiHttp);
 
@@ -77,7 +79,7 @@ describe("routes : Sensors", () => {
                             res.type.should.equal("application/json");
                             res.body.value.length.should.eql(nb);
                             res.body.should.include.keys("@iot.count", "value");
-                            res.body.value[0].should.include.keys(entity.testsKeys);
+                            res.body.value[0].should.include.keys(testsKeys);
                             res.body.value = [res.body.value[0], res.body.value[1], "..."];
                             addToApiDoc({ ...infos, result: res });
                             done();
@@ -98,7 +100,7 @@ describe("routes : Sensors", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     res.body["@iot.selfLink"].should.contain("/Sensors(1)");
                     res.body["@iot.id"].should.eql("1");
                     res.body["Datastreams@iot.navigationLink"].should.contain("/Sensors(1)/Datastreams");
@@ -132,9 +134,9 @@ describe("routes : Sensors", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(_DBDATAS.Sensors.testsKeys.filter((elem) => elem !== "Datastreams@iot.navigationLink"));
+                    res.body.should.include.keys(testsKeys.filter((elem) => elem !== "Datastreams@iot.navigationLink"));
                     res.body.should.include.keys("Datastreams");
-                    res.body.Datastreams[0].should.include.keys(_DBDATAS.Datastreams.testsKeys);
+                    res.body.Datastreams[0].should.include.keys(datastreams_testsKeys);
                     res.body["@iot.id"].should.eql("1");
                     res.body.Datastreams = [res.body.Datastreams[0], res.body.Datastreams[1], "..."];
 
@@ -186,7 +188,7 @@ describe("routes : Sensors", () => {
                     should.not.exist(err);
                     res.status.should.equal(201);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     addToApiDoc({ ...infos, result: res });
                     done();
                 });
@@ -228,7 +230,7 @@ describe("routes : Sensors", () => {
                             should.not.exist(err);
                             res.status.should.equal(200);
                             res.type.should.equal("application/json");
-                            res.body.should.include.keys(entity.testsKeys);
+                            res.body.should.include.keys(testsKeys);
                             const newItems = res.body;
                             newItems.description.should.not.eql(itemObject.description);
                             addToApiDoc({

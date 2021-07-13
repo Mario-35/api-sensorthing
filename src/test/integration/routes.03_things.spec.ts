@@ -15,6 +15,16 @@ import { server } from "../../server/index";
 import { db } from "../../server/db";
 import { _DBDATAS, IEntityProperty } from "../../server/constant";
 
+export const testsKeys = [
+    "@iot.id",
+    "@iot.selfLink",
+    "Datastreams@iot.navigationLink",
+    "HistoricalLocation@iot.navigationLink",
+    "Locations@iot.navigationLink",
+    "description",
+    "name",
+    "properties"
+];
 chai.use(chaiHttp);
 
 const should = chai.should();
@@ -97,7 +107,7 @@ describe("routes : Thing [8.2.1]", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     res.body["@iot.id"].should.eql("1");
                     res.body["@iot.selfLink"].should.contain("/Things(1)");
                     res.body["Locations@iot.navigationLink"].should.contain("/Things(1)/Locations");
@@ -193,7 +203,7 @@ describe("routes : Thing [8.2.1]", () => {
                     should.not.exist(err);
                     res.status.should.equal(201);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     addToApiDoc({ ...infos, result: res });
                     done();
                 });
@@ -234,7 +244,7 @@ describe("routes : Thing [8.2.1]", () => {
                     should.not.exist(err);
                     res.status.should.equal(201);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     const thingId = res.body["@iot.id"];
                     db("location")
                         .orderBy("id", "desc")
@@ -291,7 +301,7 @@ describe("routes : Thing [8.2.1]", () => {
                     should.not.exist(err);
                     res.status.should.equal(201);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     const thingId = res.body["@iot.id"];
                     db("thing_location")
                         .where({ thing_id: thingId, location_id: 1 })
@@ -397,7 +407,7 @@ describe("routes : Thing [8.2.1]", () => {
                     should.not.exist(err);
                     res.status.should.equal(201);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     const thingId = res.body["@iot.id"];
                     db("datastream")
                         .orderBy("id", "desc")
@@ -468,7 +478,7 @@ describe("routes : Thing [8.2.1]", () => {
                             should.not.exist(err);
                             res.status.should.equal(200);
                             res.type.should.equal("application/json");
-                            res.body.should.include.keys(entity.testsKeys);
+                            res.body.should.include.keys(testsKeys);
                             const newThingObject = res.body;
                             newThingObject.name.should.not.eql(thingObject.name);
                             addToApiDoc({ ...infos, result: res });
@@ -525,7 +535,7 @@ describe("routes : Thing [8.2.1]", () => {
                             should.not.exist(err);
                             res.status.should.equal(200);
                             res.type.should.equal("application/json");
-                            res.body.should.include.keys(entity.testsKeys);
+                            res.body.should.include.keys(testsKeys);
                             const thingId = res.body["@iot.id"];
                             db("thing_location")
                                 .where({ thing_id: thingId, location_id: 10 })

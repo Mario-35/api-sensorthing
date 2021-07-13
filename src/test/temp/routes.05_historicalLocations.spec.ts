@@ -66,7 +66,7 @@ describe("routes : HistoricalLocations", () => {
                             res.type.should.equal("application/json");
                             res.body.value.length.should.eql(nb);
                             res.body.should.include.keys("@iot.count", "value");
-                            res.body.value[0].should.include.keys(entity.testsKeys);
+                            res.body.value[0].should.include.keys(testsKeys);
                             res.body.value = [res.body.value[0], res.body.value[1], "..."];
                             addToApiDoc({ ...infos, result: res });
                             done();
@@ -88,7 +88,7 @@ describe("routes : HistoricalLocations", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     res.body["@iot.selfLink"].should.contain(`/HistoricalLocations(${id})`);
                     res.body["@iot.id"].should.eql(`${id}`);
                     res.body["Thing@iot.navigationLink"].should.contain(`/HistoricalLocations(${id})/Thing`);
@@ -133,7 +133,7 @@ describe("routes : HistoricalLocations", () => {
                             should.not.exist(err);
                             res.status.should.equal(200);
                             res.type.should.equal("application/json");
-                            res.body.should.include.keys(entity.testsKeys);
+                            res.body.should.include.keys(testsKeys);
                             const newItems = res.body;
                             newItems.time.should.not.eql(itemObject.time);
                             addToApiDoc({ ...infos, result: res });

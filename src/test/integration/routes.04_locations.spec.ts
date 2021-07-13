@@ -14,6 +14,17 @@ import { server } from "../../server/index";
 import { db } from "../../server/db";
 import { _DBDATAS, IEntityProperty } from "../../server/constant";
 
+export const testsKeys = [
+    "@iot.selfLink",
+    "@iot.id",
+    "Things@iot.navigationLink",
+    "HistoricalLocation@iot.navigationLink",
+    "name",
+    "description",
+    "encodingType",
+    "location"
+];
+
 chai.use(chaiHttp);
 
 const should = chai.should();
@@ -74,7 +85,7 @@ describe("routes : Locations", () => {
                             res.type.should.equal("application/json");
                             res.body.value.length.should.eql(nb);
                             res.body.should.include.keys("@iot.count", "value");
-                            res.body.value[0].should.include.keys(entity.testsKeys);
+                            res.body.value[0].should.include.keys(testsKeys);
                             res.body.value = [res.body.value[0], res.body.value[1], "..."];
                             addToApiDoc({ ...infos, result: res });
                             done();
@@ -95,7 +106,7 @@ describe("routes : Locations", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     res.body["@iot.selfLink"].should.contain("/Locations(1)");
                     res.body["@iot.id"].should.eql("1");
                     res.body["Things@iot.navigationLink"].should.contain("/Locations(1)/Things");
@@ -126,7 +137,7 @@ describe("routes : Locations", () => {
                             res.type.should.equal("application/json");
                             res.body.value.length.should.eql(nb);
                             res.body.should.include.keys("@iot.count", "value");
-                            res.body.value[0].should.include.keys(entity.testsKeys);
+                            res.body.value[0].should.include.keys(testsKeys);
                             res.body.value = [res.body.value[0], res.body.value[1], "..."];
                             addToApiDoc({ ...infos, result: res });
                             done();
@@ -176,7 +187,7 @@ describe("routes : Locations", () => {
                     should.not.exist(err);
                     res.status.should.equal(201);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     addToApiDoc({ ...infos, result: res });
                     done();
                 });
@@ -220,7 +231,7 @@ describe("routes : Locations", () => {
                     should.not.exist(err);
                     res.status.should.equal(201);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     const tempSearch = await db.table("thing_location").select("*").where({ thing_id: 1, location_id: res.body["@iot.id"] });
                     tempSearch[0].should.include.keys("location_id", "thing_id");
                     tempSearch[0]["thing_id"].should.eql("1");
@@ -263,7 +274,7 @@ describe("routes : Locations", () => {
                     should.not.exist(err);
                     res.status.should.equal(201);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     const tempSearch = await db.table("thing_location").select("*").where({ thing_id: 2, location_id: res.body["@iot.id"] });
                     tempSearch[0].should.include.keys("location_id", "thing_id");
                     tempSearch[0]["thing_id"].should.eql("2");
@@ -302,7 +313,7 @@ describe("routes : Locations", () => {
                             should.not.exist(err);
                             res.status.should.equal(200);
                             res.type.should.equal("application/json");
-                            res.body.should.include.keys(entity.testsKeys);
+                            res.body.should.include.keys(testsKeys);
                             const newLocationObject = res.body;
                             newLocationObject.should.not.eql(locationObject.name);
                             addToApiDoc({ ...infos, result: res });

@@ -13,7 +13,9 @@ import { IApiDoc, generateApiDoc, IApiInput, prepareToApiDoc, createListColumns 
 import { server } from "../../server/index";
 import { db } from "../../server/db";
 import { _DBDATAS, IEntityProperty } from "../../server/constant";
+import { testsKeys as observations_testsKeys } from "./routes.09_observations.spec";
 
+const testsKeys = ["@iot.id", "@iot.selfLink", "Observations@iot.navigationLink", "name", "description", "encodingType", "feature"];
 chai.use(chaiHttp);
 
 const should = chai.should();
@@ -68,7 +70,7 @@ describe("routes : Features of Interest", () => {
                             res.type.should.equal("application/json");
                             res.body.value.length.should.eql(nb);
                             res.body.should.include.keys("@iot.count", "value");
-                            res.body.value[0].should.include.keys(entity.testsKeys);
+                            res.body.value[0].should.include.keys(testsKeys);
                             res.body.value = [res.body.value[0], res.body.value[1], "..."];
                             addToApiDoc({ ...infos, result: res });
                             done();
@@ -89,7 +91,7 @@ describe("routes : Features of Interest", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     res.body["@iot.selfLink"].should.contain("/FeaturesOfInterest(1)");
                     res.body["@iot.id"].should.eql("1");
                     res.body["Observations@iot.navigationLink"].should.contain("/FeaturesOfInterest(1)/Observations");
@@ -124,9 +126,9 @@ describe("routes : Features of Interest", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(_DBDATAS.FeaturesOfInterest.testsKeys.filter((elem) => elem !== "Observations@iot.navigationLink"));
+                    res.body.should.include.keys(testsKeys.filter((elem) => elem !== "Observations@iot.navigationLink"));
                     res.body.should.include.keys("Observations");
-                    res.body.Observations[0].should.include.keys(_DBDATAS.Observations.testsKeys);
+                    res.body.Observations[0].should.include.keys(observations_testsKeys);
                     res.body["@iot.id"].should.eql("1");
                     res.body.Observations = [res.body.Observations[0], res.body.Observations[1], "..."];
                     addToApiDoc({ ...infos, result: res });
@@ -159,7 +161,7 @@ describe("routes : Features of Interest", () => {
                     should.not.exist(err);
                     res.status.should.equal(201);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     addToApiDoc({ ...infos, result: res });
                     done();
                 });
@@ -206,7 +208,7 @@ describe("routes : Features of Interest", () => {
                             should.not.exist(err);
                             res.status.should.equal(200);
                             res.type.should.equal("application/json");
-                            res.body.should.include.keys(entity.testsKeys);
+                            res.body.should.include.keys(testsKeys);
                             const newItems = res.body;
                             newItems.name.should.not.eql(itemObject.name);
                             addToApiDoc({

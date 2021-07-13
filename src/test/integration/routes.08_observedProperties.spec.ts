@@ -13,6 +13,10 @@ import { IApiDoc, generateApiDoc, IApiInput, prepareToApiDoc, createListColumns 
 import { server } from "../../server/index";
 import { db } from "../../server/db";
 import { _DBDATAS, IEntityProperty } from "../../server/constant";
+import { testsKeys as sensors_testsKeys } from "./routes.07_sensors.spec";
+import { testsKeys as datastreams_testsKeys } from "./routes.06_datastreams.spec";
+
+export const testsKeys = ["@iot.id", "@iot.selfLink", "Datastreams@iot.navigationLink", "name", "description", "definition"];
 
 chai.use(chaiHttp);
 
@@ -73,7 +77,7 @@ describe("routes : ObservedProperties", () => {
                             res.type.should.equal("application/json");
                             res.body.value.length.should.eql(nb);
                             res.body.should.include.keys("@iot.count", "value");
-                            res.body.value[0].should.include.keys(entity.testsKeys);
+                            res.body.value[0].should.include.keys(testsKeys);
                             res.body.value = [res.body.value[0], res.body.value[1], "..."];
                             addToApiDoc({ ...infos, result: res });
                             done();
@@ -94,7 +98,7 @@ describe("routes : ObservedProperties", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     res.body["@iot.selfLink"].should.contain("/ObservedProperties(2)");
                     res.body["@iot.id"].should.eql("2");
                     res.body["Datastreams@iot.navigationLink"].should.contain("/ObservedProperties(2)/Datastreams");
@@ -131,7 +135,7 @@ describe("routes : ObservedProperties", () => {
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
                     res.body.should.include.keys("value");
-                    res.body.value[0].should.include.keys(entity.testsKeys);
+                    res.body.value[0].should.include.keys(testsKeys);
                     res.body["@iot.count"].should.eql("1");
                     res.body.value.length.should.eql(1);
                     res.body.value[0]["@iot.id"].should.eql(id.toString());
@@ -168,9 +172,9 @@ describe("routes : ObservedProperties", () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(_DBDATAS.Sensors.testsKeys.filter((elem) => elem !== "Datastreams@iot.navigationLink"));
+                    res.body.should.include.keys(sensors_testsKeys.filter((elem) => elem !== "Datastreams@iot.navigationLink"));
                     res.body.should.include.keys("Datastreams");
-                    res.body.Datastreams[0].should.include.keys(_DBDATAS.Datastreams.testsKeys);
+                    res.body.Datastreams[0].should.include.keys(datastreams_testsKeys);
                     res.body["@iot.id"].should.eql("1");
                     res.body.Datastreams = [res.body.Datastreams[0], res.body.Datastreams[1], "..."];
 
@@ -221,7 +225,7 @@ describe("routes : ObservedProperties", () => {
                     should.not.exist(err);
                     res.status.should.equal(201);
                     res.type.should.equal("application/json");
-                    res.body.should.include.keys(entity.testsKeys);
+                    res.body.should.include.keys(testsKeys);
                     addToApiDoc({ ...infos, result: res });
                     done();
                 });
@@ -263,7 +267,7 @@ describe("routes : ObservedProperties", () => {
                             should.not.exist(err);
                             res.status.should.equal(200);
                             res.type.should.equal("application/json");
-                            res.body.should.include.keys(entity.testsKeys);
+                            res.body.should.include.keys(testsKeys);
                             res.body.name.should.not.eql(itemObject.name);
                             addToApiDoc({ ...infos, result: res });
                             done();
