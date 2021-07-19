@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * TDD for things API.
  *
@@ -153,7 +154,7 @@ describe("routes : Observations", () => {
         });
     });
 
-    it(`Retrieve a ${entity.name} with inline related enities using $expand query option.`, (done) => {
+    it(`Retrieve a ${entity.name} with inline related entities using $expand query option.`, (done) => {
         const infos = {
             api: `{get} /${entity.name}(:id) [${++index}] Expands.`,
             apiName: `GetExpandDatastreams${entity.name}`,

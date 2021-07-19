@@ -6,7 +6,7 @@
  *
  */
 
-import { requestArgs, ReturnResult } from "../../constant";
+import { requestArgs, ReturnResult, _DBDATAS } from "../../constant";
 import { DataAccessInterface } from "../interfaces";
 
 import * as entities from "../entities/index";
@@ -40,7 +40,7 @@ export class apiAccess implements DataAccessInterface {
 
     async addTolog(): Promise<bigint> {
         const result = await db
-            .table("log_request")
+            .table(_DBDATAS.Logs_request.table)
             .insert({ user_id: process.env.USERID, method: this.ctx.request.method, url: this.ctx.request.url, datas: this.ctx.request.body })
             .returning("id");
         return result ? BigInt(result[0] as string) : BigInt(0);

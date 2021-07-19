@@ -130,8 +130,8 @@ router.post("/(.*)", async (ctx) => {
                     host: ctx.request.body["host"],
                     user: ctx.request.body["user"],
                     password: ctx.request.body["password"],
-                    database: ctx.request.body["database"],
-                }
+                    database: ctx.request.body["database"]
+                };
                 const results = await createDB(conParams, ctx);
                 returnFormat[formatsResult.JSON];
                 ctx.body = results;

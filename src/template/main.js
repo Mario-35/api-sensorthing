@@ -401,7 +401,7 @@ require([
         $(".nav-tabs-examples").find("a:first").tab("show");
 
         // sample request switch
-        $(".sample-request-switch").click(function (e) {
+        $(".sample-request-switch").click(() => {
             var name = "." + $(this).attr("name") + "-fields";
             $(name).addClass("hide");
             $(this).parent().next(name).removeClass("hide");
@@ -433,7 +433,7 @@ require([
         $("#sidenav li:not(.nav-fixed)").addClass("hide");
 
         // show 1st equal or lower Version of each entry
-        $("article[data-version]").each(function(index) {
+        $("article[data-version]").each(() => {
             var group = $(this).data("group");
             var name = $(this).data("name");
             var version = $(this).data("version");
@@ -451,7 +451,7 @@ require([
 
 
         // show 1st equal or lower Version of each entry
-        $("article[data-version]").each(function(index) {
+        $("article[data-version]").each(() => {
             var group = $(this).data("group");
             $("section#api-" + group).removeClass("hide");
             if ($("section#api-" + group + " article:visible").length === 0) {
@@ -515,7 +515,7 @@ require([
             // the version of the entry is set to the highest version (reset)
             resetArticle(group, name, version);
         } else {
-            var $compareToArticle = $("article[data-group='" + group + "'][data-name='" + name + "'][data-version='" + selectedVersion + "']");
+            // var $compareToArticle = $("article[data-group='" + group + "'][data-name='" + name + "'][data-version='" + selectedVersion + "']");
 
             var sourceEntry = {};
             var compareEntry = {};

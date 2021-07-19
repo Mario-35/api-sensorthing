@@ -15,7 +15,7 @@
     "debug2": "node --inspect -r ts-node/register ./src/server/index.ts",
     "lint": "tsc --noEmit && eslint \"./src/server/**/*.{js,ts}\" --quiet --fix",
     "prettier-format": "prettier --config .prettierrc ./src/**/*.ts --write",
-    "------BULID-----": "",
+    "------BUILD-----": "",
     "buildUglyRem": "npm run build-ts && node build.js ugly && scp -r -p dist.zip madam@194.167.76.143:./",
     "buildRem": "npm run build-ts && node build.js && scp -r -p dist.zip madam@194.167.76.143:./",
     "build": "npm run build-ts && node build.js",

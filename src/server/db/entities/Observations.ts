@@ -23,9 +23,6 @@ export class Observations extends Common {
 
         const results: string[] = [];
         let total = 0;
-
-        // http://docs.opengeospatial.org/is/15-078r6/15-078r6.html#82
-
         if (this.args.entities[0].startsWith("CreateObservations")) {
             if (this.args.extras) {
                 const extras = this.args.extras;
@@ -43,15 +40,15 @@ export class Observations extends Common {
 
                     const tempTable = `temp${Date.now().toString()}`;
 
-                    const sql = `with updated as ( insert into "observation" ("datastream_id", "featureofinterest_id", "phenomenonTime", "result")
-            select ${dataStreamId.toString()}, 1, TO_TIMESTAMP(concat("${tempTable}".date, "${tempTable}".hour), 'DD/MM/YYYYHH24:MI:SS:MS'),
-            CASE "${tempTable}".value
-            WHEN '---' THEN
-            NULL
-            ELSE
-            cast(REPLACE(value,',','.') as float)
-            END
-            from "${tempTable}" returning id) select count(*) over () as total, updated.id from updated limit ${
+                    const sql = `with updated as (insert into "observation" ("datastream_id", "featureofinterest_id", "phenomenonTime", "result")
+                                select ${dataStreamId.toString()}, 1, TO_TIMESTAMP(concat("${tempTable}".date, "${tempTable}".hour), 'DD/MM/YYYYHH24:MI:SS:MS'),
+                                CASE "${tempTable}".value
+                                WHEN '---' THEN
+                                NULL
+                                ELSE
+                                cast(REPLACE(value,',','.') as float)
+                                END
+                                from "${tempTable}" returning id) select count(*) over () as total, updated.id from updated limit ${
                         process.env.APILIMIT ? Number(process.env.APILIMIT) : 200
                     }`;
                     const importDatas = await importCsv(Common.dbContext, tempTable, filename, sql, this.args.debug);

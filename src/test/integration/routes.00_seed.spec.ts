@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 process.env.NODE_ENV = "test";
 
 import chai from "chai";
