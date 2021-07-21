@@ -156,6 +156,7 @@ router.post("/(.*)", async (ctx) => {
             =============== FORM (query) ===============
         */
     } else if (ctx.request.type.startsWith("multipart/form-data")) {
+        // If upload datas
         const getDatas = async (): Promise<keyString> => {
             return new Promise(async (resolve, reject) => {
                 await upload(ctx)

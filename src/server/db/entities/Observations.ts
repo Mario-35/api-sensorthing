@@ -11,7 +11,7 @@ import { ParameterizedContext } from "koa";
 import { Common } from "./common";
 import { db } from "../../db";
 import { importCsv, message, renameProp } from "../../utils/index";
-import { keyValue, requestArgs, ReturnResult } from "../../constant";
+import { csvFile, keyValue, requestArgs, ReturnResult } from "../../constant";
 
 export class Observations extends Common {
     constructor(ctx: ParameterizedContext, args: requestArgs, level: number, knexInstance?: Knex | Knex.Transaction) {
@@ -28,32 +28,24 @@ export class Observations extends Common {
                 const extras = this.args.extras;
                 if (extras["entity"] == "Datastreams" && Number(extras["nb"]) > 0) {
                     message(this.args.debug, "INFO", "addFromCsv");
+                    const paramsFile: csvFile = {
+                        tempTable: `temp${Date.now().toString()}`,
+                        filename: extras["file"],
+                        column: extras["column"] ? Number(extras["column"]) : 1,
+                        header: extras["header"] ? ", HEADER" : "",
+                        dataStreamId: BigInt(extras["nb"]),
+                        debug: this.args.debug
+                    };
 
-                    const filename = extras["file"];
-                    const dataStreamId = BigInt(extras["nb"]);
-
-                    const testIfId = await this.verifyIdExist(dataStreamId);
+                    const testIfId = await this.verifyIdExist(paramsFile.dataStreamId);
 
                     if (testIfId === false) {
-                        this.ctx.throw(404, { detail: `No id found for : ${dataStreamId}` });
+                        this.ctx.throw(404, { detail: `No id found for : ${paramsFile.dataStreamId}` });
                     }
 
-                    const tempTable = `temp${Date.now().toString()}`;
+                    const importDatas = await importCsv(Common.dbContext, paramsFile);
 
-                    const sql = `with updated as (insert into "observation" ("datastream_id", "featureofinterest_id", "phenomenonTime", "result")
-                                select ${dataStreamId.toString()}, 1, TO_TIMESTAMP(concat("${tempTable}".date, "${tempTable}".hour), 'DD/MM/YYYYHH24:MI:SS:MS'),
-                                CASE "${tempTable}".value
-                                WHEN '---' THEN
-                                NULL
-                                ELSE
-                                cast(REPLACE(value,',','.') as float)
-                                END
-                                from "${tempTable}" returning id) select count(*) over () as total, updated.id from updated limit ${
-                        process.env.APILIMIT ? Number(process.env.APILIMIT) : 200
-                    }`;
-                    const importDatas = await importCsv(Common.dbContext, tempTable, filename, sql, this.args.debug);
-
-                    message(this.args.debug, "INFO", "importCsv OK");
+                    message(this.args.debug, "INFO", "importCsv", "OK");
                     total = Number(importDatas.shift());
 
                     importDatas.forEach((element: string) => {

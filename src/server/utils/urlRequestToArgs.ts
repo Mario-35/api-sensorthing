@@ -33,8 +33,16 @@ const getEntityNameFromString = (input: string): string | undefined => {
 export const urlRequestToArgs = (ctx: ParameterizedContext, extras?: keyString): requestArgs | undefined => {
     // URI Pattern: SERVICE_ROOT_URI/ENTITY_NAME(KEY_OF_THE_ENTITY)/LINK_NAME/$ref
     // URI Pattern: SERVICE_ROOT_URI/ENTITY_NAME(ENTITY_ID)/PROPERTY_NAME/$value
-    const debug: boolean = ctx.request.url.includes("-debug-");
+    const debug: boolean = ctx.request.url.includes("-debug-") || (extras !== undefined && extras.tab.includes("-debug-"));
     // remove parasites char
+    if (extras !== undefined && extras.tab) {
+        const temp = extras.tab.replace("-debug-", "");
+        const tempSplit = temp.trim().split("&");
+        tempSplit.forEach((elem: string) => {
+            const elemSplit = elem.split("=");
+            extras[elemSplit[0]] = elemSplit[1];
+        });
+    }
     let cleanStr = unescape(ctx.request.url.replace("-debug-", "")).replace("/Query", "");
     const getOneArg = (input: string): string | undefined => {
         if (ctx.request.url.includes(`${input}=`)) {

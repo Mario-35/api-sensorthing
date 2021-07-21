@@ -8,6 +8,14 @@
 
 /* eslint-disable quotes */
 
+export interface csvFile {
+    filename: string;
+    tempTable: string;
+    dataStreamId: bigint;
+    column: number;
+    header: string;
+    debug: boolean;
+}
 export interface keyString {
     [key: string]: string;
 }
@@ -95,7 +103,7 @@ export const _DBDATAS: { [key: string]: IEntityProperty } = {
         name: "Users",
         singular: "User",
         table: "user",
-        order: -1,
+        order: -1, // exclude
         columns: {
             id: {
                 create: "int8 GENERATED ALWAYS AS IDENTITY",
@@ -122,32 +130,32 @@ export const _DBDATAS: { [key: string]: IEntityProperty } = {
         relations: {}
     },
 
-    Logs: {
-        name: "Logs",
-        singular: "Log",
-        table: "log",
-        order: -1,
-        columns: {
-            id: {
-                create: "BIGINT GENERATED ALWAYS AS IDENTITY",
-                comment: "A unique bigSerial."
-            },
-            author: {
-                create: "text NULL",
-                comment: "Author of the opération."
-            },
-            filename: {
-                create: "text NULL",
-                comment: "Filename of the opération."
-            },
-            dateexecuted: {
-                create: "timestamptz NULL",
-                comment: "The time of the opération."
-            }
-        },
-        excludeColumn: [],
-        relations: {}
-    },
+    // Logs: {
+    //     name: "Logs",
+    //     singular: "Log",
+    //     table: "log",
+    //     order: -1,
+    //     columns: {
+    //         id: {
+    //             create: "BIGINT GENERATED ALWAYS AS IDENTITY",
+    //             comment: "A unique bigSerial."
+    //         },
+    //         author: {
+    //             create: "text NULL",
+    //             comment: "Author of the opération."
+    //         },
+    //         filename: {
+    //             create: "text NULL",
+    //             comment: "Filename of the opération."
+    //         },
+    //         dateexecuted: {
+    //             create: "timestamptz NULL",
+    //             comment: "The time of the opération."
+    //         }
+    //     },
+    //     excludeColumn: [],
+    //     relations: {}
+    // },
 
     Logs_request: {
         name: "Logs_request",
