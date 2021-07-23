@@ -30,11 +30,20 @@ var notify =  function (titleMess, bodyMess) {
 
 // btn Go or Submit 
 var goOrSubmit =  function () {
+  column.style.display = "none";
+  columnlabel.style.display = "none";
+  header.style.display = "none";
+  headerlabel.style.display = "none";
   if (importFile == true) {
     go.style.display = "none";
+    column.style.display = "inline-block";
+    columnlabel.style.display = "inline-block";
+    header.style.display = "inline-block";
+    headerlabel.style.display = "inline-block";
     
     if (Number(nb.value) > 0) { 
       submit.style.display = "inline-block";
+      
     } else {
       submit.style.display = "none";
     }
@@ -89,7 +98,6 @@ buildTableWithCsv = (input, separator) => {
       const _td = document.createElement(singleRow === 0 ? "th" : "td");
       const text = document.createTextNode(rowCells[rowCell].replace(/\"/g, ""));
       _td.appendChild(text);
-      console.log(rowCells[rowCell]);
       _tr.appendChild(_td);
     }
     _table.appendChild(_tr);
@@ -322,7 +330,7 @@ populate.onclick = () => {
         "name": "datastream name 2",
         "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
         "ObservedProperty": {
-          "name": "Tempretaure",
+          "name": "Temperature",
           "definition": "http://www.qudt.org/qudt/owl/1.0.0/quantity/Instances.html/Tempreture",
           "description": "observedProperty 2"
         },
@@ -330,7 +338,7 @@ populate.onclick = () => {
           "description": "sensor 2",
           "name": "sensor name 2",
           "encodingType": "application/pdf",
-          "metadata": "Tempreture sensor"
+          "metadata": "Temperature sensor"
         },
         "Observations": [
           {
@@ -415,6 +423,7 @@ var init =  function () {
   populate.style.display = visible;
   fileone.style.display = visible;
   fileonelabel.style.display = visible;
+
 };
 
 init();
