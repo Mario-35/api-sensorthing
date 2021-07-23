@@ -202,9 +202,12 @@ export class Common {
         return undefined;
     }
 
-    async verifyIdExist(idInput: bigint): Promise<boolean> {
+    async verifyIdExist(idInput: bigint, tableSearch?: string): Promise<boolean> {
         message(this.args.debug, "HEAD", `class common verifyIdExist [${this.constructor.name}]`);
-        const result = await Common.dbContext(this.entityProperty.table).select("id").where({ id: idInput }).first();
+        const result = await Common.dbContext(tableSearch ? tableSearch : this.entityProperty.table)
+            .select("id")
+            .where({ id: idInput })
+            .first();
         return result ? true : false;
     }
 

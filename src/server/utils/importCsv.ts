@@ -142,7 +142,7 @@ export const importCsv = async (knex: Knex | Knex.Transaction, paramsFile: csvFi
                         .forEach((element: string) => {
                             results.push(element);
                         });
-                    await knex.schema.dropTable(paramsFile.tempTable);
+                    // await knex.schema.dropTable(paramsFile.tempTable);
                     cleanup();
                     resolve(true);
                 });
